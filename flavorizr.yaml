@@ -1,0 +1,31 @@
+flavors:
+  dev:
+    app:
+      name: "Recon dev"
+
+    android:
+      applicationId: "id.co.recon.dev"  
+    ios:
+      bundleId: "id.co.recon.dev"
+    macos:
+      bundleId: "id.co.recon.dev"  
+  uat:
+    app:
+      name: "Recon uat"
+  
+    android:
+      applicationId: "id.co.recon.uat"  
+    ios:
+      bundleId: "id.co.recon.uat"
+    macos:
+      bundleId: "id.co.recon.uat"  
+  prod:
+    app:
+      name: "Recon"
+  
+    android:
+      applicationId: "id.co.recon"  
+    ios:
+      bundleId: "id.co.recon"
+    macos:
+      bundleId: "id.co.recon"  
