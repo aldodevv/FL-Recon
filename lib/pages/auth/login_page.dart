@@ -27,10 +27,11 @@ class LoginForm extends StatefulWidget {
 }
 
 class _LoginFormState extends State<LoginForm> {
+  final _corpIdController = TextEditingController();
   final _usernameController = TextEditingController();
   final _passwordController = TextEditingController();
 
-   @override
+  @override
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(title: const Text('Login')),
@@ -38,64 +39,72 @@ class _LoginFormState extends State<LoginForm> {
         padding: const EdgeInsets.all(16),
         child: Column(
           children: [
-            TextField(controller: _usernameController, decoration: InputDecoration(labelText: 'Username')),
-            TextField(controller: _passwordController, obscureText: true, decoration: InputDecoration(labelText: 'Password')),
+            TextField(
+                controller: _usernameController,
+                decoration: InputDecoration(labelText: 'Username')),
+            TextField(
+                controller: _passwordController,
+                obscureText: true,
+                decoration: InputDecoration(labelText: 'Password')),
             const SizedBox(height: 16),
             BlocBuilder<LoginBloc, LoginState>(
-  builder: (context, state) {
-    final isLoading = state is LoginLoading;
-    final isSuccess = state is LoginSuccess;
-    final isFailure = state is LoginFailure;
+              builder: (context, state) {
+                final isLoading = state is LoginLoading;
+                final isSuccess = state is LoginSuccess;
+                final isFailure = state is LoginFailure;
 
-    if (state is LoginSuccess) {
-      context.router.replace(
-        HomeRoute(username: state.username), // ← kirim data ke halaman
-      );
-    }
+                if (state is LoginSuccess) {
+                  context.router.replace(
+                    HomeRoute(
+                        username: state.username), // ← kirim data ke halaman
+                  );
+                }
 
-    return Column(
-      mainAxisSize: MainAxisSize.min,
-      children: [
-        if (isFailure)
-          Text(
-            (state as LoginFailure).message,
-            style: const TextStyle(color: Colors.red),
-          ),
-        if (isSuccess)
-          const Text(
-            'Login Berhasil!',
-            style: TextStyle(color: Colors.green),
-          ),
-        ElevatedButton(
-          onPressed: isLoading
-              ? null // disable saat loading
-              : () {
+                return Column(
+                  mainAxisSize: MainAxisSize.min,
+                  children: [
+                    if (isFailure)
+                      Text(
+                        (state).message,
+                        style: const TextStyle(color: Colors.red),
+                      ),
+                    if (isSuccess)
+                      const Text(
+                        'Login Berhasil!',
+                        style: TextStyle(color: Colors.green),
+                      ),
+                    ElevatedButton(
+                      onPressed: isLoading
+                          ? null // disable saat loading
+                          : () {
+                            final corpid = _corpIdController.text;
                   final username = _usernameController.text;
                   final password = _passwordController.text;
-                  context.read<LoginBloc>().add(LoginSubmitted(username, password));
-                },
-          child: Row(
-            mainAxisSize: MainAxisSize.min,
-            children: [
-              const Text('Login'),
-              if (isLoading) ...[
-                const SizedBox(width: 8),
-                const SizedBox(
-                  height: 16,
-                  width: 16,
-                  child: CircularProgressIndicator(
-                    strokeWidth: 2,
-                    valueColor: AlwaysStoppedAnimation<Color>(Colors.white),
-                  ),
-                ),
-              ],
-            ],
-          ),
-        ),
-      ],
-    );
-  },
-),
+                  context.read<LoginBloc>().add(LoginSubmitted(corpid, username, password));
+                            },
+                      child: Row(
+                        mainAxisSize: MainAxisSize.min,
+                        children: [
+                          const Text('Login'),
+                          if (isLoading) ...[
+                            const SizedBox(width: 8),
+                            const SizedBox(
+                              height: 16,
+                              width: 16,
+                              child: CircularProgressIndicator(
+                                strokeWidth: 2,
+                                valueColor:
+                                    AlwaysStoppedAnimation<Color>(Colors.white),
+                              ),
+                            ),
+                          ],
+                        ],
+                      ),
+                    ),
+                  ],
+                );
+              },
+            ),
           ],
         ),
       ),
