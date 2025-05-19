@@ -1,15 +1,14 @@
-
 // pages/home_screen.dart
 import 'package:auto_route/auto_route.dart';
 import 'package:flutter/material.dart';
-import 'package:recon/pages/app_router.gr.dart';
-
+import 'package:recon/router/app_router.gr.dart';
 
 @RoutePage()
 class HomePage extends StatelessWidget {
   final String username;
 
   const HomePage({super.key, required this.username});
+  
 
   @override
   Widget build(BuildContext context) {
@@ -40,31 +39,17 @@ class HomePage extends StatelessWidget {
                   label: 'Pengaturan',
                   onTap: null,
                 ),
-                _ToolIcon(
-                  icon: Icons.security,
-                  label: 'Keamanan',
-                  onTap: null,
-                ),
-                _ToolIcon(
-                  icon: Icons.storage,
-                  label: 'Storage',
-                  onTap: null,
-                ),
+                _ToolIcon(icon: Icons.security, label: 'Keamanan', onTap: null),
+                _ToolIcon(icon: Icons.storage, label: 'Storage', onTap: null),
               ],
             ),
           ),
           const Divider(),
-          // ===== Welcome Text =====
           Expanded(
             child: Center(
-              child: Row(
+              child: Column(
                 mainAxisSize: MainAxisSize.min,
                 children: [
-                  Text(
-                    'Selamat datang, $username! 🎉',
-                    style: const TextStyle(fontSize: 20),
-                  ),
-                  const SizedBox(width: 8),
                   Tooltip(
                     message: 'Base32 Example',
                     child: IconButton(
@@ -80,6 +65,15 @@ class HomePage extends StatelessWidget {
                       icon: const Icon(Icons.timeline),
                       onPressed: () {
                         context.pushRoute(TransformerBlocRoute());
+                      },
+                    ),
+                  ),
+                   Tooltip(
+                    message: 'User Example',
+                    child: IconButton(
+                      icon: const Icon(Icons.verified_user),
+                      onPressed: () {
+                        context.pushRoute(UserRoute());
                       },
                     ),
                   ),

@@ -1,6 +1,6 @@
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
-import 'package:recon/pages/app_router.dart';
+import 'package:recon/router/app_router.dart';
 
 import 'flavors.dart';
 
