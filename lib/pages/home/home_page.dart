@@ -1,17 +1,17 @@
-
 // pages/home_screen.dart
 import 'package:auto_route/auto_route.dart';
 import 'package:flutter/material.dart';
-import 'package:recon/pages/app_router.gr.dart';
-
+import 'package:recon/router/app_router.gr.dart';
 
 @RoutePage()
 class HomePage extends StatelessWidget {
   final String username;
 
   const HomePage({super.key, required this.username});
+  
 
   @override
+
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(title: const Text('Home')),
@@ -36,35 +36,21 @@ class HomePage extends StatelessWidget {
                   onTap: SettingRoute(),
                 ),
                 _ToolIcon(
-                  icon: Icons.settings,
-                  label: 'Pengaturan',
-                  onTap: null,
+                  icon: Icons.date_range,
+                  label: 'Date Picker',
+                  onTap: DatePickerRoute(),
                 ),
-                _ToolIcon(
-                  icon: Icons.security,
-                  label: 'Keamanan',
-                  onTap: null,
-                ),
-                _ToolIcon(
-                  icon: Icons.storage,
-                  label: 'Storage',
-                  onTap: null,
-                ),
+                _ToolIcon(icon: Icons.security, label: 'Keamanan', onTap: null),
+                _ToolIcon(icon: Icons.storage, label: 'Storage', onTap: null),
               ],
             ),
           ),
           const Divider(),
-          // ===== Welcome Text =====
           Expanded(
             child: Center(
-              child: Row(
+              child: Column(
                 mainAxisSize: MainAxisSize.min,
                 children: [
-                  Text(
-                    'Selamat datang, $username! 🎉',
-                    style: const TextStyle(fontSize: 20),
-                  ),
-                  const SizedBox(width: 8),
                   Tooltip(
                     message: 'Base32 Example',
                     child: IconButton(

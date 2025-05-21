@@ -1,6 +1,7 @@
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
-import 'package:recon/pages/app_router.dart';
+import 'package:flutter_dotenv/flutter_dotenv.dart';
+import 'package:recon/router/app_router.dart';
 
 import 'flavors.dart';
 
@@ -23,7 +24,7 @@ class App extends StatelessWidget {
   Widget _flavorBanner({required Widget child, bool show = true}) => show
       ? Banner(
           location: BannerLocation.topStart,
-          message: F.name,
+          message: '${F.name} ${dotenv.env['APP_NAME']}',
           color: Colors.green.withAlpha(150),
           textStyle: const TextStyle(
             fontWeight: FontWeight.w700,

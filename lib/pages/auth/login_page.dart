@@ -4,7 +4,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:recon/bloc/login_bloc/login_bloc.dart';
 import 'package:recon/bloc/login_bloc/login_state.dart';
-import 'package:recon/pages/app_router.gr.dart';
+import 'package:recon/router/app_router.gr.dart';
 import 'package:recon/utils/utils.dart';
 
 @RoutePage()
@@ -13,10 +13,7 @@ class LoginPage extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return BlocProvider(
-      create: (_) => LoginBloc(),
-      child: const LoginForm(),
-    );
+    return BlocProvider(create: (_) => LoginBloc(), child: const LoginForm());
   }
 }
 
@@ -47,9 +44,10 @@ class _LoginFormState extends State<LoginForm> {
                 controller: _usernameController,
                 decoration: InputDecoration(labelText: 'Username')),
             TextField(
-                controller: _passwordController,
-                obscureText: true,
-                decoration: InputDecoration(labelText: 'Password')),
+              controller: _passwordController,
+              obscureText: true,
+              decoration: InputDecoration(labelText: 'Password'),
+            ),
             const SizedBox(height: 16),
             BlocBuilder<LoginBloc, LoginState>(
               builder: (context, state) {
@@ -60,7 +58,8 @@ class _LoginFormState extends State<LoginForm> {
                 if (state is LoginSuccess) {
                   context.router.replace(
                     HomeRoute(
-                        username: state.username), // ← kirim data ke halaman
+                      username: state.username,
+                    ), // ← kirim data ke halaman
                   );
                 }
 
@@ -97,8 +96,9 @@ class _LoginFormState extends State<LoginForm> {
                               width: 16,
                               child: CircularProgressIndicator(
                                 strokeWidth: 2,
-                                valueColor:
-                                    AlwaysStoppedAnimation<Color>(Colors.white),
+                                valueColor: AlwaysStoppedAnimation<Color>(
+                                  Colors.white,
+                                ),
                               ),
                             ),
                           ],
