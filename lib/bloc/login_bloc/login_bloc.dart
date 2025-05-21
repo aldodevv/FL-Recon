@@ -12,12 +12,15 @@ class LoginBloc extends Bloc<LoginEvent, LoginState> {
     on<LoginSubmitted>(_onLoginSubmitted, transformer: concurrent());
   }
 
-  Future<void> _onLoginSubmitted(LoginSubmitted event, Emitter<LoginState> emit) async {
+  Future<void> _onLoginSubmitted(
+    LoginSubmitted event,
+    Emitter<LoginState> emit,
+  ) async {
     emit(LoginLoading());
 
     try {
       final response = await DioClient().post(
-        '/identity/v2.3/public/login',
+        '/identity/v2.4/public/login',
         data: {
           'corporateId': event.corporateId,
           'username': event.username,
@@ -29,11 +32,17 @@ class LoginBloc extends Bloc<LoginEvent, LoginState> {
       if (response.statusCode == 200) {
         emit(LoginSuccess(event.username)); // Kirim username
       } else {
+        
         emit(LoginFailure('Login gagal: ${response.statusMessage}'));
       }
     } on DioException catch (e) {
+
       if (e.response != null) {
-        emit(LoginFailure('Login gagal: ${e.response?.data['message'] ?? 'Unknown error'}'));
+        emit(
+          LoginFailure(
+            'Login gagal: ${e.response?.data['message'] ?? 'Unknown error'}',
+          ),
+        );
       } else {
         emit(LoginFailure('Login gagal: ${e.message}'));
       }

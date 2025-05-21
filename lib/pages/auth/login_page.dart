@@ -5,6 +5,7 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:recon/bloc/login_bloc/login_bloc.dart';
 import 'package:recon/bloc/login_bloc/login_state.dart';
 import 'package:recon/router/app_router.gr.dart';
+import 'package:recon/utils/utils.dart';
 
 @RoutePage()
 class LoginPage extends StatelessWidget {
@@ -26,7 +27,7 @@ class LoginForm extends StatefulWidget {
 class _LoginFormState extends State<LoginForm> {
   final _corpIdController = TextEditingController();
   final _usernameController = TextEditingController();
-  final _passwordController = TextEditingController();
+  final _passwordController = TextEditingController();  
 
   @override
   Widget build(BuildContext context) {
@@ -37,9 +38,11 @@ class _LoginFormState extends State<LoginForm> {
         child: Column(
           children: [
             TextField(
-              controller: _usernameController,
-              decoration: InputDecoration(labelText: 'Username'),
-            ),
+                controller: _corpIdController,
+                decoration: InputDecoration(labelText: 'Corp ID')),
+            TextField(
+                controller: _usernameController,
+                decoration: InputDecoration(labelText: 'Username')),
             TextField(
               controller: _passwordController,
               obscureText: true,
@@ -74,17 +77,14 @@ class _LoginFormState extends State<LoginForm> {
                         style: TextStyle(color: Colors.green),
                       ),
                     ElevatedButton(
-                      onPressed:
-                          isLoading
-                              ? null // disable saat loading
-                              : () {
-                                final corpid = _corpIdController.text;
-                                final username = _usernameController.text;
-                                final password = _passwordController.text;
-                                context.read<LoginBloc>().add(
-                                  LoginSubmitted(corpid, username, password),
-                                );
-                              },
+                      onPressed: isLoading
+                          ? null // disable saat loading
+                          : () {
+                            final corpid = _corpIdController.text;
+                  final username = _usernameController.text;
+                  final password = Utils.encryptWithKey(_passwordController.text);
+                  context.read<LoginBloc>().add(LoginSubmitted(corpid, username, password));
+                            },
                       child: Row(
                         mainAxisSize: MainAxisSize.min,
                         children: [
