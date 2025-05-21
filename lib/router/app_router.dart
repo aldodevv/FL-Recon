@@ -16,5 +16,6 @@ class AppRouter extends RootStackRouter {
     AutoRoute(page: SettingRoute.page),
     AutoRoute(page: Base32Route.page),
     AutoRoute(page: TransformerBlocRoute.page),
+    AutoRoute(page: DatePickerRoute.page),
   ];
 }

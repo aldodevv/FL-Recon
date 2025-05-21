@@ -11,6 +11,7 @@ class HomePage extends StatelessWidget {
   
 
   @override
+
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(title: const Text('Home')),
@@ -35,9 +36,9 @@ class HomePage extends StatelessWidget {
                   onTap: SettingRoute(),
                 ),
                 _ToolIcon(
-                  icon: Icons.settings,
-                  label: 'Pengaturan',
-                  onTap: null,
+                  icon: Icons.date_range,
+                  label: 'Date Picker',
+                  onTap: DatePickerRoute(),
                 ),
                 _ToolIcon(icon: Icons.security, label: 'Keamanan', onTap: null),
                 _ToolIcon(icon: Icons.storage, label: 'Storage', onTap: null),
@@ -65,15 +66,6 @@ class HomePage extends StatelessWidget {
                       icon: const Icon(Icons.timeline),
                       onPressed: () {
                         context.pushRoute(TransformerBlocRoute());
-                      },
-                    ),
-                  ),
-                   Tooltip(
-                    message: 'User Example',
-                    child: IconButton(
-                      icon: const Icon(Icons.verified_user),
-                      onPressed: () {
-                        context.pushRoute(UserRoute());
                       },
                     ),
                   ),
