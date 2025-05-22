@@ -9,13 +9,13 @@ class AppRouter extends RootStackRouter {
 
   @override
   List<AutoRoute> get routes => [
-    AutoRoute(page: OnboardRoute.page, initial: true),
-    AutoRoute(page: LoginRoute.page),
-    AutoRoute(page: HomeRoute.page),
-    AutoRoute(page: FlushbarRoute.page),
-    AutoRoute(page: SettingRoute.page),
-    AutoRoute(page: Base32Route.page),
-    AutoRoute(page: TransformerBlocRoute.page),
-    AutoRoute(page: DatePickerRoute.page),
+    AutoRoute(path: '/onboarding', page: OnboardRoute.page, initial: true),
+    AutoRoute(path: '/signin', page: LoginRoute.page),
+    AutoRoute(path: '/home', page: HomeRoute.page),
+    AutoRoute(path: '/flushbar', page: FlushbarRoute.page),
+    AutoRoute(path: '/setting', page: SettingRoute.page),
+    AutoRoute(path: '/base32', page: Base32Route.page),
+    AutoRoute(path: '/transformer', page: TransformerBlocRoute.page),
+    AutoRoute(path: '/datepicker', page: DatePickerRoute.page),
   ];
 }
