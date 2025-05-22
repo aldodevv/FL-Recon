@@ -1,31 +1,32 @@
-import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_dotenv/flutter_dotenv.dart';
+import 'package:recon/app_theme.dart';
 import 'package:recon/router/app_router.dart';
 
 import 'flavors.dart';
 
 class App extends StatelessWidget {
-   App({super.key});
+  App({super.key});
 
-  // Inisialisasi router sebagai final field agar tidak dibuat ulang di build()
-  final _appRouter =  AppRouter();
+  final _appRouter = AppRouter();
 
   @override
   Widget build(BuildContext context) {
     return MaterialApp.router(
       title: F.title,
-      theme: ThemeData(primarySwatch: Colors.blue),
+      theme: AppTheme.lightTheme,          // 💡 Use light theme
+      darkTheme: AppTheme.darkTheme,       // 💡 Use dark theme
+      themeMode: ThemeMode.system,         // 🌗 Automatically switch based on system
       routerConfig: _appRouter.config(),
-      builder: (context, child) => _flavorBanner(child: child ?? const SizedBox(), show: kDebugMode),
+      builder: (context, child) => _flavorBanner(child: child ?? const SizedBox(), show: false),
     );
   }
 
   Widget _flavorBanner({required Widget child, bool show = true}) => show
       ? Banner(
-          location: BannerLocation.topStart,
+          location: BannerLocation.topEnd,
           message: '${F.name} ${dotenv.env['APP_NAME']}',
-          color: Colors.green.withAlpha(150),
+          color: Colors.red,
           textStyle: const TextStyle(
             fontWeight: FontWeight.w700,
             fontSize: 12.0,
