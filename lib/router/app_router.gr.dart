@@ -12,11 +12,12 @@
 import 'package:auto_route/auto_route.dart' as _i9;
 import 'package:flutter/material.dart' as _i10;
 import 'package:recon/pages/auth/login_page.dart' as _i5;
-import 'package:recon/pages/auth/onboard_page.dart' as _i6;
+import 'package:recon/pages/auth/onboard_page.dart';
 import 'package:recon/pages/home/home_page.dart' as _i4;
 import 'package:recon/pages/tools/base32_page.dart' as _i1;
 import 'package:recon/pages/tools/datepicker_page.dart' as _i2;
 import 'package:recon/pages/tools/flushbar_page.dart' as _i3;
+import 'package:recon/pages/tools/maintool_page.dart' as _i6;
 import 'package:recon/pages/tools/settings_page.dart' as _i7;
 import 'package:recon/pages/tools/transformer_bloc_page.dart' as _i8;
 
@@ -122,7 +123,44 @@ class LoginRoute extends _i9.PageRouteInfo<void> {
 }
 
 /// generated route for
-/// [_i6.OnboardPage]
+/// [_i6.MaintoolPage]
+class MaintoolRoute extends _i9.PageRouteInfo<MaintoolRouteArgs> {
+  MaintoolRoute({
+    _i10.Key? key,
+    required String username,
+    List<_i9.PageRouteInfo>? children,
+  }) : super(
+         MaintoolRoute.name,
+         args: MaintoolRouteArgs(key: key, username: username),
+         initialChildren: children,
+       );
+
+  static const String name = 'MaintoolRoute';
+
+  static _i9.PageInfo page = _i9.PageInfo(
+    name,
+    builder: (data) {
+      final args = data.argsAs<MaintoolRouteArgs>();
+      return _i6.MaintoolPage(key: args.key, username: args.username);
+    },
+  );
+}
+
+class MaintoolRouteArgs {
+  const MaintoolRouteArgs({this.key, required this.username});
+
+  final _i10.Key? key;
+
+  final String username;
+
+  @override
+  String toString() {
+    return 'MaintoolRouteArgs{key: $key, username: $username}';
+  }
+}
+
+/// generated route for
+/// [OnboardPage]
 class OnboardRoute extends _i9.PageRouteInfo<void> {
   const OnboardRoute({List<_i9.PageRouteInfo>? children})
     : super(OnboardRoute.name, initialChildren: children);
@@ -132,7 +170,7 @@ class OnboardRoute extends _i9.PageRouteInfo<void> {
   static _i9.PageInfo page = _i9.PageInfo(
     name,
     builder: (data) {
-      return const _i6.OnboardPage();
+      return const OnboardPage();
     },
   );
 }
