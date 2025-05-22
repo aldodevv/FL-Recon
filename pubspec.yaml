@@ -47,6 +47,7 @@ dependencies:
   encrypt: ^5.0.3
   flutter_dotenv: ^5.2.1
   date_picker_plus: ^4.2.0
+  biometric_signature: ^6.2.0
 
 dev_dependencies:
   flutter_test:

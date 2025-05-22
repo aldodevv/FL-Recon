@@ -27,7 +27,7 @@ class LoginForm extends StatefulWidget {
 class _LoginFormState extends State<LoginForm> {
   final _corpIdController = TextEditingController();
   final _usernameController = TextEditingController();
-  final _passwordController = TextEditingController();  
+  final _passwordController = TextEditingController();
 
   @override
   Widget build(BuildContext context) {
@@ -38,11 +38,13 @@ class _LoginFormState extends State<LoginForm> {
         child: Column(
           children: [
             TextField(
-                controller: _corpIdController,
-                decoration: InputDecoration(labelText: 'Corp ID')),
+              controller: _corpIdController,
+              decoration: InputDecoration(labelText: 'Corp ID'),
+            ),
             TextField(
-                controller: _usernameController,
-                decoration: InputDecoration(labelText: 'Username')),
+              controller: _usernameController,
+              decoration: InputDecoration(labelText: 'Username'),
+            ),
             TextField(
               controller: _passwordController,
               obscureText: true,
@@ -77,14 +79,19 @@ class _LoginFormState extends State<LoginForm> {
                         style: TextStyle(color: Colors.green),
                       ),
                     ElevatedButton(
-                      onPressed: isLoading
-                          ? null // disable saat loading
-                          : () {
-                            final corpid = _corpIdController.text;
-                  final username = _usernameController.text;
-                  final password = Utils.encryptWithKey(_passwordController.text);
-                  context.read<LoginBloc>().add(LoginSubmitted(corpid, username, password));
-                            },
+                      onPressed:
+                          isLoading
+                              ? null // disable saat loading
+                              : () {
+                                final corpid = _corpIdController.text;
+                                final username = _usernameController.text;
+                                final password = Utils.encryptWithKey(
+                                  _passwordController.text,
+                                );
+                                context.read<LoginBloc>().add(
+                                  LoginSubmitted(corpid, username, password),
+                                );
+                              },
                       child: Row(
                         mainAxisSize: MainAxisSize.min,
                         children: [
@@ -109,8 +116,56 @@ class _LoginFormState extends State<LoginForm> {
                 );
               },
             ),
+            _ToolIcon(
+              icon: Icons.fingerprint,
+              label: 'Biometrics',
+              onTap: () {
+                context.read<LoginBloc>().add(
+                  LoginBiometrics("cql", "cu_rzcql4", "P@ssw0rd"),
+                );
+              },
+            ),
           ],
         ),
+      ),
+    );
+  }
+}
+
+class _ToolIcon extends StatelessWidget {
+  final IconData icon;
+  final String label;
+  final VoidCallback? onTap; // <--- ini diperbaiki
+
+  const _ToolIcon({
+    required this.icon,
+    required this.label,
+    required this.onTap,
+  });
+
+  @override
+  Widget build(BuildContext context) {
+    return Padding(
+      padding: const EdgeInsets.symmetric(horizontal: 6),
+      child: Column(
+        mainAxisSize: MainAxisSize.min,
+        children: [
+          InkWell(
+            onTap: onTap, // langsung saja
+            borderRadius: BorderRadius.circular(12),
+            child: CircleAvatar(
+              radius: 20,
+              backgroundColor: Colors.blue.shade100,
+              child: Icon(icon, color: Colors.blue, size: 20),
+            ),
+          ),
+          const SizedBox(height: 4),
+          Text(
+            label,
+            style: const TextStyle(fontSize: 12),
+            overflow: TextOverflow.ellipsis,
+          ),
+        ],
       ),
     );
   }

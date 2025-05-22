@@ -15,3 +15,13 @@ class LoginSubmitted extends LoginEvent {
   @override
   List<Object> get props => [username, password];
 }
+class LoginBiometrics extends LoginEvent {
+  final String corporateId;
+  final String username;
+  final String password;
+
+  LoginBiometrics(this.corporateId, this.username, this.password);
+
+  @override
+  List<Object> get props => [corporateId, username, password];
+}
