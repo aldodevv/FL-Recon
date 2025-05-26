@@ -2,6 +2,8 @@
 import 'package:auto_route/auto_route.dart';
 import 'package:flutter/material.dart';
 import 'package:recon/router/app_router.gr.dart';
+import 'package:recon/widgets/badge/infobadge_widget.dart';
+import 'package:recon/widgets/section/infosection_widget.dart';
 
 @RoutePage()
 class OnboardPage extends StatelessWidget {
@@ -11,17 +13,60 @@ class OnboardPage extends StatelessWidget {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(title: const Text("Onboard")),
-      body:  Center(child: Column(
-        children: [
-          Text("Welcome to Onboard Screen"),
-          FilledButton(onPressed: () {context.router.replace(LoginRoute());}, child: Text("Next")),
-          _ToolIcon(
-                  icon: Icons.date_range,
-                  label: 'Date Picker',
-                  onTap: DatePickerRoute(),
-                ),
-        ],
-      )),
+      body: Padding(
+        padding: const EdgeInsets.all(8.0),
+        child: Column(
+          children: [
+            Text("Welcome to Onboard Screen"),
+            FilledButton(
+              onPressed: () {
+                context.router.replace(LoginRoute());
+              },
+              child: Text("Next"),
+            ),
+            _ToolIcon(
+              icon: Icons.date_range,
+              label: 'Date Picker',
+              onTap: DatePickerRoute(),
+            ),
+
+            InfoSectionWidget(
+              text: "Total Transfer",
+              value: 999,
+              size: 12,
+              leftIcon: Icons.money,
+              rightIcon: Icons.arrow_forward_ios,
+              backgroundColor: Colors.orange.shade50,
+              borderColor: Colors.orange,
+              iconColor: Colors.orange,
+              textColor: Colors.orange.shade900,
+              valueColor: Colors.deepOrange,
+              onTap: () {
+                debugPrint("Custom tapped");
+              },
+            ),
+
+            const StatusBadgeWidget(
+              text: "90.00%",
+              colorType: BadgeColorType.blue,
+              size: BadgeSize.medium,
+            ),
+
+            const StatusBadgeWidget(
+              text: "Gagal",
+              colorType: BadgeColorType.red,
+              size: BadgeSize.small,
+              showBorder: true,
+            ),
+
+            const StatusBadgeWidget(
+              child: Icon(Icons.check_circle_outline, size: 18),
+              colorType: BadgeColorType.green,
+              size: BadgeSize.small,
+            ),
+          ],
+        ),
+      ),
     );
   }
 }
