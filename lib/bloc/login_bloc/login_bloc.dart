@@ -82,10 +82,7 @@ class LoginBloc extends Bloc<LoginEvent, LoginState> {
   ) async {
     final String? token = await Utils.storageSecure.read(key: 'token');
 
-    if (token == null) {
-      print('Token null, tidak bisa lanjut.');
-      return;
-    }
+    if (token == null) return;
 
     try {
       final response = await DioClient().get(
