@@ -1,4 +1,5 @@
 import 'package:encrypt/encrypt.dart';
+import 'package:flutter_secure_storage/flutter_secure_storage.dart';
 
 class Utils {
   static String encryptWithKey(String value) {
@@ -7,4 +8,12 @@ class Utils {
     final encrypted = encrypter.encrypt(value, iv: IV.fromLength(0));
     return encrypted.base64;
   }
+  
+  static final FlutterSecureStorage storageSecure = FlutterSecureStorage(
+    aOptions: AndroidOptions(),
+    iOptions: IOSOptions(
+      accessibility: KeychainAccessibility.unlocked_this_device
+    )
+  );
 }
+

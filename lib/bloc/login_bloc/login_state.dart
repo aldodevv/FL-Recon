@@ -1,25 +1,58 @@
 import 'package:equatable/equatable.dart';
 
-abstract class LoginState extends Equatable {
-  @override
-  List<Object> get props => [];
-}
-
-class LoginInitial extends LoginState {}
-
-class LoginLoading extends LoginState {}
-
-class LoginSuccess extends LoginState {
+class LoginState extends Equatable {
+  final String corpId;
   final String username;
-  LoginSuccess(this.username);
-}
+  final String password;
+  final bool isLogin;
+  final String isLoginFailure;
+  final bool isLoadingBiometric;
 
+  const LoginState({
+    required this.corpId,
+    required this.username,
+    required this.password,
+    required this.isLogin,
+    required this.isLoginFailure,
+    required this.isLoadingBiometric,
+  });
 
-class LoginFailure extends LoginState {
-  final String message;
+  /// Initial State
+  factory LoginState.initial() => const LoginState(
+        corpId: '',
+        username: '',
+        password: '',
+        isLogin: false,
+        isLoginFailure: '',
+        isLoadingBiometric: false,
+      );
 
-  LoginFailure(this.message);
+  /// CopyWith function
+  LoginState copyWith({
+    String? corpId,
+    String? username,
+    String? password,
+    bool? isLogin,
+    String? isLoginFailure,
+    bool? isLoadingBiometric,
+  }) {
+    return LoginState(
+      corpId: corpId ?? this.corpId,
+      username: username ?? this.username,
+      password: password ?? this.password,
+      isLogin: isLogin ?? this.isLogin,
+      isLoginFailure: isLoginFailure ?? this.isLoginFailure,
+      isLoadingBiometric: isLoadingBiometric ?? this.isLoadingBiometric,
+    );
+  }
 
   @override
-  List<Object> get props => [message];
+  List<Object> get props => [
+        corpId,
+        username,
+        password,
+        isLogin,
+        isLoginFailure,
+        isLoadingBiometric,
+      ];
 }

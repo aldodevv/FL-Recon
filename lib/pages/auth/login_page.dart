@@ -4,7 +4,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:recon/bloc/login_bloc/login_bloc.dart';
 import 'package:recon/bloc/login_bloc/login_state.dart';
-import 'package:recon/router/app_router.gr.dart';
+import 'package:recon/core/constant/biometrice_auth.dart';
 import 'package:recon/utils/utils.dart';
 
 @RoutePage()
@@ -25,9 +25,59 @@ class LoginForm extends StatefulWidget {
 }
 
 class _LoginFormState extends State<LoginForm> {
+  final GlobalKey<FormState> _formKey = GlobalKey<FormState>();
+
   final _corpIdController = TextEditingController();
   final _usernameController = TextEditingController();
-  final _passwordController = TextEditingController();  
+  final _passwordController = TextEditingController();
+  // update biometrics
+  bool _isBiometricSupported = false;
+
+  @override
+  void initState() {
+    // TODO: implement initState
+    super.initState();
+    _checkBiometrics();
+  }
+
+  // pengecekan biometrics
+  void _checkBiometrics() async {
+    final isSupported = await BiometriceAuth.isDeviceSupported();
+    if (!mounted) return;
+
+    debugPrint('Biometrik Supported: $isSupported');
+    setState(() {
+      _isBiometricSupported = isSupported;
+    });
+  }
+
+  void _triggerBiometricLogin() async {
+    if (_isBiometricSupported) {
+      final isAuthenticated = await BiometriceAuth.authenticate(
+        title: 'Login dengan Sidik Jari',
+        description: 'Silakan scan sidik jari untuk melanjutkan.',
+      );
+      print('Authentication result: $isAuthenticated');
+      if (isAuthenticated) {
+        context.read<LoginBloc>().add(LoginFormSubmitted());
+      }
+    }
+  }
+
+  void _onLogin(BuildContext context) async {
+    if (_formKey.currentState!.validate()) {
+      final corpId = _corpIdController.text;
+      final username = _usernameController.text;
+      final password = Utils.encryptWithKey(_passwordController.text);
+      context.read<LoginBloc>().add(
+        LoginSubmitted(
+          corporateId: corpId,
+          username: username,
+          password: password,
+        ),
+      );
+    }
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -35,83 +85,95 @@ class _LoginFormState extends State<LoginForm> {
       appBar: AppBar(title: const Text('Login')),
       body: Padding(
         padding: const EdgeInsets.all(16),
-        child: Column(
-          children: [
-            TextField(
+        child: Form(
+          key: _formKey,
+          child: Column(
+            children: [
+              TextField(
                 controller: _corpIdController,
-                decoration: InputDecoration(labelText: 'Corp ID')),
-            TextField(
+                decoration: InputDecoration(labelText: 'Corp ID'),
+              ),
+              TextField(
                 controller: _usernameController,
-                decoration: InputDecoration(labelText: 'Username')),
-            TextField(
-              controller: _passwordController,
-              obscureText: true,
-              decoration: InputDecoration(labelText: 'Password'),
-            ),
-            const SizedBox(height: 16),
-            BlocBuilder<LoginBloc, LoginState>(
-              builder: (context, state) {
-                final isLoading = state is LoginLoading;
-                final isSuccess = state is LoginSuccess;
-                final isFailure = state is LoginFailure;
+                decoration: InputDecoration(labelText: 'Username'),
+              ),
+              TextField(
+                controller: _passwordController,
+                obscureText: true,
+                decoration: InputDecoration(labelText: 'Password'),
+              ),
+              const SizedBox(height: 16),
+              BlocBuilder<LoginBloc, LoginState>(
+                builder: (context, state) {
+                  final isLoading = state.isLogin;
+                  final isSuccess = state.username;
+                  final isFailure = state.isLoginFailure;
 
-                if (state is LoginSuccess) {
-                  context.router.replace(
-                    HomeRoute(
-                      username: state.username,
-                    ), // ← kirim data ke halaman
-                  );
-                }
+                  // if (state.isLogin) {
+                  //   context.router.replace(
+                  //     HomeRoute(
+                  //       username: state.username,
+                  //     ), // ← kirim data ke halaman
+                  //   );
+                  // }
 
-                return Column(
-                  mainAxisSize: MainAxisSize.min,
-                  children: [
-                    if (isFailure)
-                      Text(
-                        (state).message,
-                        style: const TextStyle(color: Colors.red),
-                      ),
-                    if (isSuccess)
-                      const Text(
-                        'Login Berhasil!',
-                        style: TextStyle(color: Colors.green),
-                      ),
-                    ElevatedButton(
-                      onPressed: isLoading
-                          ? null // disable saat loading
-                          : () {
-                            final corpid = _corpIdController.text;
-                  final username = _usernameController.text;
-                  final password = Utils.encryptWithKey(_passwordController.text);
-                  context.read<LoginBloc>().add(LoginSubmitted(corpid, username, password));
-                            },
-                      child: Row(
-                        mainAxisSize: MainAxisSize.min,
-                        children: [
-                          const Text('Login'),
-                          if (isLoading) ...[
-                            const SizedBox(width: 8),
-                            const SizedBox(
-                              height: 16,
-                              width: 16,
-                              child: CircularProgressIndicator(
-                                strokeWidth: 2,
-                                valueColor: AlwaysStoppedAnimation<Color>(
-                                  Colors.white,
+                  return Column(
+                    mainAxisSize: MainAxisSize.min,
+                    children: [
+                      if (isFailure.isNotEmpty)
+                        Text(
+                          state.isLoginFailure,
+                          style: const TextStyle(color: Colors.red),
+                        ),
+                      if (isSuccess.isNotEmpty)
+                        const Text(
+                          'Login Berhasil!',
+                          style: TextStyle(color: Colors.green),
+                        ),
+                      ElevatedButton(
+                        onPressed:
+                            isLoading
+                                ? null // disable saat loading
+                                : () => _onLogin(context),
+                        child: Row(
+                          mainAxisSize: MainAxisSize.min,
+                          children: [
+                            const Text('Login'),
+                            if (isLoading) ...[
+                              const SizedBox(width: 8),
+                              const SizedBox(
+                                height: 16,
+                                width: 16,
+                                child: CircularProgressIndicator(
+                                  strokeWidth: 2,
+                                  valueColor: AlwaysStoppedAnimation<Color>(
+                                    Colors.white,
+                                  ),
                                 ),
                               ),
-                            ),
+                            ],
                           ],
-                        ],
+                        ),
                       ),
-                    ),
-                  ],
-                );
-              },
-            ),
-          ],
+                    ],
+                  );
+                },
+              ),
+              const SizedBox(height: 12),
+              if (_isBiometricSupported)
+                ElevatedButton.icon(
+                  icon: const Icon(Icons.fingerprint),
+                  label: const Text('Login dengan Biometrik'),
+                  onPressed: () {
+                    _triggerBiometricLogin();
+                  },
+                ),
+            ],
+          ),
         ),
       ),
     );
   }
 }
+
+enum _SupportState { unknown, supported, unsupported }
