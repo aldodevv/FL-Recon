@@ -19,7 +19,6 @@ import 'package:recon/pages/tools/datepicker_page.dart' as _i2;
 import 'package:recon/pages/tools/flushbar_page.dart' as _i3;
 import 'package:recon/pages/tools/maintool_page.dart' as _i6;
 import 'package:recon/pages/tools/settings_page.dart' as _i8;
-import 'package:recon/pages/tools/transformer_bloc_page.dart' as _i9;
 
 /// generated route for
 /// [_i1.Base32Page]
@@ -161,8 +160,8 @@ class MaintoolRouteArgs {
 
 /// generated route for
 /// [_i7.OnboardPage]
-class OnboardRoute extends _i10.PageRouteInfo<void> {
-  const OnboardRoute({List<_i10.PageRouteInfo>? children})
+class OnboardRoute extends _i9.PageRouteInfo<void> {
+  const OnboardRoute({List<_i9.PageRouteInfo>? children})
     : super(OnboardRoute.name, initialChildren: children);
 
   static const String name = 'OnboardRoute';
@@ -177,8 +176,8 @@ class OnboardRoute extends _i10.PageRouteInfo<void> {
 
 /// generated route for
 /// [_i8.SettingPage]
-class SettingRoute extends _i10.PageRouteInfo<void> {
-  const SettingRoute({List<_i10.PageRouteInfo>? children})
+class SettingRoute extends _i9.PageRouteInfo<void> {
+  const SettingRoute({List<_i9.PageRouteInfo>? children})
     : super(SettingRoute.name, initialChildren: children);
 
   static const String name = 'SettingRoute';
@@ -187,22 +186,6 @@ class SettingRoute extends _i10.PageRouteInfo<void> {
     name,
     builder: (data) {
       return const _i8.SettingPage();
-    },
-  );
-}
-
-/// generated route for
-/// [_i9.TransformerBlocPage]
-class TransformerBlocRoute extends _i10.PageRouteInfo<void> {
-  const TransformerBlocRoute({List<_i10.PageRouteInfo>? children})
-    : super(TransformerBlocRoute.name, initialChildren: children);
-
-  static const String name = 'TransformerBlocRoute';
-
-  static _i10.PageInfo page = _i10.PageInfo(
-    name,
-    builder: (data) {
-      return const _i9.TransformerBlocPage();
     },
   );
 }

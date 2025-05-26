@@ -60,15 +60,6 @@ class MaintoolPage extends StatelessWidget {
                       },
                     ),
                   ),
-                  Tooltip(
-                    message: 'Bloc Currency Example',
-                    child: IconButton(
-                      icon: const Icon(Icons.timeline),
-                      onPressed: () {
-                        context.pushRoute(TransformerBlocRoute());
-                      },
-                    ),
-                  ),
                 ],
               ),
             ),

@@ -15,7 +15,6 @@ class AppRouter extends RootStackRouter {
     AutoRoute(path: '/flushbar', page: FlushbarRoute.page),
     AutoRoute(path: '/setting', page: SettingRoute.page),
     AutoRoute(path: '/base32', page: Base32Route.page),
-    AutoRoute(path: '/transformer', page: TransformerBlocRoute.page),
     AutoRoute(path: '/datepicker', page: DatePickerRoute.page),
   ];
 }

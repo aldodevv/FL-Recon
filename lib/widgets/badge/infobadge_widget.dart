@@ -1,12 +1,27 @@
 import 'package:flutter/material.dart';
+import 'package:recon/constant/colors_const.dart';
 
-enum BadgeColorType { blue, orange, green, red }
 enum BadgeSize { small, medium, large }
+extension ColorTypeExt on ColorType {
+  MainStatusColor get groupColor {
+    switch (this) {
+      case ColorType.orange:
+        return MainGroupColors.orange;
+      case ColorType.green:
+        return MainGroupColors.green;
+      case ColorType.red:
+        return MainGroupColors.red;
+      case ColorType.blue:
+      default:
+        return MainGroupColors.blue;
+    }
+  }
+}
 
 class StatusBadgeWidget extends StatelessWidget {
   final String? text;
   final Widget? child;
-  final BadgeColorType colorType;
+  final ColorType colorType;
   final BadgeSize size;
   final bool showBorder;
 
@@ -18,7 +33,7 @@ class StatusBadgeWidget extends StatelessWidget {
     super.key,
     this.text,
     this.child,
-    this.colorType = BadgeColorType.blue,
+    this.colorType = ColorType.blue,
     this.size = BadgeSize.medium,
     this.showBorder = false,
     this.fontSize,
@@ -26,32 +41,14 @@ class StatusBadgeWidget extends StatelessWidget {
     this.borderRadius,
   });
 
-  Color _backgroundColor() {
-    switch (colorType) {
-      case BadgeColorType.orange:
-        return const Color(0xFFFEEDDF);
-      case BadgeColorType.green:
-        return const Color(0xFFE1F8EB);
-      case BadgeColorType.red:
-        return const Color(0xFFFCE7E7);
-      case BadgeColorType.blue:
-      default:
-        return const Color(0xFFDDEFFC);
-    }
-  }
+  bool _isDarkMode(BuildContext context) =>
+      Theme.of(context).brightness == Brightness.dark;
 
-  Color _textColor() {
-    switch (colorType) {
-      case BadgeColorType.orange:
-        return const Color(0xFFF87304);
-      case BadgeColorType.green:
-        return const Color(0xFF27AE60);
-      case BadgeColorType.red:
-        return const Color(0xFFE84040);
-      case BadgeColorType.blue:
-      default:
-        return const Color(0xFF1078CA);
-    }
+  MainStatusColor _resolvedColor(BuildContext context) {
+    final group = colorType.groupColor;
+    return _isDarkMode(context)
+        ? MainStatusColor(background: group.color, color: group.background)
+        : group;
   }
 
   double _defaultFontSize() {
@@ -92,12 +89,14 @@ class StatusBadgeWidget extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final colorGroup = _resolvedColor(context);
+
     final content = child ??
         Text(
           text ?? '',
           style: TextStyle(
             fontSize: fontSize ?? _defaultFontSize(),
-            color: _textColor(),
+            color: colorGroup.color,
             fontWeight: FontWeight.bold,
           ),
         );
@@ -105,9 +104,10 @@ class StatusBadgeWidget extends StatelessWidget {
     return Container(
       padding: padding ?? _defaultPadding(),
       decoration: BoxDecoration(
-        color: _backgroundColor(),
-        borderRadius: BorderRadius.circular(borderRadius ?? _defaultBorderRadius()),
-        border: showBorder ? Border.all(color: _textColor()) : null,
+        color: colorGroup.background,
+        borderRadius:
+            BorderRadius.circular(borderRadius ?? _defaultBorderRadius()),
+        border: showBorder ? Border.all(color: colorGroup.color) : null,
       ),
       child: content,
     );

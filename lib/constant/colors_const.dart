@@ -107,3 +107,58 @@ class MainColors {
   static const darkNeutral50 = Color(0xFF525252);
   static const darkNeutral40 = Color(0xFF666666);
 }
+
+class MainStatusColor {
+  final Color background;
+  final Color color;
+
+  const MainStatusColor({
+    required this.background,
+    required this.color,
+  });
+}
+
+final class MainGroupColors {
+  static const blue = MainStatusColor(
+    background: MainColors.blue10,
+    color: MainColors.blue80,
+  );
+
+  static const red = MainStatusColor(
+    background: MainColors.red10,
+    color: MainColors.red80,
+  );
+
+  static const orange = MainStatusColor(
+    background: MainColors.orange10,
+    color: MainColors.orange80,
+  );
+
+  static const green = MainStatusColor(
+    background: MainColors.green10,
+    color: MainColors.green80,
+  );
+
+  static const yellow = MainStatusColor(
+    background: MainColors.yellow10,
+    color: MainColors.yellow80,
+  );
+
+  static const purple = MainStatusColor(
+    background: MainColors.purpleCeria10,
+    color: MainColors.purpleCeria80,
+  );
+
+  static const white = MainStatusColor(
+    background: MainColors.white,
+    color: MainColors.darkNeutral60,
+  );
+
+  static const grey = MainStatusColor(
+    background: MainColors.lightNeutral10,
+    color: MainColors.darkNeutral70,
+  );
+}
+
+
+enum ColorType { blue, orange, green, red }
