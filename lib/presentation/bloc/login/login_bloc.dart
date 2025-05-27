@@ -2,7 +2,7 @@ import 'package:bloc_concurrency/bloc_concurrency.dart';
 import 'package:dio/dio.dart';
 import 'package:equatable/equatable.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:recon/bloc/login_bloc/login_state.dart';
+import 'package:recon/presentation/bloc/login/login_state.dart';
 import 'package:recon/core/network/dio_client.dart';
 import 'package:recon/domain/entitites/signin.dart';
 import 'package:recon/core/utils/utils.dart';

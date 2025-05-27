@@ -1,8 +1,8 @@
 // pages/home_screen.dart
 import 'package:auto_route/auto_route.dart';
 import 'package:flutter/material.dart';
-import 'package:recon/bloc/theme/theme_bloc.dart';
-import 'package:recon/constant/colors_const.dart';
+import 'package:recon/presentation/bloc/theme/theme_bloc.dart';
+import 'package:recon/core/constants/constant/colors_const.dart';
 import 'package:recon/core/network/dio_app.dart';
 import 'package:recon/presentation/routes/app_router.gr.dart';
 import 'package:recon/presentation/widgets/badge/infobadge_widget.dart';
