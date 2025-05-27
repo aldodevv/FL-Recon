@@ -4,8 +4,8 @@ import 'package:equatable/equatable.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:recon/bloc/login_bloc/login_state.dart';
 import 'package:recon/core/network/dio_client.dart';
-import 'package:recon/domain/auth/entites/signin.dart';
-import 'package:recon/utils/utils.dart';
+import 'package:recon/domain/entitites/signin.dart';
+import 'package:recon/core/utils/utils.dart';
 
 part 'login_event.dart';
 

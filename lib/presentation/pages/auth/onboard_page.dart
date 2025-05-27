@@ -3,15 +3,45 @@ import 'package:auto_route/auto_route.dart';
 import 'package:flutter/material.dart';
 import 'package:recon/bloc/theme/theme_bloc.dart';
 import 'package:recon/constant/colors_const.dart';
-import 'package:recon/router/app_router.gr.dart';
-import 'package:recon/widgets/badge/infobadge_widget.dart';
-import 'package:recon/widgets/section/infosection_widget.dart';
+import 'package:recon/core/network/dio_app.dart';
+import 'package:recon/presentation/routes/app_router.gr.dart';
+import 'package:recon/presentation/widgets/badge/infobadge_widget.dart';
+import 'package:recon/presentation/widgets/section/infosection_widget.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
 @RoutePage()
-class OnboardPage extends StatelessWidget {
+class OnboardPage extends StatefulWidget {
   const OnboardPage({super.key});
 
+  @override
+  State<OnboardPage> createState() => _OnboardPageState();
+}
+
+class _OnboardPageState extends State<OnboardPage> {
+  String? responseLog;
+
+  @override
+  void initState() {
+    super.initState();
+    _fetchUIData();
+  }
+
+  Future<void> _fetchUIData() async {
+    try {
+      final response = await DioApp.instance.get(
+        '/ui/v1.1.0/public/userInterface/ID',
+      );
+
+      setState(() {
+        responseLog = response.data.toString();
+      });
+
+      // Log ke console
+      debugPrint('✅ API Response:\n${response.data}');
+    } catch (e, stackTrace) {
+      debugPrint('❌ API Error: $e\n$stackTrace');
+    }
+  }
   @override
   Widget build(BuildContext context) {
     final currentThemeMode = context.select(

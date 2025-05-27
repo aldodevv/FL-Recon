@@ -4,8 +4,8 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:recon/bloc/login_bloc/login_bloc.dart';
 import 'package:recon/bloc/login_bloc/login_state.dart';
-import 'package:recon/core/constant/biometrice_auth.dart';
-import 'package:recon/utils/utils.dart';
+import 'package:recon/core/services/biometrice_auth.dart';
+import 'package:recon/core/utils/utils.dart';
 
 @RoutePage()
 class LoginPage extends StatelessWidget {

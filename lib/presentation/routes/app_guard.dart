@@ -1,5 +1,5 @@
 import 'package:auto_route/auto_route.dart';
-import 'package:recon/router/app_router.gr.dart';
+import 'package:recon/presentation/routes/app_router.gr.dart';
 
 class AppGuard extends AutoRouteGuard {
   @override
