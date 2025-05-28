@@ -25,7 +25,7 @@ class App extends StatelessWidget {
         buildWhen: (previous, current) => previous.themeMode != current.themeMode,
         builder: (context, state) {
           return MaterialApp.router(
-            themeAnimationDuration: const Duration(milliseconds: 100),
+            themeAnimationDuration: const Duration(milliseconds: 200),
             theme: AppTheme.lightTheme,
             darkTheme: AppTheme.darkTheme,
             themeMode: state.themeMode,
