@@ -169,7 +169,7 @@ class DioApp {
     if (!kDebugMode) return;
 
     _logger.i('''
-┌── REQUEST ────────────────────────────────────────────────────────────────
+┌── REQUEST ────────────────────────────────────
 │ ${options.method.toUpperCase()} ${options.uri}
 ├── Headers:
 ${_formatHeaders(options.headers)}
@@ -177,7 +177,7 @@ ${_formatHeaders(options.headers)}
 ${_formatMap(options.queryParameters)}
 ├── Body:
 ${_formatData(options.data)}
-└────────────────────────────────────────────────────────────────────────────
+└───────────────────────────────────────────────
 ''');
   }
 
@@ -185,14 +185,14 @@ ${_formatData(options.data)}
     if (!kDebugMode) return;
 
     _logger.i('''
-┌── RESPONSE ───────────────────────────────────────────────────────────────
+┌── RESPONSE ──────────────────────────────────
 │ ${response.statusCode} ${response.statusMessage}
 │ ${response.requestOptions.method.toUpperCase()} ${response.requestOptions.uri}
 ├── Headers:
 ${_formatHeaders(response.headers.map)}
 ├── Data:
 ${_formatData(response.data)}
-└────────────────────────────────────────────────────────────────────────────
+└──────────────────────────────────────────────
 ''');
   }
 
