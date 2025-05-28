@@ -1,22 +1,42 @@
 // pages/home_screen.dart
 import 'package:auto_route/auto_route.dart';
 import 'package:flutter/material.dart';
+import 'package:recon/presentation/widgets/home/SaldoCard.dart';
 
 @RoutePage()
-class HomePage extends StatelessWidget {
-  final String username;
-  const HomePage({super.key, required this.username});
-  @override
+class HomePage extends StatefulWidget {
+  const HomePage({super.key});
 
+  @override
+  State<HomePage> createState() => _HomePageState();
+}
+
+class _HomePageState extends State<HomePage> {
+  @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(title: const Text('Home')),
       body: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          Text('Hello, $username!'),
-        ]
-        )
+          Saldocard(
+            title: 'Total Saldo',
+            currency: 'IDR',
+            value: '12,345,678',
+            dateTime: '14 Feb 2023, 13:53',
+            isHidden: false,
+            selectedCurrency: 'IDR',
+            onToggleVisibility: () {
+              // logika untuk show/hide saldo
+            },
+            onTapDetail: () {
+              // navigasi ke detail
+            },
+            onCurrencyChange: (String newCurrency) {
+              // update state currency (IDR <-> USD)
+            },
+          ),
+        ],
+      ),
     );
   }
 }

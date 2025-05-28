@@ -2,10 +2,11 @@ import 'package:bloc_concurrency/bloc_concurrency.dart';
 import 'package:dio/dio.dart';
 import 'package:equatable/equatable.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:recon/presentation/bloc/login/login_state.dart';
+import 'package:recon/core/constants/app_url.dart';
 import 'package:recon/core/network/dio_client.dart';
-import 'package:recon/domain/entitites/signin.dart';
 import 'package:recon/core/utils/utils.dart';
+import 'package:recon/domain/entitites/signin.dart';
+import 'package:recon/presentation/bloc/login/login_state.dart';
 
 part 'login_event.dart';
 
@@ -24,10 +25,9 @@ class LoginBloc extends Bloc<LoginEvent, LoginState> {
   Emitter<LoginState> emit,
 ) async {
   emit(state.copyWith(isLogin: true));
-
   try {
     final response = await DioClient().post(
-      '/identity/v2.4/public/login',
+      '${AppUrl.identityV4}/public/login',
       data: {
         'corporateId': event.corporateId,
         'username': event.username,
@@ -86,7 +86,7 @@ class LoginBloc extends Bloc<LoginEvent, LoginState> {
 
     try {
       final response = await DioClient().get(
-        '/identity/v1.0/private/token/check',
+        '${AppUrl.identityV1}/private/token/check',
         options: Options(
           headers: {
             'Authorization': 'Bearer $token',

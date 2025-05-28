@@ -2,10 +2,11 @@
 import 'package:auto_route/auto_route.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:recon/presentation/bloc/login/login_bloc.dart';
-import 'package:recon/presentation/bloc/login/login_state.dart';
 import 'package:recon/core/services/biometrice_auth.dart';
 import 'package:recon/core/utils/utils.dart';
+import 'package:recon/presentation/bloc/login/login_bloc.dart';
+import 'package:recon/presentation/bloc/login/login_state.dart';
+import 'package:recon/presentation/routes/app_router.gr.dart';
 
 @RoutePage()
 class LoginPage extends StatelessWidget {
@@ -57,9 +58,9 @@ class _LoginFormState extends State<LoginForm> {
         title: 'Login dengan Sidik Jari',
         description: 'Silakan scan sidik jari untuk melanjutkan.',
       );
-      print('Authentication result: $isAuthenticated');
       if (isAuthenticated) {
         context.read<LoginBloc>().add(LoginFormSubmitted());
+        context.router.replace(HomeRoute());
       }
     }
   }
@@ -109,13 +110,11 @@ class _LoginFormState extends State<LoginForm> {
                   final isSuccess = state.username;
                   final isFailure = state.isLoginFailure;
 
-                  // if (state.isLogin) {
-                  //   context.router.replace(
-                  //     HomeRoute(
-                  //       username: state.username,
-                  //     ), // ← kirim data ke halaman
-                  //   );
-                  // }
+                  if (state.isLogin) {
+                    context.router.replace(
+                      HomeRoute(),
+                    );
+                  }
 
                   return Column(
                     mainAxisSize: MainAxisSize.min,
@@ -175,5 +174,3 @@ class _LoginFormState extends State<LoginForm> {
     );
   }
 }
-
-enum _SupportState { unknown, supported, unsupported }

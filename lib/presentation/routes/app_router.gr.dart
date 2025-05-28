@@ -70,39 +70,18 @@ class FlushbarRoute extends _i9.PageRouteInfo<void> {
 
 /// generated route for
 /// [_i4.HomePage]
-class HomeRoute extends _i9.PageRouteInfo<HomeRouteArgs> {
-  HomeRoute({
-    _i10.Key? key,
-    required String username,
-    List<_i9.PageRouteInfo>? children,
-  }) : super(
-         HomeRoute.name,
-         args: HomeRouteArgs(key: key, username: username),
-         initialChildren: children,
-       );
+class HomeRoute extends _i9.PageRouteInfo<void> {
+  const HomeRoute({List<_i9.PageRouteInfo>? children})
+    : super(HomeRoute.name, initialChildren: children);
 
   static const String name = 'HomeRoute';
 
   static _i9.PageInfo page = _i9.PageInfo(
     name,
     builder: (data) {
-      final args = data.argsAs<HomeRouteArgs>();
-      return _i4.HomePage(key: args.key, username: args.username);
+      return const _i4.HomePage();
     },
   );
-}
-
-class HomeRouteArgs {
-  const HomeRouteArgs({this.key, required this.username});
-
-  final _i10.Key? key;
-
-  final String username;
-
-  @override
-  String toString() {
-    return 'HomeRouteArgs{key: $key, username: $username}';
-  }
 }
 
 /// generated route for
