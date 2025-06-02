@@ -1,3 +1,29 @@
+class BalanceResponseEntity {
+  final int statusCode;
+  final String status;
+  final String message;
+  final String displayMessage;
+  final BalanceEntity response;
+
+  BalanceResponseEntity({
+    required this.statusCode,
+    required this.status,
+    required this.message,
+    required this.displayMessage,
+    required this.response,
+  });
+
+  factory BalanceResponseEntity.fromJson(Map<String, dynamic> json) {
+    return BalanceResponseEntity(
+      statusCode: json['statusCode'],
+      status: json['status'],
+      message: json['message'],
+      displayMessage: json['displayMessage'] ?? '',
+      response: BalanceEntity.fromJson(json['response']),
+    );
+  }
+}
+
 class BalanceEntity {
   final List<BalanceHistory> balanceHisList;
   final DateTime lastUpdated;

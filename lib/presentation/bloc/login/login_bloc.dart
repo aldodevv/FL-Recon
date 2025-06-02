@@ -27,7 +27,7 @@ class LoginBloc extends Bloc<LoginEvent, LoginState> {
   emit(state.copyWith(isLogin: true));
   try {
     final response = await DioClient().post(
-      '${AppUrl.identityV4}/public/login',
+      '${AppUrl.identityV2_4}/public/login',
       data: {
         'corporateId': event.corporateId,
         'username': event.username,
