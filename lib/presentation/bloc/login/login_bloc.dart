@@ -2,14 +2,13 @@ import 'package:bloc_concurrency/bloc_concurrency.dart';
 import 'package:dio/dio.dart';
 import 'package:equatable/equatable.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:injectable/injectable.dart';
 import 'package:recon/core/constants/app_url.dart';
 import 'package:recon/core/network/dio_client.dart';
 import 'package:recon/core/utils/utils.dart';
-import 'package:recon/domain/entitites/signin.dart';
-import 'package:recon/presentation/bloc/login/login_state.dart';
 
 part 'login_event.dart';
-
+@injectable
 class LoginBloc extends Bloc<LoginEvent, LoginState> {
   LoginBloc() : super(LoginState.initial()) {
     on<LoginSubmitted>(_onLoginSubmitted, transformer: concurrent());
