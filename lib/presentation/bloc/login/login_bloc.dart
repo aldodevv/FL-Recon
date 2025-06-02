@@ -6,9 +6,10 @@ import 'package:recon/presentation/bloc/login/login_state.dart';
 import 'package:recon/core/network/dio_client.dart';
 import 'package:recon/domain/entitites/signin.dart';
 import 'package:recon/core/utils/utils.dart';
+import 'package:injectable/injectable.dart';
 
 part 'login_event.dart';
-
+@injectable
 class LoginBloc extends Bloc<LoginEvent, LoginState> {
   LoginBloc() : super(LoginState.initial()) {
     on<LoginSubmitted>(_onLoginSubmitted, transformer: concurrent());

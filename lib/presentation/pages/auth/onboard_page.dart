@@ -4,10 +4,11 @@ import 'package:flutter/material.dart';
 import 'package:logger/logger.dart';
 import 'package:recon/presentation/bloc/theme/theme_bloc.dart';
 import 'package:recon/core/constants/colors_const.dart';
-import 'package:recon/core/network/dio_app.dart';
 import 'package:recon/presentation/routes/app_router.gr.dart';
 import 'package:recon/presentation/widgets/badge/infobadge_widget.dart';
+import 'package:recon/presentation/widgets/card/saldobadgecard_widget.dart';
 import 'package:recon/presentation/widgets/card/transactionschedulecard_widget.dart';
+import 'package:recon/presentation/widgets/section/dateofweeksection_widget.dart';
 import 'package:recon/presentation/widgets/section/dividersection_widget.dart';
 import 'package:recon/presentation/widgets/section/infosection_widget.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
@@ -30,25 +31,25 @@ class _OnboardPageState extends State<OnboardPage> {
   @override
   void initState() {
     super.initState();
-    _fetchUIData();
+    // _fetchUIData();
   }
 
-  Future<void> _fetchUIData() async {
-    try {
-      final response = await DioApp.instance.get(
-        '/ui/v1.1.0/public/userInterface/ID',
-      );
+  // Future<void> _fetchUIData() async {
+  //   try {
+  //     final response = await DioApp.instance.get(
+  //       '/ui/v1.1.0/public/userInterface/ID',
+  //     );
 
-      setState(() {
-        responseLog = response.data.toString();
-      });
+  //     setState(() {
+  //       responseLog = response.data.toString();
+  //     });
 
-      // Log ke console
-      logger.i(response);
-    } catch (e, stackTrace) {
-      debugPrint('❌ API Error: $e\n$stackTrace');
-    }
-  }
+  //     // Log ke console
+  //     logger.i(response);
+  //   } catch (e, stackTrace) {
+  //     debugPrint('❌ API Error: $e\n$stackTrace');
+  //   }
+  // }
 
   @override
   Widget build(BuildContext context) {
@@ -98,7 +99,7 @@ class _OnboardPageState extends State<OnboardPage> {
                   ),
                   FilledButton(
                     onPressed: () {
-                      context.router.replace(LoginRoute());
+                      context.router.replace(SigninRoute());
                     },
                     child: Text("Next"),
                   ),
@@ -174,7 +175,99 @@ class _OnboardPageState extends State<OnboardPage> {
                       ),
                     ],
                   ),
+                  DividersectionWidget(size: 1.5),
+                  DateofweeksectionWidget(
+                    initialDate: DateTime.now(),
+                    onDateSelected: (date) {
+                      print('Selected date: ${date.toString()}');
+                      // Handle date selection
+                    },
+                  ),
 
+                  DividersectionWidget(size: 1.5),
+                  // Example 1: Exact replica from image
+                  SaldoBadgeCardWidget(
+                    title: 'Deposito',
+                    amount: 'IDR 999.153.000.000.000,00',
+                    leftColor: const Color(0xFFEA580C), // Orange color
+                    size: BadgeSize.medium,
+                    badges: [
+                      BadgeData(
+                        child: Row(
+                          mainAxisSize: MainAxisSize.min,
+                          children: const [
+                            Icon(
+                              Icons.credit_card,
+                              size: 14,
+                              color: Color(0xFF6B7280),
+                            ),
+                            SizedBox(width: 4),
+                            Text(
+                              '2 Rekening',
+                              style: TextStyle(color: Color(0xFF6B7280)),
+                            ),
+                          ],
+                        ),
+                        colorType: ColorType.blue,
+                      ),
+                      BadgeData(
+                        child: Row(
+                          mainAxisSize: MainAxisSize.min,
+                          children: const [
+                            Icon(
+                              Icons.percent,
+                              size: 14,
+                              color: Color(0xFF6B7280),
+                            ),
+                            SizedBox(width: 4),
+                            Text(
+                              '10.00%',
+                              style: TextStyle(color: Color(0xFF6B7280)),
+                            ),
+                          ],
+                        ),
+                        colorType: ColorType.blue,
+                      ),
+                    ],
+                    onTap: () => print('Deposito tapped'),
+                  ),
+
+                  const SizedBox(height: 16),
+
+                  // Example 2: Different variations
+                  SaldoBadgeCardWidget(
+                    title: 'Tabungan',
+                    amount: 'IDR 50.000.000,00',
+                    leftColor: const Color(0xFF16A34A), // Green color
+                    size: BadgeSize.small,
+                    badges: [
+                      BadgeData(text: 'Aktif', colorType: ColorType.green),
+                      BadgeData(text: '5.5%', colorType: ColorType.blue),
+                    ],
+                  ),
+
+                  const SizedBox(height: 16),
+
+                  // Example 3: Large size
+                  SaldoBadgeCardWidget(
+                    title: 'Investasi',
+                    amount: 'IDR 1.250.000.000,00',
+                    leftColor: const Color(0xFFDC2626), // Red color
+                    size: BadgeSize.large,
+                    badges: [
+                      BadgeData(
+                        child: Row(
+                          mainAxisSize: MainAxisSize.min,
+                          children: const [
+                            Icon(Icons.trending_up, size: 16),
+                            SizedBox(width: 4),
+                            Text('High Risk'),
+                          ],
+                        ),
+                        colorType: ColorType.red,
+                      ),
+                    ],
+                  ),
                   DividersectionWidget(size: 1.5),
 
                   TransactionschedulecardWidget(

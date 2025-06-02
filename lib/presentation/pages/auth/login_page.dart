@@ -35,7 +35,6 @@ class _LoginFormState extends State<LoginForm> {
 
   @override
   void initState() {
-    // TODO: implement initState
     super.initState();
     _checkBiometrics();
   }
@@ -175,5 +174,3 @@ class _LoginFormState extends State<LoginForm> {
     );
   }
 }
-
-enum _SupportState { unknown, supported, unsupported }

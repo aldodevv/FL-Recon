@@ -4,14 +4,14 @@ import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_dotenv/flutter_dotenv.dart';
-import 'package:recon/core/di/servicelocator_di.dart';
+import 'package:recon/core/injection.dart';
 
 import 'app.dart';
 import 'flavors.dart';
 
 FutureOr<void> main() async {
   WidgetsFlutterBinding.ensureInitialized();
-  await setupLocator();
+  await configureDependencies();
 
   if (kReleaseMode) {
     debugPrint = (String? message, {int? wrapWidth}) {};
