@@ -7,6 +7,7 @@ class LoginState extends Equatable {
   final bool isLogin;
   final String isLoginFailure;
   final bool isLoadingBiometric;
+  final bool isLoginSuccess;
 
   const LoginState({
     required this.corpId,
@@ -15,6 +16,7 @@ class LoginState extends Equatable {
     required this.isLogin,
     required this.isLoginFailure,
     required this.isLoadingBiometric,
+    required this.isLoginSuccess,
   });
 
   /// Initial State
@@ -25,6 +27,7 @@ class LoginState extends Equatable {
         isLogin: false,
         isLoginFailure: '',
         isLoadingBiometric: false,
+        isLoginSuccess: false,
       );
 
   /// CopyWith function
@@ -35,6 +38,7 @@ class LoginState extends Equatable {
     bool? isLogin,
     String? isLoginFailure,
     bool? isLoadingBiometric,
+    bool? isLoginSuccess
   }) {
     return LoginState(
       corpId: corpId ?? this.corpId,
@@ -43,6 +47,7 @@ class LoginState extends Equatable {
       isLogin: isLogin ?? this.isLogin,
       isLoginFailure: isLoginFailure ?? this.isLoginFailure,
       isLoadingBiometric: isLoadingBiometric ?? this.isLoadingBiometric,
+      isLoginSuccess: isLoginSuccess ?? this.isLoginSuccess
     );
   }
 
@@ -54,5 +59,6 @@ class LoginState extends Equatable {
         isLogin,
         isLoginFailure,
         isLoadingBiometric,
+        isLoginSuccess,
       ];
 }
