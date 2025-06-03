@@ -57,6 +57,7 @@ dependencies:
   injectable: ^2.5.0
   json_serializable: ^6.9.5
   json_annotation: ^4.9.0
+  fl_chart: ^1.0.0
 
 dev_dependencies:
   flutter_test:

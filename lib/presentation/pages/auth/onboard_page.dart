@@ -1,13 +1,19 @@
 // pages/home_screen.dart
+import 'dart:async';
+
 import 'package:auto_route/auto_route.dart';
+import 'package:fl_chart/fl_chart.dart';
 import 'package:flutter/material.dart';
 import 'package:logger/logger.dart';
+import 'package:recon/core/constants/images_const.dart';
 import 'package:recon/presentation/bloc/theme/theme_bloc.dart';
 import 'package:recon/core/constants/colors_const.dart';
 import 'package:recon/presentation/routes/app_router.gr.dart';
 import 'package:recon/presentation/widgets/badge/infobadge_widget.dart';
+import 'package:recon/presentation/widgets/card/accounttransfercard_widget.dart';
 import 'package:recon/presentation/widgets/card/saldobadgecard_widget.dart';
 import 'package:recon/presentation/widgets/card/transactionschedulecard_widget.dart';
+import 'package:recon/presentation/widgets/chart/piedonutchart_widget.dart';
 import 'package:recon/presentation/widgets/section/dateofweeksection_widget.dart';
 import 'package:recon/presentation/widgets/section/dividersection_widget.dart';
 import 'package:recon/presentation/widgets/section/infosection_widget.dart';
@@ -24,6 +30,8 @@ class OnboardPage extends StatefulWidget {
 
 class _OnboardPageState extends State<OnboardPage> {
   String? responseLog;
+  StreamSubscription<int>? _subscription;
+  int _counter = 0;
   Logger logger = Logger(
     printer: PrettyPrinter(methodCount: 0, colors: true, printEmojis: true),
   );
@@ -31,7 +39,28 @@ class _OnboardPageState extends State<OnboardPage> {
   @override
   void initState() {
     super.initState();
+    // Simulasi fetch API async
+    print("hehe $_counter");
+    // Simulasi stream data, misal event dari server atau sensor
+    Stream<int> stream = Stream.periodic(
+      Duration(seconds: 1),
+      (x) => x,
+    ).take(10);
+    _subscription = stream.listen((event) {
+      setState(() {
+        _counter = event;
+      });
+      print("Stream event: $event $_counter");
+    });
+
     // _fetchUIData();
+  }
+
+  @override
+  void dispose() {
+    print("dispose - bersihkan subscription stream $_counter");
+    _subscription?.cancel();
+    super.dispose();
   }
 
   // Future<void> _fetchUIData() async {
@@ -50,6 +79,33 @@ class _OnboardPageState extends State<OnboardPage> {
   //     debugPrint('❌ API Error: $e\n$stackTrace');
   //   }
   // }
+
+  List<PieChartSectionData> sections = [
+    PieChartSectionData(
+      value: 60,
+      title: '60%',
+      color: Colors.blue,
+      radius: 50,
+      titleStyle: const TextStyle(
+        color: Colors.white,
+        fontSize: 8,
+        fontWeight: FontWeight.bold,
+      ),
+      titlePositionPercentageOffset: 0.5,
+    ),
+    PieChartSectionData(
+      value: 40,
+      title: '40%',
+      color: Colors.red,
+      radius: 50,
+      titleStyle: const TextStyle(
+        color: Colors.white,
+        fontSize: 8,
+        fontWeight: FontWeight.bold,
+      ),
+      titlePositionPercentageOffset: 0.5,
+    ),
+  ];
 
   @override
   Widget build(BuildContext context) {
@@ -140,6 +196,16 @@ class _OnboardPageState extends State<OnboardPage> {
                     size: BadgeSize.small,
                     colorType: ColorType.red,
                   ),
+                  DividersectionWidget(size: 1.5),
+                  PiedonutchartWidget(
+                    size: 200,
+                    sections: sections,
+                    centerText: 'Februari',
+                    onSectionTapped: (index, position) {
+                      print('Tapped section $index at $position');
+                    },
+                  ),
+
                   DividersectionWidget(size: 1.5),
                   Row(
                     mainAxisAlignment: MainAxisAlignment.spaceBetween,
@@ -280,34 +346,30 @@ class _OnboardPageState extends State<OnboardPage> {
                     detailTitle: "Lihat Detail",
                     onPressDetail: () {
                       // Aksi ketika diklik
+                       context.router.replace(TermsconditionRoute());
                       debugPrint("Detail pressed");
                     },
                   ),
-                  TransactionschedulecardWidget(
-                    dateTime: '28 Mei 2025 14:45:10',
-                    statusText: "Pending Signer",
-                    statusColorType: ColorType.orange,
-                    transactionId: "2361728374819",
-                    description: "Transfer Sesama BRI",
-                    amount: "IDR 99.999.000.000",
-                    detailTitle: "Lihat Detail",
-                    onPressDetail: () {
-                      // Aksi ketika diklik
-                      debugPrint("Detail pressed");
-                    },
-                  ),
-                  TransactionschedulecardWidget(
-                    dateTime: '28 Mei 2025 14:45:10',
-                    statusText: "Pending Signer",
-                    statusColorType: ColorType.orange,
-                    transactionId: "2361728374819",
-                    description: "Transfer Sesama BRI",
-                    amount: "IDR 99.999.000.000",
-                    detailTitle: "Lihat Detail",
-                    onPressDetail: () {
-                      // Aksi ketika diklik
-                      debugPrint("Detail pressed");
-                    },
+                  DividersectionWidget(size: 1.5),
+                  Row(
+                    children: [
+                      AccounttransfercardWidget(
+                        logoUrl: AppImages.logoQlola,
+                        title: 'Rachman Hakim',
+                        desc: '123456789012345',
+                        badgeText: 'USD',
+                        badgeColor: ColorType.blue,
+                        badgeSize: BadgeSize.small,
+                      ),
+                      AccounttransfercardWidget(
+                        logoUrl: AppImages.logoQlola,
+                        title: 'Rachman Hakim',
+                        desc: '123456789012345',
+                        badgeText: 'USD',
+                        badgeColor: ColorType.blue,
+                        badgeSize: BadgeSize.small,
+                      ),
+                    ],
                   ),
                 ],
               ),
