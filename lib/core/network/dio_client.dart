@@ -1,11 +1,12 @@
 import 'package:dio/dio.dart';
+import 'package:recon/core/constants/app_url.dart';
 import 'package:recon/core/network/interceptors.dart';
 
 class DioClient {
   late final Dio _dio;
   DioClient():_dio = Dio(
     BaseOptions(
-      baseUrl: 'https://qlola-uat.dev.bri.co.id/api',
+      baseUrl: AppUrl.baseUrl,
       headers: {
         'Content-Type': 'application/json; charset=UTF-8'
       },

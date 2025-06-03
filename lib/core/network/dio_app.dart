@@ -1,10 +1,11 @@
 // network/dio_client.dart
 import 'package:dio/dio.dart';
-import 'package:logger/logger.dart';
 import 'package:flutter/foundation.dart';
+import 'package:logger/logger.dart';
+import 'package:recon/core/constants/app_url.dart';
 import 'package:recon/core/network/dio_constants.dart';
-import 'package:recon/flavors.dart';
 import 'package:recon/core/utils/utils.dart';
+import 'package:recon/flavors.dart';
 
 class DioApp {
   static DioApp? _instance;
@@ -61,19 +62,19 @@ class DioApp {
   String _getBaseUrl() {
     switch (F.appFlavor) {
       case Flavor.dev:
-        return const String.fromEnvironment(
+        return String.fromEnvironment(
           'DEV_BASE_URL',
-          defaultValue: 'https://qlola.dev.bri.co.id/api',
+          defaultValue: AppUrl.baseUrl,
         );
       case Flavor.uat:
-        return const String.fromEnvironment(
+        return String.fromEnvironment(
           'UAT_BASE_URL',
-          defaultValue: 'https://qlola-uat.dev.bri.co.id/api',
+          defaultValue: AppUrl.baseUrl,
         );
       case Flavor.prod:
-        return const String.fromEnvironment(
+        return String.fromEnvironment(
           'PROD_BASE_URL',
-          defaultValue: 'https://qlola.bri.co.id/api',
+          defaultValue: AppUrl.baseUrl,
         );
     }
   }

@@ -2,13 +2,16 @@ import 'package:bloc_concurrency/bloc_concurrency.dart';
 import 'package:dio/dio.dart';
 import 'package:equatable/equatable.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:recon/presentation/bloc/login/login_state.dart';
-import 'package:recon/core/network/dio_client.dart';
-import 'package:recon/domain/entitites/signin.dart';
-import 'package:recon/core/utils/utils.dart';
 import 'package:injectable/injectable.dart';
+import 'package:recon/core/constants/app_url.dart';
+import 'package:recon/core/network/dio_app.dart';
+import 'package:recon/core/network/dio_client.dart';
+import 'package:recon/core/utils/utils.dart';
+import 'package:recon/domain/entitites/signin.dart';
+import 'package:recon/presentation/bloc/login/login_state.dart';
 
 part 'login_event.dart';
+
 @injectable
 class LoginBloc extends Bloc<LoginEvent, LoginState> {
   LoginBloc() : super(LoginState.initial()) {
@@ -21,80 +24,77 @@ class LoginBloc extends Bloc<LoginEvent, LoginState> {
   }
 
   Future<void> _onLoginSubmitted(
-  LoginSubmitted event,
-  Emitter<LoginState> emit,
-) async {
-  emit(state.copyWith(isLogin: true));
-
-  try {
-    final response = await DioClient().post(
-      '/identity/v2.4/public/login',
-      data: {
-        'corporateId': event.corporateId,
-        'username': event.username,
-        'password': event.password,
-      },
-    );
-
-    // Parse response ke SigninEntity
-    final data = SigninEntity.fromJson(response.data);
-
-    if (data.statusCode == 200) {
-      emit(state.copyWith(username: event.username));
-      await Utils.storageSecure.write(
-        key: 'token',
-        value: data.response?.token,
+    LoginSubmitted event,
+    Emitter<LoginState> emit,
+  ) async {
+    emit(state.copyWith(isLogin: true));
+    try {
+      final response = await DioClient().post(
+        '${AppUrl.identityV2_4}/public/login',
+        data: {
+          'corporateId': event.corporateId,
+          'username': event.username,
+          'password': event.password,
+        },
       );
-    } else {
+
+      // Parse response ke SigninEntity
+      final data = SigninEntity.fromJson(response.data);
+
+      if (data.statusCode == 200) {
+        emit(state.copyWith(username: event.username, isLogin: false, isLoginSuccess: true));
+        await Utils.storageSecure.write(
+          key: 'token',
+          value: data.response!.token,
+        );
+      } else {
+        emit(
+          state.copyWith(
+            isLogin: false,
+            isLoginFailure: 'Login gagal: ${data.message ?? 'Unknown error'}',
+          ),
+        );
+      }
+    } on DioException catch (e) {
+      if (e.response != null) {
+        emit(
+          state.copyWith(
+            isLogin: false,
+            isLoginFailure: 'Login gagal: ${e.response?.data['message']}',
+          ),
+        );
+      } else {
+        emit(
+          state.copyWith(
+            isLogin: false,
+            isLoginFailure: 'Login gagal: ${e.message}',
+          ),
+        );
+      }
+    } catch (e) {
       emit(
-        state.copyWith(
-          isLogin: false,
-          isLoginFailure: 'Login gagal: ${data.message ?? 'Unknown error'}',
-        ),
+        state.copyWith(isLogin: false, isLoginFailure: 'Terjadi kesalahan: $e'),
       );
     }
-  } on DioException catch (e) {
-    if (e.response != null) {
-      emit(
-        state.copyWith(
-          isLogin: false,
-          isLoginFailure: 'Login gagal: ${e.response?.data['message']}',
-        ),
-      );
-    } else {
-      emit(
-        state.copyWith(
-          isLogin: false,
-          isLoginFailure: 'Login gagal: ${e.message}',
-        ),
-      );
-    }
-  } catch (e) {
-    emit(
-      state.copyWith(isLogin: false, isLoginFailure: 'Terjadi kesalahan: $e'),
-    );
   }
-}
-
 
   void _onLoginBiometrics(
     LoginFormSubmitted event,
     Emitter<LoginState> emit,
   ) async {
     final String? token = await Utils.storageSecure.read(key: 'token');
-
     if (token == null) return;
 
     try {
-      final response = await DioClient().get(
-        '/identity/v1.0/private/token/check',
+      final response = await DioApp.instance.get(
+        '${AppUrl.identityV1}/private/token/check',
         options: Options(
           headers: {
             'Authorization': 'Bearer $token',
-          },
+          }
         ),
       );
-      print(response.data);
+      print("wodkowkdo: ${response.data}");
     } on DioException catch (e) {
       print('DioException: ${e.message}');
     } catch (e) {

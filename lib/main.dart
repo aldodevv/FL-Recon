@@ -18,6 +18,7 @@ FutureOr<void> main() async {
   }
 
   await dotenv.load(fileName: ".env");
+
   F.appFlavor = Flavor.values.firstWhere(
     (element) => element.name == appFlavor,
   );

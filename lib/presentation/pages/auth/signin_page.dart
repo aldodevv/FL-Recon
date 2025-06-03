@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:recon/core/constants/colors_const.dart';
 import 'package:recon/core/constants/images_const.dart';
+import 'package:recon/core/services/biometrice_auth.dart';
 import 'package:recon/core/utils/utils.dart';
 import 'package:recon/presentation/bloc/login/login_bloc.dart';
 import 'package:recon/presentation/bloc/login/login_state.dart';
@@ -18,20 +19,43 @@ class SigninPage extends StatefulWidget {
 }
 
 class _SigninPageState extends State<SigninPage> {
-  String? _corpIdController;
+  final TextEditingController _corpIdController = TextEditingController();
   final TextEditingController _usernameController = TextEditingController();
   final TextEditingController _passwordController = TextEditingController();
   bool showPassword = false;
+  bool _isBiometricSupported = false;
 
   final List<String> corpIds = ['TVCQLOLA', 'QLA1', 'Corp003'];
   String selectedLanguage = 'ID';
   final GlobalKey<FormState> _formKey = GlobalKey<FormState>();
 
-  void _handleSeamlessLogin() {
-    // Dummy call to biometric function
-    ScaffoldMessenger.of(
-      context,
-    ).showSnackBar(const SnackBar(content: Text('Biometric login triggered')));
+  @override
+  void initState() {
+    super.initState();
+    _checkBiometrics();
+  }
+
+  void _checkBiometrics() async {
+    final isSupported = await BiometriceAuth.isDeviceSupported();
+    if (!mounted) return;
+
+    debugPrint('Biometrik Supported: $isSupported');
+    setState(() {
+      _isBiometricSupported = isSupported;
+    });
+  }
+
+  void _handleSeamlessLogin(BuildContext context) async {
+    if (_isBiometricSupported) {
+      final isAuthenticated = await BiometriceAuth.authenticate(
+        title: 'Login dengan Sidik Jari',
+        hint: 'Silakan scan sidik jari untuk melanjutkan.',
+      );
+      if (isAuthenticated) {
+        context.read<LoginBloc>().add(LoginFormSubmitted());
+        context.router.replace(HomeRoute());
+      }
+    }
   }
 
   void _showHelpPopup() {
@@ -87,17 +111,19 @@ class _SigninPageState extends State<SigninPage> {
     context.router.push(TermsconditionRoute());
   }
 
-  void _login(BuildContext context) async {
-    final corpId = _corpIdController ?? '';
-    final username = _usernameController.text;
-    final password = Utils.encryptWithKey(_passwordController.text);
-    context.read<LoginBloc>().add(
-      LoginSubmitted(
-        corporateId: corpId,
-        username: username,
-        password: password,
-      ),
-    );
+  void _login(BuildContext context) {
+    if (_formKey.currentState!.validate()) {
+      final corpId = _corpIdController.text;
+      final username = _usernameController.text;
+      final password = Utils.encryptWithKey(_passwordController.text);
+      context.read<LoginBloc>().add(
+        LoginSubmitted(
+          corporateId: corpId,
+          username: username,
+          password: password,
+        ),
+      );
+    }
   }
 
   @override
@@ -281,7 +307,9 @@ class _SigninPageState extends State<SigninPage> {
                                 child: Center(
                                   child: ConstrainedBox(
                                     constraints: const BoxConstraints(),
-                                    child: Column(
+                                    child: Form(
+                                      key: _formKey,
+                                      child: Column(
                                       crossAxisAlignment:
                                           CrossAxisAlignment.start,
                                       children: [
@@ -303,22 +331,15 @@ class _SigninPageState extends State<SigninPage> {
                                           ),
                                         ),
                                         const SizedBox(height: 8),
-                                        DropdownButtonFormField<String>(
-                                          value: _corpIdController,
-                                          hint: const Text('Corp ID'),
-                                          items:
-                                              corpIds
-                                                  .map(
-                                                    (e) => DropdownMenuItem(
-                                                      value: e,
-                                                      child: Text(e),
-                                                    ),
-                                                  )
-                                                  .toList(),
-                                          onChanged:
-                                              (value) => setState(
-                                                () => _corpIdController = value,
-                                              ),
+                                        TextField(
+                                          controller: _corpIdController,
+                                          decoration: const InputDecoration(
+                                            prefixIcon: Icon(
+                                              Icons.person_outline,
+                                            ),
+                                            labelText: 'Corp ID',
+                                            border: OutlineInputBorder(),
+                                          ),
                                         ),
                                         const SizedBox(height: 12),
                                         TextField(
@@ -357,32 +378,45 @@ class _SigninPageState extends State<SigninPage> {
                                           ),
                                         ),
                                         const SizedBox(height: 16),
-                                        Row(
-                                          children: [
-                                            Expanded(
-                                              child: MainbuttonWidget(
-                                                text: 'Login',
-                                                onPressed:
-                                                    () => _login(context),
-                                                justify:
-                                                    MainAxisAlignment.center,
-                                                colorType: ColorType.blue,
-                                                size: ButtonSize.medium,
-                                                type: ButtonType.fullfilled,
-                                              ),
-                                            ),
-                                            const SizedBox(width: 12),
-                                            IconButton(
-                                              onPressed: _handleSeamlessLogin,
-                                              icon: const Icon(Icons.face),
-                                              style: IconButton.styleFrom(
-                                                backgroundColor: Colors.blue,
-                                                foregroundColor: Colors.white,
-                                              ),
-                                            ),
-                                          ],
+                                        BlocBuilder<LoginBloc, LoginState>(
+                                          builder: (context, state) {
+                                            if (state.isLoginSuccess) {
+                                              context.router.replace(
+                                                HomeRoute(),
+                                              );
+                                            }
+                                            return Row(
+                                              children: [
+                                                Expanded(
+                                                  child: MainbuttonWidget(
+                                                    text: 'Login',
+                                                    onPressed:
+                                                        () => _login(context),
+                                                    justify:
+                                                        MainAxisAlignment.center,
+                                                    colorType: ColorType.blue,
+                                                    size: ButtonSize.medium,
+                                                    type: ButtonType.fullfilled,
+                                                  ),
+                                                ),
+                                                const SizedBox(width: 12),
+                                                if (_isBiometricSupported) 
+                                                  IconButton(
+                                                    onPressed: () {
+                                                      _handleSeamlessLogin(context);
+                                                    },
+                                                    icon: const Icon(Icons.fingerprint),
+                                                    style: IconButton.styleFrom(
+                                                      backgroundColor: Colors.blue,
+                                                      foregroundColor: Colors.white,
+                                                    ),
+                                                  ),
+                                              ],
+                                            );
+                                          },
                                         ),
                                       ],
+                                    ),
                                     ),
                                   ),
                                 ),

@@ -32,7 +32,7 @@ class BiometriceAuth {
         authMessages: <AuthMessages>[
           AndroidAuthMessages(
             signInTitle: title ?? 'Autentikasi Biometrik',
-            biometricHint: hint ?? 'Gunakan sidik jari Anda',
+            biometricHint: hint,
             cancelButton: cancelLabel ?? 'Batalkan',
           ),
           IOSAuthMessages(

@@ -1,10 +1,13 @@
-class SigninEntity {
+import 'package:json_annotation/json_annotation.dart';
 
+part 'signin.g.dart';
+
+@JsonSerializable()
+class SigninEntity {
   final String? displayMessage;
   final String? message;
   final int? statusCode;
   final ResponseEntity? response;
-
 
   SigninEntity({
     required this.displayMessage,
@@ -13,20 +16,14 @@ class SigninEntity {
     required this.response,
   });
 
-  factory SigninEntity.fromJson(Map<String, dynamic> json) {
-    return SigninEntity(
-      statusCode: json['statusCode'] as int?,
-      message: json['message'] as String?,
-      displayMessage: json['displayMessage'] as String?,
-      response: json['response'] != null
-          ? ResponseEntity.fromJson(json['response'])
-          : null,
-    );
-  }
+  factory SigninEntity.fromJson(Map<String, dynamic> json) =>
+      _$SigninEntityFromJson(json);
 
+  Map<String, dynamic> toJson() => _$SigninEntityToJson(this);
 }
 
 
+@JsonSerializable()
 class ResponseEntity {
   final String? page;
   final String? token;
@@ -44,28 +41,21 @@ class ResponseEntity {
     this.firstLogin,
   });
 
-  factory ResponseEntity.fromJson(Map<String, dynamic> json) {
-    return ResponseEntity(
-      page: json['page'] as String?,
-      token: json['token'] as String?,
-      roleCode: json['roleCode'] as String?,
-      menu: (json['menu'] as List<dynamic>?)
-          ?.map((menuItem) => MenuEntity.fromJson(menuItem))
-          .toList(),
-      isConsent: json['isConsent'] as bool?,
-      firstLogin: json['firstLogin'] as bool?,
-    );
-  }
+  factory ResponseEntity.fromJson(Map<String, dynamic> json) =>
+      _$ResponseEntityFromJson(json);
+
+  Map<String, dynamic> toJson() => _$ResponseEntityToJson(this);
 }
 
+
+@JsonSerializable()
 class MenuEntity {
   final String? menuCode;
 
   MenuEntity({this.menuCode});
 
-  factory MenuEntity.fromJson(Map<String, dynamic> json) {
-    return MenuEntity(
-      menuCode: json['menuCode'] as String?,
-    );
-  }
+  factory MenuEntity.fromJson(Map<String, dynamic> json) =>
+      _$MenuEntityFromJson(json);
+
+  Map<String, dynamic> toJson() => _$MenuEntityToJson(this);
 }
