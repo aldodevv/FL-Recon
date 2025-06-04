@@ -8,10 +8,12 @@ final class AppUrl {
   // Identity
   static String get identityV1 => dotenv.env['APP_PUBLIC_MENU_IDENTITY_V1_0'] ?? '';
   static String get identityV2 => dotenv.env['APP_PUBLIC_MENU_IDENTITY_V2_0'] ?? '';
+  static String get identityV2_1 => dotenv.env['APP_PUBLIC_MENU_IDENTITY_V2_1'] ?? '';
   static String get identityV2_4 => dotenv.env['APP_PUBLIC_MENU_IDENTITY_V2_4'] ?? '';
 
   // Dashboard
   static String get DashboardV2_1 => dotenv.env['APP_PUBLIC_MENU_DASHBOARD_V2_1'] ?? '';
+  static String get DashboardV1_2_0 => dotenv.env['APP_PUBLIC_MENU_DASHBOARD2_V1_2_0'] ?? '';
 
   // Menu
   static String get language => dotenv.env['APP_PUBLIC_MENU_UI_V1_1_0'] ?? '';

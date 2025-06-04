@@ -4,13 +4,13 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:recon/core/injection.dart';
 import 'package:recon/presentation/bloc/me/me_bloc.dart';
 import 'package:recon/presentation/bloc/me/me_event.dart';
-import 'package:recon/presentation/bloc/me/me_state.dart';
 import 'package:recon/presentation/bloc/transaction/balance/balance_bloc.dart';
 import 'package:recon/presentation/bloc/transaction/balance/balance_event.dart';
+import 'package:recon/presentation/bloc/transaction/balance/balance_state.dart';
 import 'package:recon/presentation/bloc/transaction/historytransaction/historyTrans_bloc.dart';
 import 'package:recon/presentation/bloc/transaction/historytransaction/historyTrans_event.dart';
-import 'package:recon/presentation/pages/home/widgets/RowInformasi.dart';
-import 'package:recon/presentation/pages/home/widgets/SaldoCard.dart';
+import 'package:recon/presentation/bloc/transaction/historytransaction/historyTrans_state.dart';
+import 'package:recon/presentation/pages/home/widgets/home.dart';
 
 @RoutePage()
 class HomePage extends StatefulWidget {
@@ -29,6 +29,7 @@ class _HomePageState extends State<HomePage> {
   void initState() {
     super.initState();
     _getBalance();
+    _getGeneralBalance();
     _getHistory();
     _getMe();
   }
@@ -43,6 +44,10 @@ class _HomePageState extends State<HomePage> {
         year: "2025",
       ),
     );
+  }
+
+  void _getGeneralBalance() {
+    _balanceBloc.add(GeneralBalance(lang: 'ID', currency: 'IDR'));
   }
 
   void _getHistory() {
@@ -77,79 +82,20 @@ class _HomePageState extends State<HomePage> {
         BlocProvider<HistorytransBloc>.value(value: _historytransBloc),
         BlocProvider<MeBloc>.value(value: _meBloc),
       ],
-      child: Scaffold(
-        backgroundColor: const Color(0xFFF5F5F5),
-        body: SafeArea(
-          child: SingleChildScrollView(
-            child: Column(
-              children: [
-                Stack(
-                  children: [
-                    Container(
-                      height: 220,
-                      width: double.infinity,
-                      decoration: const BoxDecoration(
-                        image: DecorationImage(
-                          image: NetworkImage(
-                            'https://qlola-uat.dev.bri.co.id/api/general/v2.0/public/banner/image/d482b907-62a8-4e03-84b4-8db21e610e5b',
-                          ),
-                          fit: BoxFit.cover,
-                        ),
-                        borderRadius: BorderRadius.all(Radius.circular(12)),
-                      ),
-                    ),
-                    Padding(
-                      padding: const EdgeInsets.all(16),
-                      child: Column(
-                        children: [
-                          Column(
-                            children: [
-                              BlocBuilder<MeBloc, MeState>(
-                                builder: (context, state) {
-                                  if (state.username == '' ||
-                                      state.corporateName == '') {
-                                    return const Text(
-                                      'Gagal memuat informasi user',
-                                    );
-                                  }
-                                  return InformasiRow(
-                                    greeting: 'Selamat Datang',
-                                    companyName: state.corporateName,
-                                    logoAssetPath:
-                                        "https://upload.wikimedia.org/wikipedia/commons/thumb/2/2c/Kantor_Pusat_Bank_Rakyat_Indonesia_%282025%29.jpg/500px-Kantor_Pusat_Bank_Rakyat_Indonesia_%282025%29.jpg",
-                                    notificationCount: 12,
-                                    onNotificationTap:
-                                        () => print('Notifikasi ditekan'),
-                                    onSearchTap: () => print('Cari ditekan'),
-                                  );
-                                },
-                              ),
-                              Saldocard(
-                                title: 'Total Saldo',
-                                currencySymbol: 'IDR',
-                                value: '9.999.000.000.000',
-                                dateTime: '14 Feb 2025, 13:53',
-                                isHidden: false,
-                                onToggleVisibility: () {},
-                                onTapDetail: () {},
-                                selectedCurrency: 'IDR',
-                                onCurrencyChange: (val) {},
-                              ),
-                              const SizedBox(height: 20),
-
-                              // Tambahkan komponen lain di bawah sini
-                              // e.g. history list, card lainnya, dll
-                            ],
-                          ),
-                        ],
-                      ),
-                    ),
-                  ],
-                ),
-              ],
-            ),
-          ),
-        ),
+      child: MultiBlocListener(
+        listeners: [
+          BlocListener<BalanceBloc, BalanceState>(listener: (context, state) {
+            if (state.isLoadingBalance) {
+              Center(child: CircularProgressIndicator());
+            }
+          }),
+          BlocListener<HistorytransBloc, HistorytransState>(listener: (context, state) {
+            if (state.isLoadingHistory) {
+              Center(child: CircularProgressIndicator());
+            }
+          }),
+        ],
+        child: Home(),
       ),
     );
   }
