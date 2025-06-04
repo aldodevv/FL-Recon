@@ -6,6 +6,8 @@ import 'package:fl_chart/fl_chart.dart';
 import 'package:flutter/material.dart';
 import 'package:logger/logger.dart';
 import 'package:recon/core/constants/images_const.dart';
+import 'package:recon/domain/entitites/ui/entity_language.dart';
+import 'package:recon/domain/repositories/ui_repository.dart';
 import 'package:recon/presentation/bloc/theme/theme_bloc.dart';
 import 'package:recon/core/constants/colors_const.dart';
 import 'package:recon/presentation/routes/app_router.gr.dart';
@@ -40,7 +42,8 @@ class _OnboardPageState extends State<OnboardPage> {
   void initState() {
     super.initState();
     // Simulasi fetch API async
-    print("hehe $_counter");
+        _loadUIData();
+
     // Simulasi stream data, misal event dari server atau sensor
     Stream<int> stream = Stream.periodic(
       Duration(seconds: 1),
@@ -63,22 +66,31 @@ class _OnboardPageState extends State<OnboardPage> {
     super.dispose();
   }
 
-  // Future<void> _fetchUIData() async {
-  //   try {
-  //     final response = await DioApp.instance.get(
-  //       '/ui/v1.1.0/public/userInterface/ID',
-  //     );
+Future<void> _loadUIData() async {
+    final result = await UiLanguageRepository().getUIData();
 
-  //     setState(() {
-  //       responseLog = response.data.toString();
-  //     });
+    result.fold(
+      (failure) {
+        // ❌ Sudah dihandle oleh DioApp (modal, logout, dll), tinggal log kalau perlu
+        debugPrint('Gagal ambil data: ${failure.message}');
+      },
+      (response) {
+        try {
+          final uiResponse = EntityLanguage.fromJson(response as Map<String, dynamic>);
 
-  //     // Log ke console
-  //     logger.i(response);
-  //   } catch (e, stackTrace) {
-  //     debugPrint('❌ API Error: $e\n$stackTrace');
-  //   }
-  // }
+          setState(() {
+            responseLog = uiResponse.toJson().toString();
+          });
+
+          for (final item in uiResponse.response) {
+            debugPrint('${item.id} - ${item.label} - ${item.group}');
+          }
+        } catch (e, stack) {
+          debugPrint('❌ Parsing error: $e\n$stack');
+        }
+      },
+    );
+  }
 
   List<PieChartSectionData> sections = [
     PieChartSectionData(
