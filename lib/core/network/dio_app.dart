@@ -1,359 +1,211 @@
 // network/dio_client.dart
+import 'dart:convert';
+
+import 'package:auto_route/auto_route.dart';
+import 'package:dartz/dartz.dart';
 import 'package:dio/dio.dart';
-import 'package:flutter/foundation.dart';
+import 'package:flutter/material.dart';
 import 'package:logger/logger.dart';
 import 'package:recon/core/constants/app_url.dart';
+import 'package:recon/core/injection.dart';
 import 'package:recon/core/network/dio_constants.dart';
+import 'package:recon/core/network/failure_response.dart';
 import 'package:recon/core/utils/utils.dart';
 import 'package:recon/flavors.dart';
+import 'package:recon/presentation/routes/app_router.gr.dart';
+
+class DioHeaders {
+  static const authorization = 'Authorization';
+  static const bearer = 'Bearer';
+}
+
+extension DioAppX on DioApp {
+  Future<Either<ResponseFailed, Response<T>>> safeRequest<T>(
+    Future<Response<T>> Function() requestFn,
+  ) async {
+    try {
+      final response = await requestFn();
+      return Right(response);
+    } on DioException catch (e) {
+      if (e.response?.statusCode == 401) {
+        await _handleUnauthorized();
+      }
+      return Left(ResponseFailed.fromDioError(e));
+    } catch (e) {
+      return Left(
+        ResponseFailed(
+          message: e.toString(),
+          statusCode: null,
+          isUnauthorized: false,
+        ),
+      );
+    }
+  }
+}
 
 class DioApp {
   static DioApp? _instance;
   static DioApp get instance => _instance ??= DioApp._();
 
-  late Dio _dio;
-  late Logger _logger;
-
-  DioApp._() {
-    _setupLogger();
-    _setupDio();
-    _setupInterceptors();
-  }
-
-  Dio get dio => _dio;
-
-  void _setupLogger() {
-    _logger = Logger(
-      filter: ProductionFilter(),
-      printer: PrettyPrinter(
-        methodCount: 0,
-        errorMethodCount: 3,
-        lineLength: 75,
-        colors: true,
-        printEmojis: true,
-        dateTimeFormat: DateTimeFormat.onlyTimeAndSinceStart,
-      ),
-      output: ConsoleOutput(),
-    );
-  }
-
-  void _setupDio() {
-    _dio = Dio(
-      BaseOptions(
-        baseUrl: _getBaseUrl(),
-        connectTimeout: const Duration(seconds: DioConfig.connectTimeout),
-        receiveTimeout: const Duration(seconds: DioConfig.receiveTimeout),
-        sendTimeout: const Duration(seconds: DioConfig.sendTimeout),
-        headers: {
-          DioHeaders.contentType: DioContentType.json,
-          DioHeaders.accept: DioContentType.json,
-          DioHeaders.userAgent: _getUserAgent(),
-          DioHeaders.platform: _getPlatform(),
-          DioHeaders.appVersion: _getAppVersion(),
-        },
-        responseType: ResponseType.json,
-        followRedirects: true,
-        maxRedirects: 3,
-        validateStatus: (status) => status != null && status < 500,
-      ),
-    );
-  }
-
-  String _getBaseUrl() {
+  static String get _baseUrl {
     switch (F.appFlavor) {
       case Flavor.dev:
-        return String.fromEnvironment(
-          'DEV_BASE_URL',
-          defaultValue: AppUrl.baseUrl,
-        );
+        return AppUrl.devBaseUrl;
       case Flavor.uat:
-        return String.fromEnvironment(
-          'UAT_BASE_URL',
-          defaultValue: AppUrl.baseUrl,
-        );
+        return AppUrl.uatBaseUrl;
       case Flavor.prod:
-        return String.fromEnvironment(
-          'PROD_BASE_URL',
-          defaultValue: AppUrl.baseUrl,
-        );
-    }
+        return AppUrl.appBaseUrl;
+      }
   }
 
-  String _getUserAgent() => 'recon/${_getAppVersion()} ${_getPlatform()}';
-  String _getPlatform() => defaultTargetPlatform.name;
-  String _getAppVersion() =>
-      const String.fromEnvironment('APP_VERSION', defaultValue: '1.0.0');
+  late Dio dio;
+  final Logger _logger = Logger();
 
-  void _setupInterceptors() {
-    // Auth Interceptor
-    _dio.interceptors.add(
+  DioApp._() {
+    dio = Dio(
+      BaseOptions(
+        baseUrl: _baseUrl,
+        connectTimeout: const Duration(seconds: 30),
+        receiveTimeout: const Duration(seconds: 30),
+        sendTimeout: const Duration(seconds: 30),
+        contentType: DioContentType.json,
+        responseType: ResponseType.json,
+      ),
+    );
+
+    dio.interceptors.add(
       InterceptorsWrapper(
         onRequest: (options, handler) async {
-          final isPublicEndpoint = options.path.contains('/public/');
-          if (!isPublicEndpoint) {
-            final token = await Utils.storageSecure.read(key: 'token');
-            if (token != null) {
-              options.headers[DioHeaders.authorization] =
-                  '${DioHeaders.bearer} $token';
-            }
+          final token = await Utils.storageSecure.read(key: 'token');
+          final hasToken = token != null && token.isNotEmpty;
+
+          final isPrivate = options.path.contains('/private/');
+          final isPublic = options.path.contains('/public/');
+
+          if (isPrivate && hasToken) {
+            options.headers[DioHeaders.authorization] =
+                '${DioHeaders.bearer} $token';
+          } else if (isPublic) {
+            options.headers.remove(DioHeaders.authorization);
           }
-          options.headers[DioHeaders.requestId] = _generateRequestId();
-          options.headers[DioHeaders.timestamp] =
-              DateTime.now().millisecondsSinceEpoch.toString();
-          handler.next(options);
-        },
-      ),
-    );
 
-    // Loading Interceptor
-    _dio.interceptors.add(
-      InterceptorsWrapper(
-        onRequest: (options, handler) {
-          // LoadingService.show();
-          handler.next(options);
-        },
-        onResponse: (response, handler) {
-          // LoadingService.hide();
-          handler.next(response);
-        },
-        onError: (error, handler) {
-          // LoadingService.hide();
-          handler.next(error);
-        },
-      ),
-    );
-
-    // Logging Interceptor
-    _dio.interceptors.add(
-      InterceptorsWrapper(
-        onRequest: (options, handler) {
-          _logRequest(options);
           handler.next(options);
         },
         onResponse: (response, handler) {
           _logResponse(response);
           handler.next(response);
         },
-        onError: (error, handler) {
-          _logError(error);
-          handler.next(error);
+        onError: (DioException e, handler) async {
+          _logError(e);
+          handler.next(e);
         },
       ),
     );
-
-    // Error Handling Interceptor
-    _dio.interceptors.add(
-      InterceptorsWrapper(
-        onError: (error, handler) async {
-          if (error.response?.statusCode == DioHttpStatus.unauthorized) {
-            await _handleUnauthorized();
-            handler.next(error);
-            return;
-          }
-
-          if (error.response != null &&
-              error.response!.statusCode! >= DioHttpStatus.methodNotAllowed) {
-            _handleServerError(error);
-          }
-
-          handler.next(error);
-        },
-      ),
-    );
-
-    // Retry Interceptor
-    _dio.interceptors.add(RetryInterceptor());
   }
 
-  void _logRequest(RequestOptions options) {
-    if (!kDebugMode) return;
-
-    _logger.i('''
-┌── REQUEST ────────────────────────────────────
-│ ${options.method.toUpperCase()} ${options.uri}
-├── Headers:
-${_formatHeaders(options.headers)}
-├── Query Parameters:
-${_formatMap(options.queryParameters)}
-├── Body:
-${_formatData(options.data)}
-└───────────────────────────────────────────────
-''');
-  }
-
-  void _logResponse(Response response) {
-    if (!kDebugMode) return;
-
-    _logger.i('''
-┌── RESPONSE ──────────────────────────────────
-│ ${response.statusCode} ${response.statusMessage}
-│ ${response.requestOptions.method.toUpperCase()} ${response.requestOptions.uri}
-├── Headers:
-${_formatHeaders(response.headers.map)}
-├── Data:
-${_formatData(response.data)}
-└──────────────────────────────────────────────
-''');
-  }
-
-  void _logError(DioException error) {
-    if (!kDebugMode) return;
-
-    _logger.e('''
-┌── ERROR ──────────────────────────────────────────────────────────────────
-│ ${error.response?.statusCode ?? 'UNKNOWN'} ${error.message}
-│ ${error.requestOptions.method.toUpperCase()} ${error.requestOptions.uri}
-├── Error Type: ${error.type}
-├── Response Data:
-${_formatData(error.response?.data)}
-├── Stack Trace:
-${error.stackTrace.toString().split('\n').take(5).join('\n')}
-└────────────────────────────────────────────────────────────────────────────
-''');
-  }
-
-  String _formatHeaders(Map<String, dynamic> headers) {
-    return headers.entries.map((e) => '│   ${e.key}: ${e.value}').join('\n');
-  }
-
-  String _formatMap(Map<String, dynamic> map) {
-    if (map.isEmpty) return '│   (empty)';
-    return map.entries.map((e) => '│   ${e.key}: ${e.value}').join('\n');
-  }
-
-  String _formatData(dynamic data) {
-    if (data == null) return '│   (null)';
-
-    final String dataStr = data.toString();
-    if (dataStr.length > 500) {
-      return '│   ${dataStr.substring(0, 500)}...';
-    }
-
-    return dataStr.split('\n').map((line) => '│   $line').join('\n');
-  }
-
-  Future<void> _handleUnauthorized() async {
-    _logger.w('Unauthorized access - clearing auth data');
-    // await AuthService.clearAuth();
-    // ErrorService.showUnauthorizedDialog();
-  }
-
-  void _handleServerError(DioException error) {
-    _logger.e('Server error: ${error.response?.statusCode}');
-    // ErrorService.showGeneralError(
-    //   message: _getErrorMessage(error),
-    //   statusCode: error.response?.statusCode,
-    // );
-  }
-
-  // String _getErrorMessage(DioException error) {
-  //   switch (error.response?.statusCode) {
-  //     case DioHttpStatus.methodNotAllowed:
-  //       return DioMessages.generalError;
-  //     case DioHttpStatus.internalServerError:
-  //       return DioMessages.internalServerError;
-  //     case DioHttpStatus.serviceUnavailable:
-  //       return DioMessages.serviceUnavailable;
-  //     case DioHttpStatus.gatewayTimeout:
-  //       return DioMessages.networkTimeout;
-  //     default:
-  //       return DioMessages.generalError;
-  //   }
-  // }
-
-  String _generateRequestId() {
-    return '${DateTime.now().millisecondsSinceEpoch}-${UniqueKey().toString().substring(0, 8)}';
-  }
-
-  // Utility methods untuk custom requests
-  Future<Response<T>> get<T>(
-    String path, {
-    Map<String, dynamic>? queryParameters,
-    Options? options,
-  }) async {
-    return await _dio.get<T>(
-      path,
-      queryParameters: queryParameters,
-      options: options,
-    );
-  }
-
-  Future<Response<T>> post<T>(
-    String path, {
-    dynamic data,
-    Map<String, dynamic>? queryParameters,
-    Options? options,
-  }) async {
-    return await _dio.post<T>(
-      path,
-      data: data,
-      queryParameters: queryParameters,
-      options: options,
-    );
-  }
-
-  Future<Response<T>> put<T>(
-    String path, {
-    dynamic data,
-    Map<String, dynamic>? queryParameters,
-    Options? options,
-  }) async {
-    return await _dio.put<T>(
-      path,
-      data: data,
-      queryParameters: queryParameters,
-      options: options,
-    );
-  }
-
-  Future<Response<T>> delete<T>(
-    String path, {
-    dynamic data,
-    Map<String, dynamic>? queryParameters,
-    Options? options,
-  }) async {
-    return await _dio.delete<T>(
-      path,
-      data: data,
-      queryParameters: queryParameters,
-      options: options,
-    );
-  }
-}
-
-// Retry Interceptor untuk auto retry pada network error
-class RetryInterceptor extends Interceptor {
-  @override
-  void onError(DioException err, ErrorInterceptorHandler handler) async {
-    if (_shouldRetry(err) && err.requestOptions.extra['retryCount'] == null) {
-      err.requestOptions.extra['retryCount'] = 0;
-    }
-
-    final retryCount = err.requestOptions.extra['retryCount'] ?? 0;
-    if (retryCount < DioConfig.maxRetries && _shouldRetry(err)) {
-      err.requestOptions.extra['retryCount'] = retryCount + 1;
-      await Future.delayed(
-        Duration(
-          milliseconds: (DioConfig.retryDelay * (retryCount + 1)).toInt(),
+  /// Gunakan ini untuk memanggil Dio request dengan error handling
+  Future<Either<ResponseFailed, Response<T>>> safeRequest<T>(
+    Future<Response<T>> Function() requestFn,
+  ) async {
+    try {
+      final response = await requestFn();
+      return Right(response);
+    } on DioException catch (e) {
+      return _handleException(e);
+    } catch (e) {
+      return Left(
+        ResponseFailed(
+          message: e.toString(),
+          statusCode: null,
+          isUnauthorized: false,
         ),
       );
-      try {
-        final response = await DioApp.instance.dio.fetch(err.requestOptions);
-        handler.resolve(response);
-        return;
-      } catch (e) {
-        // Continue with original error if retry fails
+    }
+  }
+
+  /// Handler untuk error dari Dio
+  Future<Either<ResponseFailed, Response<T>>> _handleException<T>(
+    DioException error,
+  ) async {
+    final responseFailed = ResponseFailed.fromDioError(error);
+    final mainContext =
+        getIt<GlobalKey<NavigatorState>>().currentState!.context;
+    // Unauthorized (401)
+    if (responseFailed.isUnauthorized) {
+      await Utils.storageSecure.delete(key: 'token');
+      if (mainContext.mounted) {
+        mainContext.router.replaceAll([const SigninRoute()]);
       }
     }
 
-    handler.next(err);
+    // Show error bottom sheet
+    if (mainContext.mounted) {
+      showModalBottomSheet(
+        context: mainContext,
+        builder:
+            (_) => Padding(
+              padding: const EdgeInsets.all(16.0),
+              child: Text(responseFailed.message),
+            ),
+      );
+    }
+
+    return Left(responseFailed);
   }
 
-  bool _shouldRetry(DioException err) {
-    return err.type == DioExceptionType.connectionTimeout ||
-        err.type == DioExceptionType.receiveTimeout ||
-        err.type == DioExceptionType.sendTimeout ||
-        err.type == DioExceptionType.connectionError ||
-        (err.response?.statusCode != null && err.response!.statusCode! >= 500);
+  void _logResponse(Response response) {
+    try {
+      final uri = response.requestOptions.uri;
+      final method = response.requestOptions.method;
+      final status = response.statusCode;
+      final headers = response.headers.map;
+      final responseData = response.data;
+
+      _logger.i(
+        '📥 RESPONSE: [$method] $uri\n'
+        'Status: $status\n'
+        'Headers: $headers\n'
+        'Payload: ${_prettyPrint(responseData)}',
+      );
+    } catch (e) {
+      _logger.e('Error logging response: $e');
+    }
   }
+
+  Future<void> _handleUnauthorized() async {
+    _logger.w('401 detected - clearing token');
+    await Utils.storageSecure.delete(key: 'token');
+  }
+
+  void _logError(DioException error) {
+    try {
+      final uri = error.requestOptions.uri;
+      final method = error.requestOptions.method;
+      final status = error.response?.statusCode;
+      final data = error.response?.data;
+      final message = error.message;
+
+      _logger.e(
+        '❌ ERROR: [$method] $uri\n'
+        'Status: $status\n'
+        'Message: $message\n'
+        'Error Data: ${_prettyPrint(data)}',
+      );
+    } catch (e) {
+      _logger.e('Error logging Dio error: $e');
+    }
+  }
+
+  String _prettyPrint(dynamic data) {
+    try {
+      if (data is String) return data;
+      return const JsonEncoder.withIndent('  ').convert(data);
+    } catch (e) {
+      return data.toString();
+    }
+  }
+
+  post(String s, {required Map<String, Object> data, required Options options}) {}
+
+  get(String s, {required Options options}) {}
 }

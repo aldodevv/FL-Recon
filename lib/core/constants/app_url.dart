@@ -2,8 +2,14 @@ import 'package:flutter_dotenv/flutter_dotenv.dart';
 
 final class AppUrl {
   // BASE URL
-  static String get baseUrl => dotenv.env['APP_PUBLIC_BASE_URL'] ?? '';
-  static String get assets => dotenv.env['APP_PUBLIC_ASSETS'] ?? '';
+  static String get appBaseUrl => dotenv.env['APP_PUBLIC_BASE_URL'] ?? '';
+  static String get appAssets => dotenv.env['APP_PUBLIC_ASSETS'] ?? '';
+
+  static String get uatBaseUrl => dotenv.env['UAT_PUBLIC_BASE_URL'] ?? '';
+  static String get uatAssets => dotenv.env['UAT_PUBLIC_ASSETS'] ?? '';
+
+  static String get devBaseUrl => dotenv.env['DEV_PUBLIC_BASE_URL'] ?? '';
+  static String get devAssets => dotenv.env['DEV_PUBLIC_ASSETS'] ?? '';
 
   // Identity
   static String get identityV1 => dotenv.env['APP_PUBLIC_MENU_IDENTITY_V1_0'] ?? '';
@@ -19,5 +25,6 @@ final class AppUrl {
   static String get language => dotenv.env['APP_PUBLIC_MENU_UI_V1_1_0'] ?? '';
 
   // Secret key
-  static String get testKeyPassword => dotenv.env['APP_PUBLIC_TEST_API_SECRET_PASSWORD'] ?? '';
+  static String get testKeyPassword =>
+      dotenv.env['APP_PUBLIC_TEST_API_SECRET_PASSWORD'] ?? '';
 }

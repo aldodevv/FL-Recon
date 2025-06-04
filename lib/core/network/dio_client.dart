@@ -6,7 +6,7 @@ class DioClient {
   late final Dio _dio;
   DioClient():_dio = Dio(
     BaseOptions(
-      baseUrl: AppUrl.baseUrl,
+      baseUrl: AppUrl.appBaseUrl,
       headers: {
         'Content-Type': 'application/json; charset=UTF-8'
       },
