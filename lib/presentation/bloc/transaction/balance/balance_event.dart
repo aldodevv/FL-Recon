@@ -27,3 +27,18 @@ class BalanceRequested extends BalanceEvent {
     return [accountList, accountType, currency, lang, year];
   }
 }
+
+class GeneralBalance extends BalanceEvent {
+  final String lang;
+  final String currency;
+
+  const GeneralBalance({
+    required this.lang,
+    required this.currency
+  });
+
+  @override
+  List<Object> get props {
+    return [currency, lang];
+  }
+}

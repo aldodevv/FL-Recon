@@ -72,14 +72,6 @@ class Saldocard extends StatelessWidget {
                 Row(
                   crossAxisAlignment: CrossAxisAlignment.center,
                   children: [
-                    Text(
-                      '$currencySymbol ',
-                      style: const TextStyle(
-                        color: Colors.white,
-                        fontWeight: FontWeight.bold,
-                        fontSize: 22,
-                      ),
-                    ),
                     Expanded(
                       child: Text(
                         isHidden ? '••••••••••••••' : value,

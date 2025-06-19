@@ -12,7 +12,7 @@ import 'package:recon/presentation/bloc/me/me_state.dart';
 @injectable
 class MeBloc extends Bloc<MeEvent, MeState> {
   MeBloc() : super(MeState.initial()) {
-    on<MeGet>(_onLoadMe, transformer: sequential());
+    on<MeGet>(_onLoadMe, transformer: concurrent());
   }
 
   void _onLoadMe(MeGet event, Emitter<MeState> emit) async {
@@ -24,7 +24,8 @@ class MeBloc extends Bloc<MeEvent, MeState> {
       );      
       final Map<String, dynamic> data = response.data;      
       final meResponse = MeResponseEntity.fromJson(data);      
-      final user = meResponse.response;      
+      final user = meResponse.response;
+      print('user ${user.corporateName}');
       emit(
         state.copyWith(
           corpId: user.corporateId,
