@@ -23,5 +23,8 @@ class AppRouter extends RootStackRouter {
     AutoRoute(path: '/base32', page: Base32Route.page),
     AutoRoute(path: '/datepicker', page: DatePickerRoute.page),
 
+
+     //! Transaction Routes
+    AutoRoute(path: '/detail-transaction', page: DetailTransactionRoute.page),
   ];
 }

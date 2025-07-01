@@ -167,7 +167,7 @@ Future<void> _loadUIData() async {
                   ),
                   FilledButton(
                     onPressed: () {
-                      context.router.replace(SigninRoute());
+                      context.router.replace(DetailTransactionRoute());
                     },
                     child: Text("Next"),
                   ),

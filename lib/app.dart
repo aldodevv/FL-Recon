@@ -1,3 +1,4 @@
+import 'package:auto_route/auto_route.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_dotenv/flutter_dotenv.dart';
@@ -64,7 +65,11 @@ class _AppState extends State<App> with WidgetsBindingObserver {
             themeMode: state.themeMode,
             title: F.title,
             routerConfig: _appRouter.config(
-              navigatorObservers: () => [LogObserver()],
+              deepLinkTransformer: DeepLink.prefixStripper(''),
+              deepLinkBuilder: (deepLink) {
+ print('Received deepLink: ${deepLink.uri}');
+                return deepLink;
+              },
             ),
             builder:
                 (context, child) => _flavorBanner(
