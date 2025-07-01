@@ -5,7 +5,6 @@ import 'package:flutter_dotenv/flutter_dotenv.dart';
 import 'package:recon/app_theme.dart';
 import 'package:recon/core/injection.dart';
 import 'package:recon/presentation/bloc/theme/theme_bloc.dart';
-import 'package:recon/presentation/routes/app_log_observer.dart';
 import 'package:recon/presentation/routes/app_router.dart';
 
 import 'flavors.dart';
@@ -67,7 +66,7 @@ class _AppState extends State<App> with WidgetsBindingObserver {
             routerConfig: _appRouter.config(
               deepLinkTransformer: DeepLink.prefixStripper(''),
               deepLinkBuilder: (deepLink) {
- print('Received deepLink: ${deepLink.uri}');
+                print('Received deepLink: ${deepLink.uri}');
                 return deepLink;
               },
             ),

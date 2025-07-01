@@ -21,6 +21,7 @@ FutureOr<void> main() async {
 
   F.appFlavor = Flavor.values.firstWhere(
     (element) => element.name == appFlavor,
+    orElse: () => Flavor.dev,
   );
 
   runApp(App());

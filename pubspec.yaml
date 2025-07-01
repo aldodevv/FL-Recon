@@ -58,6 +58,7 @@ dependencies:
   json_annotation: ^4.9.0
   fl_chart: ^1.0.0
   dartz: ^0.10.1
+  flame: ^1.30.0
 
 dev_dependencies:
   flutter_test:

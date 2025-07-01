@@ -22,6 +22,10 @@ class AppRouter extends RootStackRouter {
     AutoRoute(path: '/setting', page: SettingRoute.page),
     AutoRoute(path: '/base32', page: Base32Route.page),
     AutoRoute(path: '/datepicker', page: DatePickerRoute.page),
+    AutoRoute(path: '/game', page: WordleGameRoute.page),
+    AutoRoute(path: '/memory-match', page: MemoryMatchGameRoute.page),
+    AutoRoute(path: '/snake-game', page: SnakeGameRoute.page),
+    AutoRoute(path: '/tap-the-target', page: TapTheTargetGameRoute.page),
 
 
      //! Transaction Routes
