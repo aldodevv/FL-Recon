@@ -27,10 +27,10 @@ extension GetItInjectableX on _i174.GetIt {
     _i526.EnvironmentFilter? environmentFilter,
   }) {
     final gh = _i526.GetItHelper(this, environment, environmentFilter);
-    gh.factory<_i416.HistorytransBloc>(() => _i416.HistorytransBloc());
-    gh.factory<_i141.BalanceBloc>(() => _i141.BalanceBloc());
-    gh.factory<_i610.MeBloc>(() => _i610.MeBloc());
     gh.factory<_i581.LoginBloc>(() => _i581.LoginBloc());
+    gh.factory<_i610.MeBloc>(() => _i610.MeBloc());
+    gh.factory<_i141.BalanceBloc>(() => _i141.BalanceBloc());
+    gh.factory<_i416.HistorytransBloc>(() => _i416.HistorytransBloc());
     gh.lazySingleton<_i723.UiLanguageRepository>(
       () => _i723.UiLanguageRepository(),
     );

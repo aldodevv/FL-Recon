@@ -4,22 +4,25 @@ import 'dart:async';
 import 'package:auto_route/auto_route.dart';
 import 'package:fl_chart/fl_chart.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:logger/logger.dart';
+import 'package:recon/core/constants/colors_const.dart';
 import 'package:recon/core/constants/images_const.dart';
 import 'package:recon/domain/entitites/ui/entity_language.dart';
 import 'package:recon/domain/repositories/ui_repository.dart';
 import 'package:recon/presentation/bloc/theme/theme_bloc.dart';
-import 'package:recon/core/constants/colors_const.dart';
 import 'package:recon/presentation/routes/app_router.gr.dart';
 import 'package:recon/presentation/widgets/badge/infobadge_widget.dart';
+import 'package:recon/presentation/widgets/button/button_currency_widget.dart';
 import 'package:recon/presentation/widgets/card/accounttransfercard_widget.dart';
+import 'package:recon/presentation/widgets/card/card_ringkasan_widget.dart';
 import 'package:recon/presentation/widgets/card/saldobadgecard_widget.dart';
 import 'package:recon/presentation/widgets/card/transactionschedulecard_widget.dart';
 import 'package:recon/presentation/widgets/chart/piedonutchart_widget.dart';
 import 'package:recon/presentation/widgets/section/dateofweeksection_widget.dart';
 import 'package:recon/presentation/widgets/section/dividersection_widget.dart';
 import 'package:recon/presentation/widgets/section/infosection_widget.dart';
-import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:recon/presentation/widgets/section/profile_home_widget.dart';
 import 'package:recon/presentation/widgets/section/summarysection_widget.dart';
 
 @RoutePage()
@@ -204,9 +207,9 @@ Future<void> _loadUIData() async {
                   ),
 
                   const StatusBadgeWidget(
-                    child: Icon(Icons.check_circle_outline, size: 18),
                     size: BadgeSize.small,
                     colorType: ColorType.red,
+                    child: Icon(Icons.check_circle_outline, size: 18),
                   ),
                   DividersectionWidget(size: 1.5),
                   PiedonutchartWidget(
@@ -326,6 +329,29 @@ Future<void> _loadUIData() async {
 
                   const SizedBox(height: 16),
 
+                  ButtonCurrencyWidget(value: 'IDR', onChangeFlag: (){}),
+                  const SizedBox(height: 16),
+
+                  CardRingkasanWidget(
+                      value1: "IDR 1.000.000",
+                      value2: "IDR 5.000.000",
+                      percentage1: "90.00%",
+                      percentage2: "10.00%",
+                      label: "Giro",
+                      label2: "Deposito",
+                      showPercentage1: true,
+                      showPercentage2: true, // untuk sembunyikan badge
+                    ),
+                  CardRingkasanWidget(
+                      value1: "IDR 1.000.000",
+                      value2: "IDR 5.000.000",
+                      label: "Giro",
+                      label2: "Deposito", // untuk sembunyikan badge
+                    ),
+
+                  ProfileHomeWidget(valueName: 'Jhon Doe'),
+
+                  const SizedBox(height: 16),
                   // Example 3: Large size
                   SaldoBadgeCardWidget(
                     title: 'Investasi',
