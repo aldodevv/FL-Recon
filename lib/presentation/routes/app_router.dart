@@ -26,6 +26,7 @@ class AppRouter extends RootStackRouter {
     AutoRoute(path: '/memory-match', page: MemoryMatchGameRoute.page),
     AutoRoute(path: '/snake-game', page: SnakeGameRoute.page),
     AutoRoute(path: '/tap-the-target', page: TapTheTargetGameRoute.page),
+    AutoRoute(path: '/lazy', page: LazyRoute.page),
 
 
      //! Transaction Routes

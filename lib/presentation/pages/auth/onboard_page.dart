@@ -170,7 +170,7 @@ Future<void> _loadUIData() async {
                   ),
                   FilledButton(
                     onPressed: () {
-                      context.router.replace(TapTheTargetGameRoute());
+                      context.router.replace(LazyRoute());
                     },
                     child: Text("Next"),
                   ),
