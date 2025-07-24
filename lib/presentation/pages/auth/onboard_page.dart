@@ -45,7 +45,7 @@ class _OnboardPageState extends State<OnboardPage> {
   void initState() {
     super.initState();
     // Simulasi fetch API async
-        _loadUIData();
+        // _loadUIData();
 
     // Simulasi stream data, misal event dari server atau sensor
     Stream<int> stream = Stream.periodic(
@@ -69,31 +69,31 @@ class _OnboardPageState extends State<OnboardPage> {
     super.dispose();
   }
 
-Future<void> _loadUIData() async {
-    final result = await UiLanguageRepository().getUIData();
+// Future<void> _loadUIData() async {
+//     final result = await UiLanguageRepository().getUIData();
 
-    result.fold(
-      (failure) {
-        // ❌ Sudah dihandle oleh DioApp (modal, logout, dll), tinggal log kalau perlu
-        debugPrint('Gagal ambil data: ${failure.message}');
-      },
-      (response) {
-        try {
-          final uiResponse = EntityLanguage.fromJson(response as Map<String, dynamic>);
+//     result.fold(
+//       (failure) {
+//         // ❌ Sudah dihandle oleh DioApp (modal, logout, dll), tinggal log kalau perlu
+//         debugPrint('Gagal ambil data: ${failure.message}');
+//       },
+//       (response) {
+//         try {
+//           final uiResponse = EntityLanguage.fromJson(response as Map<String, dynamic>);
 
-          setState(() {
-            responseLog = uiResponse.toJson().toString();
-          });
+//           setState(() {
+//             responseLog = uiResponse.toJson().toString();
+//           });
 
-          for (final item in uiResponse.response) {
-            debugPrint('${item.id} - ${item.label} - ${item.group}');
-          }
-        } catch (e, stack) {
-          debugPrint('❌ Parsing error: $e\n$stack');
-        }
-      },
-    );
-  }
+//           for (final item in uiResponse.response) {
+//             debugPrint('${item.id} - ${item.label} - ${item.group}');
+//           }
+//         } catch (e, stack) {
+//           debugPrint('❌ Parsing error: $e\n$stack');
+//         }
+//       },
+//     );
+//   }
 
   List<PieChartSectionData> sections = [
     PieChartSectionData(

@@ -1,22 +1,17 @@
 import 'package:auto_route/auto_route.dart';
 import 'package:flutter/material.dart';
 import 'package:date_picker_plus/date_picker_plus.dart';
+import '../../widgets/date/date_widget.dart' as custom_picker;
 
 @RoutePage()
 class DatePickerPage extends StatelessWidget {
   const DatePickerPage({super.key});
 
   Future<void> _showDateDialog(BuildContext context) async {
-    final date = await showDatePickerDialog(
+    await showModalBottomSheet(
       context: context,
-      minDate: DateTime(2021, 1, 1),
-      maxDate: DateTime(2023, 12, 31),
+      builder: (context) => const custom_picker.DatePicker(),
     );
-    if (date != null) {
-      ScaffoldMessenger.of(context).showSnackBar(
-        SnackBar(content: Text('Tanggal dipilih: $date')),
-      );
-    }
   }
 
   Future<void> _showRangeDialog(BuildContext context) async {
