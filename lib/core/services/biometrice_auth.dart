@@ -4,7 +4,7 @@ import 'package:local_auth_darwin/local_auth_darwin.dart';
 
 class BiometriceAuth {
   static final _auth = LocalAuthentication();
-  
+
   /// Mengecek apakah perangkat mendukung biometrik
   static Future<bool> isDeviceSupported() async {
     try {
@@ -26,18 +26,13 @@ class BiometriceAuth {
     try {
       return await _auth.authenticate(
         localizedReason: description ?? 'Scan sidik jari untuk login!',
-        options: const AuthenticationOptions(
-          biometricOnly: true,
-        ),
         authMessages: <AuthMessages>[
           AndroidAuthMessages(
             signInTitle: title ?? 'Autentikasi Biometrik',
-            biometricHint: hint,
+            signInHint: hint,
             cancelButton: cancelLabel ?? 'Batalkan',
           ),
-          IOSAuthMessages(
-            cancelButton: cancelLabel ?? 'Batalkan',
-          ),
+          IOSAuthMessages(cancelButton: cancelLabel ?? 'Batalkan'),
         ],
       );
     } catch (e) {
