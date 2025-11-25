@@ -41,6 +41,18 @@ class AccounttransfercardWidget extends StatelessWidget {
                 width: 40,
                 height: 16,
                 fit: BoxFit.contain,
+                errorBuilder: (context, error, stackTrace) {
+                  return Container(
+                    width: 40,
+                    height: 16,
+                    color: Colors.grey.shade200, // placeholder background
+                    child: const Icon(
+                      Icons.broken_image,
+                      size: 12,
+                      color: Colors.grey,
+                    ),
+                  );
+                },
               ),
               const SizedBox(width: 30),
               StatusBadgeWidget(

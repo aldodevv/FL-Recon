@@ -6,9 +6,9 @@ import 'package:dartz/dartz.dart';
 import 'package:dio/dio.dart';
 import 'package:flutter/material.dart';
 import 'package:logger/logger.dart';
-import 'package:recon/core/constants/app_url.dart';
+import 'package:recon/core/constants/app_const.dart';
 import 'package:recon/core/injection.dart';
-import 'package:recon/core/network/dio_constants.dart';
+import 'package:recon/core/network/dio_const.dart';
 import 'package:recon/core/network/failure_response.dart';
 import 'package:recon/core/utils/utils.dart';
 import 'package:recon/flavors.dart';
@@ -50,12 +50,12 @@ class DioApp {
   static String get _baseUrl {
     switch (F.appFlavor) {
       case Flavor.dev:
-        return AppUrl.devBaseUrl;
+        return AppConst.devBaseUrl;
       case Flavor.uat:
-        return AppUrl.uatBaseUrl;
+        return AppConst.uatBaseUrl;
       case Flavor.prod:
-        return AppUrl.appBaseUrl;
-      }
+        return AppConst.appBaseUrl;
+    }
   }
 
   late Dio dio;
@@ -205,7 +205,11 @@ class DioApp {
     }
   }
 
-  post(String s, {required Map<String, Object> data, required Options options}) {}
+  post(
+    String s, {
+    required Map<String, Object> data,
+    required Options options,
+  }) {}
 
   get(String s, {required Options options}) {}
 }

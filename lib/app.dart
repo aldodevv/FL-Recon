@@ -6,20 +6,20 @@ import 'package:recon/app_theme.dart';
 import 'package:recon/core/injection.dart';
 import 'package:recon/presentation/bloc/theme/theme_bloc.dart';
 import 'package:recon/presentation/routes/app_router.dart';
+import 'package:phone_state/phone_state.dart';
+import 'dart:async';
 
 import 'flavors.dart';
 
 class App extends StatefulWidget {
   const App({super.key});
-
-  // Static router untuk performance - shared instance
-
   @override
   State<App> createState() => _AppState();
 }
 
 class _AppState extends State<App> with WidgetsBindingObserver {
   late final AppRouter _appRouter;
+  StreamSubscription<PhoneState>? _phoneSub;
 
   @override
   void initState() {
@@ -27,11 +27,38 @@ class _AppState extends State<App> with WidgetsBindingObserver {
     WidgetsBinding.instance.addObserver(this);
     _appRouter = AppRouter();
     _init();
+    _phoneSub = PhoneState.stream.listen((event) {
+      if (event.status == PhoneStateStatus.CALL_INCOMING ||
+          event.status == PhoneStateStatus.CALL_STARTED) {
+        final navigatorKey = getIt<GlobalKey<NavigatorState>>();
+        final context = navigatorKey.currentContext;
+
+        if (context != null) {
+          showDialog(
+            context: context,
+            builder:
+                (_) => AlertDialog(
+                  title: const Text("Incoming Call"),
+                  content: const Text(
+                    "Aktivitas diblokir karena ada panggilan masuk.",
+                  ),
+                  actions: [
+                    TextButton(
+                      onPressed: () => Navigator.pop(context),
+                      child: const Text("OK"),
+                    ),
+                  ],
+                ),
+          );
+        }
+      }
+    });
   }
 
   @override
   void dispose() {
     WidgetsBinding.instance.removeObserver(this);
+    _phoneSub?.cancel();
     super.dispose();
   }
 

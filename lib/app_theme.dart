@@ -5,8 +5,8 @@ class AppTheme {
   static ThemeData lightTheme = ThemeData(
     brightness: Brightness.light,
     useMaterial3: true,
-    scaffoldBackgroundColor: MainColors.lightNeutral30,
-     textTheme: TextTheme(
+    scaffoldBackgroundColor: ColorsConst.lightNeutral30,
+    textTheme: TextTheme(
       bodyLarge: TextStyle(color: Colors.black),
       bodyMedium: TextStyle(color: Colors.black),
       titleLarge: TextStyle(color: Colors.black),
@@ -17,7 +17,7 @@ class AppTheme {
   static ThemeData darkTheme = ThemeData(
     brightness: Brightness.dark,
     useMaterial3: true,
-    scaffoldBackgroundColor: MainColors.darkNeutral80,
+    scaffoldBackgroundColor: ColorsConst.darkNeutral80,
     textTheme: TextTheme(
       bodyLarge: TextStyle(color: Colors.white),
       bodyMedium: TextStyle(color: Colors.white),

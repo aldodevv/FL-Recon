@@ -177,7 +177,7 @@ class _SigninPageState extends State<SigninPage> {
                                 child: Row(
                                   children: [
                                     Image.network(
-                                      AppImages.logoQlolaWhite,
+                                      ImagesConst.logoQlolaWhite,
                                       width: 40,
                                       loadingBuilder: (
                                         context,
@@ -249,7 +249,7 @@ class _SigninPageState extends State<SigninPage> {
                                       style: TextStyle(color: Colors.white),
                                     ),
                                     style: TextButton.styleFrom(
-                                      backgroundColor: MainColors.black
+                                      backgroundColor: ColorsConst.black
                                           .withAlpha(100),
                                       shape: const RoundedRectangleBorder(
                                         borderRadius: BorderRadius.only(
@@ -270,20 +270,15 @@ class _SigninPageState extends State<SigninPage> {
                                         vertical: 8,
                                       ),
                                       decoration: BoxDecoration(
-                                        color:  MainColors.black
-                                          .withAlpha(50),
+                                        color: ColorsConst.black.withAlpha(50),
                                         borderRadius: const BorderRadius.only(
                                           topLeft: Radius.circular(16),
                                           bottomLeft: Radius.circular(16),
                                         ),
                                       ),
-                                      child: 
-                                          Text(
-                                            'Syarat Ketentuan',
-                                            style: TextStyle(
-                                              color: Colors.white,
-                                            ),
-                                        
+                                      child: Text(
+                                        'Syarat Ketentuan',
+                                        style: TextStyle(color: Colors.white),
                                       ),
                                     ),
                                   ),
@@ -310,113 +305,125 @@ class _SigninPageState extends State<SigninPage> {
                                     child: Form(
                                       key: _formKey,
                                       child: Column(
-                                      crossAxisAlignment:
-                                          CrossAxisAlignment.start,
-                                      children: [
-                                        const Text(
-                                          'Login',
-                                          style: TextStyle(
-                                            fontSize: 20,
-                                            fontWeight: FontWeight.bold,
-                                          ),
-                                        ),
-                                        Align(
-                                          alignment: Alignment.topRight,
-                                          child: TextButton(
-                                            onPressed:
-                                                () => _openForgotPassword(
-                                                  context,
-                                                ),
-                                            child: const Text('Lupa Password'),
-                                          ),
-                                        ),
-                                        const SizedBox(height: 8),
-                                        TextField(
-                                          controller: _corpIdController,
-                                          decoration: const InputDecoration(
-                                            prefixIcon: Icon(
-                                              Icons.person_outline,
+                                        crossAxisAlignment:
+                                            CrossAxisAlignment.start,
+                                        children: [
+                                          const Text(
+                                            'Login',
+                                            style: TextStyle(
+                                              fontSize: 20,
+                                              fontWeight: FontWeight.bold,
                                             ),
-                                            labelText: 'Corp ID',
-                                            border: OutlineInputBorder(),
                                           ),
-                                        ),
-                                        const SizedBox(height: 12),
-                                        TextField(
-                                          controller: _usernameController,
-                                          decoration: const InputDecoration(
-                                            prefixIcon: Icon(
-                                              Icons.person_outline,
-                                            ),
-                                            labelText: 'Username',
-                                            border: OutlineInputBorder(),
-                                          ),
-                                        ),
-                                        const SizedBox(height: 12),
-                                        TextField(
-                                          controller: _passwordController,
-                                          obscureText: !showPassword,
-                                          decoration: InputDecoration(
-                                            prefixIcon: const Icon(
-                                              Icons.lock_outline,
-                                            ),
-                                            labelText: 'Password',
-                                            border: const OutlineInputBorder(),
-                                            suffixIcon: IconButton(
-                                              icon: Icon(
-                                                showPassword
-                                                    ? Icons.visibility_off
-                                                    : Icons.visibility,
-                                              ),
+                                          Align(
+                                            alignment: Alignment.topRight,
+                                            child: TextButton(
                                               onPressed:
-                                                  () => setState(
-                                                    () =>
-                                                        showPassword =
-                                                            !showPassword,
+                                                  () => _openForgotPassword(
+                                                    context,
                                                   ),
+                                              child: const Text(
+                                                'Lupa Password',
+                                              ),
                                             ),
                                           ),
-                                        ),
-                                        const SizedBox(height: 16),
-                                        BlocBuilder<LoginBloc, LoginState>(
-                                          builder: (context, state) {
-                                            if (state.isLoginSuccess) {
-                                              context.router.replace(
-                                                HomeRoute(),
-                                              );
-                                            }
-                                            return Row(
-                                              children: [
-                                                Expanded(
-                                                  child: MainbuttonWidget(
-                                                    text: 'Login',
-                                                    onPressed:
-                                                        () => _login(context),
-                                                    justify:
-                                                        MainAxisAlignment.center,
-                                                    colorType: ColorType.blue,
-                                                    size: ButtonSize.medium,
-                                                    type: ButtonType.fullfilled,
-                                                  ),
+                                          const SizedBox(height: 8),
+                                          TextField(
+                                            controller: _corpIdController,
+                                            decoration: const InputDecoration(
+                                              prefixIcon: Icon(
+                                                Icons.person_outline,
+                                              ),
+                                              labelText: 'Corp ID',
+                                              border: OutlineInputBorder(),
+                                            ),
+                                          ),
+                                          const SizedBox(height: 12),
+                                          TextField(
+                                            controller: _usernameController,
+                                            decoration: const InputDecoration(
+                                              prefixIcon: Icon(
+                                                Icons.person_outline,
+                                              ),
+                                              labelText: 'Username',
+                                              border: OutlineInputBorder(),
+                                            ),
+                                          ),
+                                          const SizedBox(height: 12),
+                                          TextField(
+                                            controller: _passwordController,
+                                            obscureText: !showPassword,
+                                            decoration: InputDecoration(
+                                              prefixIcon: const Icon(
+                                                Icons.lock_outline,
+                                              ),
+                                              labelText: 'Password',
+                                              border:
+                                                  const OutlineInputBorder(),
+                                              suffixIcon: IconButton(
+                                                icon: Icon(
+                                                  showPassword
+                                                      ? Icons.visibility_off
+                                                      : Icons.visibility,
                                                 ),
-                                                const SizedBox(width: 12),
-                                                if (_isBiometricSupported) 
-                                                  IconButton(
-                                                    onPressed: () {
-                                                      _handleSeamlessLogin(context);
-                                                    },
-                                                    icon: const Icon(Icons.fingerprint),
-                                                    style: IconButton.styleFrom(
-                                                      backgroundColor: Colors.blue,
-                                                      foregroundColor: Colors.white,
+                                                onPressed:
+                                                    () => setState(
+                                                      () =>
+                                                          showPassword =
+                                                              !showPassword,
+                                                    ),
+                                              ),
+                                            ),
+                                          ),
+                                          const SizedBox(height: 16),
+                                          BlocBuilder<LoginBloc, LoginState>(
+                                            builder: (context, state) {
+                                              if (state.isLoginSuccess) {
+                                                context.router.replace(
+                                                  HomeRoute(),
+                                                );
+                                              }
+                                              return Row(
+                                                children: [
+                                                  Expanded(
+                                                    child: MainbuttonWidget(
+                                                      text: 'Login',
+                                                      onPressed:
+                                                          () => _login(context),
+                                                      justify:
+                                                          MainAxisAlignment
+                                                              .center,
+                                                      colorType: ColorType.blue,
+                                                      size: ButtonSize.medium,
+                                                      type:
+                                                          ButtonType.fullfilled,
                                                     ),
                                                   ),
-                                              ],
-                                            );
-                                          },
-                                        ),
-                                      ],
-                                    ),
+                                                  const SizedBox(width: 12),
+                                                  if (_isBiometricSupported)
+                                                    IconButton(
+                                                      onPressed: () {
+                                                        _handleSeamlessLogin(
+                                                          context,
+                                                        );
+                                                      },
+                                                      icon: const Icon(
+                                                        Icons.fingerprint,
+                                                      ),
+                                                      style:
+                                                          IconButton.styleFrom(
+                                                            backgroundColor:
+                                                                Colors.blue,
+                                                            foregroundColor:
+                                                                Colors.white,
+                                                          ),
+                                                    ),
+                                                ],
+                                              );
+                                            },
+                                          ),
+                                        ],
+                                      ),
                                     ),
                                   ),
                                 ),

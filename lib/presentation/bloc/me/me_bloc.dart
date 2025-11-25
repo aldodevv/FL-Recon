@@ -2,7 +2,7 @@ import 'package:bloc_concurrency/bloc_concurrency.dart';
 import 'package:dio/dio.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:injectable/injectable.dart';
-import 'package:recon/core/constants/app_url.dart';
+import 'package:recon/core/constants/app_const.dart';
 import 'package:recon/core/network/dio_app.dart';
 import 'package:recon/core/utils/utils.dart';
 import 'package:recon/domain/entitites/me.dart';
@@ -19,11 +19,11 @@ class MeBloc extends Bloc<MeEvent, MeState> {
     final String? token = await Utils.storageSecure.read(key: 'token');
     try {
       final response = await DioApp.instance.get(
-        '${AppUrl.identityV1}/private/me',
+        '${AppConst.identityV1}/private/me',
         options: Options(headers: {'Authorization': 'Bearer $token'}),
-      );      
-      final Map<String, dynamic> data = response.data;      
-      final meResponse = MeResponseEntity.fromJson(data);      
+      );
+      final Map<String, dynamic> data = response.data;
+      final meResponse = MeResponseEntity.fromJson(data);
       final user = meResponse.response;
       print('user ${user.corporateName}');
       emit(

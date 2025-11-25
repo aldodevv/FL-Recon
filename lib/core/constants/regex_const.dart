@@ -1,4 +1,4 @@
-class RegexPatterns {
+class RegExpConst {
   static final RegExp email = RegExp(r'^[\w-\.]+@([\w-]+\.)+[\w-]{2,4}$');
   static final RegExp password = RegExp(
     r'^(?=(.*[A-Z]){2})(?=(.*[0-9]){2})(?=(.*[!@#$%^&*()\-_=+]){2})(?=(.*[a-z]){2}).{8,}$',

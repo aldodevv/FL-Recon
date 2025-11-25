@@ -1,6 +1,0 @@
-#include "../../Flutter/uatProfile.xcconfig"
-#include "Warnings.xcconfig"
-
-ASSET_PREFIX=uat
-BUNDLE_NAME=Recon uat
-BUNDLE_DISPLAY_NAME=Recon uat

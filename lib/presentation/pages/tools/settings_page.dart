@@ -14,7 +14,10 @@ class SettingPage extends StatelessWidget {
       {'label': 'Alarm', 'type': AppSettingsType.alarm},
       {'label': 'APN', 'type': AppSettingsType.apn},
       {'label': 'App Locale', 'type': AppSettingsType.appLocale},
-      {'label': 'Battery Optimization', 'type': AppSettingsType.batteryOptimization},
+      {
+        'label': 'Battery Optimization',
+        'type': AppSettingsType.batteryOptimization,
+      },
       {'label': 'Bluetooth', 'type': AppSettingsType.bluetooth},
       {'label': 'Data Roaming', 'type': AppSettingsType.dataRoaming},
       {'label': 'Date', 'type': AppSettingsType.date},
@@ -26,7 +29,10 @@ class SettingPage extends StatelessWidget {
       {'label': 'Internal Storage', 'type': AppSettingsType.internalStorage},
       {'label': 'Location', 'type': AppSettingsType.location},
       {'label': 'Lock & Password', 'type': AppSettingsType.lockAndPassword},
-      {'label': 'Install Unknown Apps', 'type': AppSettingsType.manageUnknownAppSources},
+      {
+        'label': 'Install Unknown Apps',
+        'type': AppSettingsType.manageUnknownAppSources,
+      },
       {'label': 'NFC', 'type': AppSettingsType.nfc},
       {'label': 'Notification', 'type': AppSettingsType.notification},
       {'label': 'Security', 'type': AppSettingsType.security},

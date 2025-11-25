@@ -3,7 +3,7 @@ import 'package:dio/dio.dart';
 import 'package:equatable/equatable.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:injectable/injectable.dart';
-import 'package:recon/core/constants/app_url.dart';
+import 'package:recon/core/constants/app_const.dart';
 import 'package:recon/core/network/dio_app.dart';
 import 'package:recon/core/network/dio_client.dart';
 import 'package:recon/core/utils/utils.dart';
@@ -30,7 +30,7 @@ class LoginBloc extends Bloc<LoginEvent, LoginState> {
     emit(state.copyWith(isLogin: true));
     try {
       final response = await DioClient().post(
-        '${AppUrl.identityV2_4}/public/login',
+        '${AppConst.identityV2_4}/public/login',
         data: {
           'corporateId': event.corporateId,
           'username': event.username,
@@ -42,7 +42,13 @@ class LoginBloc extends Bloc<LoginEvent, LoginState> {
       final data = SigninEntity.fromJson(response.data);
 
       if (data.statusCode == 200) {
-        emit(state.copyWith(username: event.username, isLogin: false, isLoginSuccess: true));
+        emit(
+          state.copyWith(
+            username: event.username,
+            isLogin: false,
+            isLoginSuccess: true,
+          ),
+        );
         await Utils.storageSecure.write(
           key: 'token',
           value: data.response!.token,
@@ -87,12 +93,8 @@ class LoginBloc extends Bloc<LoginEvent, LoginState> {
 
     try {
       final response = await DioApp.instance.get(
-        '${AppUrl.identityV1}/private/token/check',
-        options: Options(
-          headers: {
-            'Authorization': 'Bearer $token',
-          }
-        ),
+        '${AppConst.identityV1}/private/token/check',
+        options: Options(headers: {'Authorization': 'Bearer $token'}),
       );
       print("wodkowkdo: ${response.data}");
     } on DioException catch (e) {

@@ -45,7 +45,7 @@ class _OnboardPageState extends State<OnboardPage> {
   void initState() {
     super.initState();
     // Simulasi fetch API async
-        // _loadUIData();
+    // _loadUIData();
 
     // Simulasi stream data, misal event dari server atau sensor
     Stream<int> stream = Stream.periodic(
@@ -69,31 +69,31 @@ class _OnboardPageState extends State<OnboardPage> {
     super.dispose();
   }
 
-// Future<void> _loadUIData() async {
-//     final result = await UiLanguageRepository().getUIData();
+  // Future<void> _loadUIData() async {
+  //     final result = await UiLanguageRepository().getUIData();
 
-//     result.fold(
-//       (failure) {
-//         // ❌ Sudah dihandle oleh DioApp (modal, logout, dll), tinggal log kalau perlu
-//         debugPrint('Gagal ambil data: ${failure.message}');
-//       },
-//       (response) {
-//         try {
-//           final uiResponse = EntityLanguage.fromJson(response as Map<String, dynamic>);
+  //     result.fold(
+  //       (failure) {
+  //         // ❌ Sudah dihandle oleh DioApp (modal, logout, dll), tinggal log kalau perlu
+  //         debugPrint('Gagal ambil data: ${failure.message}');
+  //       },
+  //       (response) {
+  //         try {
+  //           final uiResponse = EntityLanguage.fromJson(response as Map<String, dynamic>);
 
-//           setState(() {
-//             responseLog = uiResponse.toJson().toString();
-//           });
+  //           setState(() {
+  //             responseLog = uiResponse.toJson().toString();
+  //           });
 
-//           for (final item in uiResponse.response) {
-//             debugPrint('${item.id} - ${item.label} - ${item.group}');
-//           }
-//         } catch (e, stack) {
-//           debugPrint('❌ Parsing error: $e\n$stack');
-//         }
-//       },
-//     );
-//   }
+  //           for (final item in uiResponse.response) {
+  //             debugPrint('${item.id} - ${item.label} - ${item.group}');
+  //           }
+  //         } catch (e, stack) {
+  //           debugPrint('❌ Parsing error: $e\n$stack');
+  //         }
+  //       },
+  //     );
+  //   }
 
   List<PieChartSectionData> sections = [
     PieChartSectionData(
@@ -329,25 +329,25 @@ class _OnboardPageState extends State<OnboardPage> {
 
                   const SizedBox(height: 16),
 
-                  ButtonCurrencyWidget(value: 'IDR', onChangeFlag: (){}),
+                  ButtonCurrencyWidget(value: 'IDR', onChangeFlag: () {}),
                   const SizedBox(height: 16),
 
                   CardRingkasanWidget(
-                      value1: "IDR 1.000.000",
-                      value2: "IDR 5.000.000",
-                      percentage1: "90.00%",
-                      percentage2: "10.00%",
-                      label: "Giro",
-                      label2: "Deposito",
-                      showPercentage1: true,
-                      showPercentage2: true, // untuk sembunyikan badge
-                    ),
+                    value1: "IDR 1.000.000",
+                    value2: "IDR 5.000.000",
+                    percentage1: "90.00%",
+                    percentage2: "10.00%",
+                    label: "Giro",
+                    label2: "Deposito",
+                    showPercentage1: true,
+                    showPercentage2: true, // untuk sembunyikan badge
+                  ),
                   CardRingkasanWidget(
-                      value1: "IDR 1.000.000",
-                      value2: "IDR 5.000.000",
-                      label: "Giro",
-                      label2: "Deposito", // untuk sembunyikan badge
-                    ),
+                    value1: "IDR 1.000.000",
+                    value2: "IDR 5.000.000",
+                    label: "Giro",
+                    label2: "Deposito", // untuk sembunyikan badge
+                  ),
 
                   ProfileHomeWidget(valueName: 'Jhon Doe'),
 
@@ -384,7 +384,7 @@ class _OnboardPageState extends State<OnboardPage> {
                     detailTitle: "Lihat Detail",
                     onPressDetail: () {
                       // Aksi ketika diklik
-                       context.router.replace(TermsconditionRoute());
+                      context.router.replace(TermsconditionRoute());
                       debugPrint("Detail pressed");
                     },
                   ),
@@ -392,7 +392,7 @@ class _OnboardPageState extends State<OnboardPage> {
                   Row(
                     children: [
                       AccounttransfercardWidget(
-                        logoUrl: AppImages.logoQlola,
+                        logoUrl: ImagesConst.logoQlola,
                         title: 'Rachman Hakim',
                         desc: '123456789012345',
                         badgeText: 'USD',
@@ -400,7 +400,7 @@ class _OnboardPageState extends State<OnboardPage> {
                         badgeSize: BadgeSize.small,
                       ),
                       AccounttransfercardWidget(
-                        logoUrl: AppImages.logoQlola,
+                        logoUrl: ImagesConst.logoQlola,
                         title: 'Rachman Hakim',
                         desc: '123456789012345',
                         badgeText: 'USD',
