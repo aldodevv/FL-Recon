@@ -3,12 +3,12 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_dotenv/flutter_dotenv.dart';
 import 'package:recon/app_theme.dart';
+import 'package:recon/core/handler/network_handler.dart';
 import 'package:recon/core/injection.dart';
+import 'package:recon/core/handler/phone_call_handler.dart';
 import 'package:recon/presentation/bloc/theme/theme_bloc.dart';
 import 'package:recon/presentation/routes/app_router.dart';
-import 'package:phone_state/phone_state.dart';
 import 'dart:async';
-
 import 'flavors.dart';
 
 class App extends StatefulWidget {
@@ -19,51 +19,86 @@ class App extends StatefulWidget {
 
 class _AppState extends State<App> with WidgetsBindingObserver {
   late final AppRouter _appRouter;
-  StreamSubscription<PhoneState>? _phoneSub;
+  late PhoneCallHandler _phoneHandler;
+  late NetworkHandler _networkHandler;
 
+  // ! First Step for initialize
   @override
   void initState() {
     super.initState();
     WidgetsBinding.instance.addObserver(this);
     _appRouter = AppRouter();
     _init();
-    _phoneSub = PhoneState.stream.listen((event) {
-      if (event.status == PhoneStateStatus.CALL_INCOMING ||
-          event.status == PhoneStateStatus.CALL_STARTED) {
-        final navigatorKey = getIt<GlobalKey<NavigatorState>>();
-        final context = navigatorKey.currentContext;
-
-        if (context != null) {
-          showDialog(
-            context: context,
-            builder:
-                (_) => AlertDialog(
-                  title: const Text("Incoming Call"),
-                  content: const Text(
-                    "Aktivitas diblokir karena ada panggilan masuk.",
-                  ),
-                  actions: [
-                    TextButton(
-                      onPressed: () => Navigator.pop(context),
-                      child: const Text("OK"),
-                    ),
-                  ],
-                ),
-          );
-        }
-      }
-    });
   }
 
+  // ! Second Step for check cycle
+  @override
+  void didChangeAppLifecycleState(AppLifecycleState state) {
+    super.didChangeAppLifecycleState(state);
+
+    switch (state) {
+      case AppLifecycleState.resumed:
+        debugPrint("🔥 App FOREGROUND");
+        _resumeListeners();
+        break;
+
+      case AppLifecycleState.paused:
+        debugPrint("🌙 App BACKGROUND");
+        _pauseListeners();
+        break;
+
+      case AppLifecycleState.inactive:
+        debugPrint("⚠️ App INACTIVE");
+        _inactiveListeners();
+        break;
+
+      case AppLifecycleState.detached:
+        debugPrint("🗑️ App DETACHED");
+        _detachedListeners();
+        break;
+
+      default:
+        debugPrint("ℹ️ Unknown lifecycle: $state");
+    }
+  }
+
+  // ! Last Step for dispose
   @override
   void dispose() {
     WidgetsBinding.instance.removeObserver(this);
-    _phoneSub?.cancel();
+    _dispose();
     super.dispose();
   }
 
-  void _init() async {
+  Future<void> _init() async {
     await _registerNavKey();
+    final navKey = getIt<GlobalKey<NavigatorState>>();
+    _phoneHandler = PhoneCallHandler(navigatorKey: navKey);
+    _networkHandler = NetworkHandler();
+    _phoneHandler.start();
+    _networkHandler.start();
+  }
+
+  Future<void> _dispose() async {
+    _phoneHandler.dispose();
+    _networkHandler.dispose();
+  }
+
+  Future<void> _pauseListeners() async {
+    _phoneHandler.resume();
+    _networkHandler.resume();
+  }
+
+  Future<void> _resumeListeners() async {
+    _phoneHandler.pause();
+    _networkHandler.pause();
+  }
+
+  Future<void> _inactiveListeners() async {
+    //
+  }
+  Future<void> _detachedListeners() async {
+    //
   }
 
   Future<void> _registerNavKey() async {
@@ -76,10 +111,7 @@ class _AppState extends State<App> with WidgetsBindingObserver {
   @override
   Widget build(BuildContext context) {
     return MultiBlocProvider(
-      providers: [
-        BlocProvider(create: (_) => ThemeBloc()),
-        // Tambah providers lain di sini
-      ],
+      providers: [BlocProvider(create: (_) => ThemeBloc())],
       child: BlocBuilder<ThemeBloc, ThemeState>(
         buildWhen:
             (previous, current) => previous.themeMode != current.themeMode,
@@ -93,7 +125,7 @@ class _AppState extends State<App> with WidgetsBindingObserver {
             routerConfig: _appRouter.config(
               deepLinkTransformer: DeepLink.prefixStripper(''),
               deepLinkBuilder: (deepLink) {
-                print('Received deepLink: ${deepLink.uri}');
+                debugPrint('Received deepLink: ${deepLink.uri}');
                 return deepLink;
               },
             ),

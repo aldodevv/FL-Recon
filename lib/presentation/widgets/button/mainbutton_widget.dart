@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:recon/core/constants/colors_const.dart';
 
 enum ButtonType { fullfilled, outlined, text }
+
 enum ButtonSize { small, medium, large }
 
 extension ColorTypeExt on ColorType {
@@ -14,7 +15,6 @@ extension ColorTypeExt on ColorType {
       case ColorType.red:
         return MainGroupColors.red;
       case ColorType.blue:
-      default:
         return MainGroupColors.blue;
     }
   }
@@ -59,7 +59,6 @@ class MainbuttonWidget extends StatelessWidget {
       case ButtonSize.large:
         return 18;
       case ButtonSize.medium:
-      default:
         return 14;
     }
   }
@@ -71,7 +70,6 @@ class MainbuttonWidget extends StatelessWidget {
       case ButtonSize.large:
         return const EdgeInsets.symmetric(horizontal: 20, vertical: 12);
       case ButtonSize.medium:
-      default:
         return const EdgeInsets.symmetric(horizontal: 16, vertical: 10);
     }
   }
@@ -83,7 +81,6 @@ class MainbuttonWidget extends StatelessWidget {
       case ButtonSize.large:
         return 12;
       case ButtonSize.medium:
-      default:
         return 8;
     }
   }
@@ -91,16 +88,19 @@ class MainbuttonWidget extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final colors = _resolvedColor(context);
-    final bgColor = type == ButtonType.fullfilled ? colors.background : Colors.transparent;
-    final textColor = type == ButtonType.fullfilled
-        ? colors.color
-        : type == ButtonType.outlined
+    final bgColor =
+        type == ButtonType.fullfilled ? colors.background : Colors.transparent;
+    final textColor =
+        type == ButtonType.fullfilled
+            ? colors.color
+            : type == ButtonType.outlined
             ? colors.background
             : colors.background;
 
-    final border = type == ButtonType.outlined
-        ? Border.all(color: colors.background)
-        : null;
+    final border =
+        type == ButtonType.outlined
+            ? Border.all(color: colors.background)
+            : null;
 
     final children = <Widget>[
       if (icon != null) icon!,
