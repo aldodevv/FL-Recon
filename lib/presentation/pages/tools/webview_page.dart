@@ -1,6 +1,5 @@
 import 'package:auto_route/auto_route.dart';
 import 'package:flutter/material.dart';
-import 'package:recon/core/injection.dart';
 import 'package:recon/core/handler/webview_handler.dart';
 import 'package:webview_flutter/webview_flutter.dart';
 
@@ -14,12 +13,11 @@ class WebViewPage extends StatefulWidget {
 }
 
 class _WebViewPageState extends State<WebViewPage> {
-  late final WebViewHandler _webViewHandler;
+  late final WebViewHandler _webViewHandler = WebViewHandler();
 
   @override
   void initState() {
     super.initState();
-    _webViewHandler = getIt<WebViewHandler>();
     _webViewHandler.loadUrl(widget.initialUrl);
     _webViewHandler.jsMessages.listen((msg) {
       debugPrint('📩 [Page] JS message: ${msg.message}');
