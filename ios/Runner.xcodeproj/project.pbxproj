@@ -499,6 +499,7 @@
 			isa = XCBuildConfiguration;
 			baseConfigurationReference = F471DEF6AAC9A60B70070187 /* devProfile.xcconfig */;
 			buildSettings = {
+				ASSETCATALOG_COMPILER_APPICON_NAME = devAppIcon;
 				DEVELOPMENT_TEAM = CQ98DM76S5;
 				INFOPLIST_KEY_LSApplicationCategoryType = "public.app-category.education";
 				PRODUCT_NAME = "$(TARGET_NAME)";
@@ -514,6 +515,7 @@
 			isa = XCBuildConfiguration;
 			baseConfigurationReference = ABF48C2B82862F497DBCBF68 /* uatDebug.xcconfig */;
 			buildSettings = {
+				ASSETCATALOG_COMPILER_APPICON_NAME = uatAppIcon;
 				DEVELOPMENT_TEAM = CQ98DM76S5;
 				INFOPLIST_KEY_LSApplicationCategoryType = "public.app-category.education";
 				PRODUCT_NAME = "$(TARGET_NAME)";
@@ -687,6 +689,7 @@
 			isa = XCBuildConfiguration;
 			baseConfigurationReference = AA43C0C1DEF9068F2DBC1571 /* uatProfile.xcconfig */;
 			buildSettings = {
+				ASSETCATALOG_COMPILER_APPICON_NAME = uatAppIcon;
 				DEVELOPMENT_TEAM = CQ98DM76S5;
 				INFOPLIST_KEY_LSApplicationCategoryType = "public.app-category.education";
 				PRODUCT_NAME = "$(TARGET_NAME)";
@@ -752,6 +755,7 @@
 			isa = XCBuildConfiguration;
 			baseConfigurationReference = B219B619EC2164D56998EC93 /* uatRelease.xcconfig */;
 			buildSettings = {
+				ASSETCATALOG_COMPILER_APPICON_NAME = uatAppIcon;
 				DEVELOPMENT_TEAM = CQ98DM76S5;
 				INFOPLIST_KEY_LSApplicationCategoryType = "public.app-category.education";
 				PRODUCT_NAME = "$(TARGET_NAME)";
@@ -767,6 +771,7 @@
 			isa = XCBuildConfiguration;
 			baseConfigurationReference = 8606F2AE29CF208AFB90BA67 /* prodProfile.xcconfig */;
 			buildSettings = {
+				ASSETCATALOG_COMPILER_APPICON_NAME = prodAppIcon;
 				CODE_SIGN_IDENTITY = "Apple Development";
 				CODE_SIGN_STYLE = Automatic;
 				DEVELOPMENT_TEAM = CQ98DM76S5;
@@ -785,6 +790,7 @@
 			isa = XCBuildConfiguration;
 			baseConfigurationReference = 786AA669B243C518573C13B3 /* devRelease.xcconfig */;
 			buildSettings = {
+				ASSETCATALOG_COMPILER_APPICON_NAME = devAppIcon;
 				DEVELOPMENT_TEAM = CQ98DM76S5;
 				INFOPLIST_KEY_LSApplicationCategoryType = "public.app-category.education";
 				PRODUCT_NAME = "$(TARGET_NAME)";
@@ -872,6 +878,7 @@
 			isa = XCBuildConfiguration;
 			baseConfigurationReference = CDDE6D5D57662A8EB8FBBAB3 /* prodRelease.xcconfig */;
 			buildSettings = {
+				ASSETCATALOG_COMPILER_APPICON_NAME = prodAppIcon;
 				CODE_SIGN_IDENTITY = "Apple Development";
 				CODE_SIGN_STYLE = Automatic;
 				DEVELOPMENT_TEAM = CQ98DM76S5;
@@ -1139,6 +1146,7 @@
 			isa = XCBuildConfiguration;
 			baseConfigurationReference = 62F12834AE1CE0C39AEF9538 /* devDebug.xcconfig */;
 			buildSettings = {
+				ASSETCATALOG_COMPILER_APPICON_NAME = devAppIcon;
 				DEVELOPMENT_TEAM = CQ98DM76S5;
 				INFOPLIST_KEY_LSApplicationCategoryType = "public.app-category.education";
 				PRODUCT_NAME = "$(TARGET_NAME)";
@@ -1368,6 +1376,7 @@
 			isa = XCBuildConfiguration;
 			baseConfigurationReference = 579C1DBC33FEAEEF751C5D5C /* prodDebug.xcconfig */;
 			buildSettings = {
+				ASSETCATALOG_COMPILER_APPICON_NAME = prodAppIcon;
 				CODE_SIGN_IDENTITY = "Apple Development";
 				CODE_SIGN_STYLE = Automatic;
 				DEVELOPMENT_TEAM = CQ98DM76S5;
