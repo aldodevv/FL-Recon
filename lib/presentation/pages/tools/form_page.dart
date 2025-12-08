@@ -1,6 +1,7 @@
 import 'package:auto_route/annotations.dart';
 import 'package:flutter/material.dart';
 import 'package:recon/core/handler/keyboard_handler.dart';
+import 'package:recon/presentation/widgets/input/text_input.dart';
 
 @RoutePage()
 class FormPage extends StatefulWidget {
@@ -66,21 +67,20 @@ class _FormPageState extends State<FormPage> {
         padding: const EdgeInsets.all(16),
         child: Column(
           children: [
-            TextField(
-              focusNode: nameFocus,
-              decoration: const InputDecoration(labelText: "Name"),
-            ),
+            TextInput(
+              focus: nameFocus, 
+              labelName: "Name", ),
 
-            TextField(
-              focusNode: ageFocus,
-              keyboardType: TextInputType.number,
-              decoration: const InputDecoration(labelText: "Age"),
-            ),
+            TextInput(
+              focus: ageFocus, 
+              labelName: "Age", 
+              textInputType: TextInputType.number,
+              ),
 
-            TextField(
-              focusNode: emailFocus,
-              decoration: const InputDecoration(labelText: "Email"),
-            ),
+            TextInput(
+              focus: emailFocus, 
+              labelName: "Email", ),
+
 
             const SizedBox(height: 24),
 
