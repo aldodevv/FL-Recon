@@ -2,12 +2,15 @@ import 'package:auto_route/auto_route.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_dotenv/flutter_dotenv.dart';
+import 'package:permission_handler/permission_handler.dart';
 import 'package:recon/app_theme.dart';
 import 'package:recon/core/handler/network_handler.dart';
 import 'package:recon/core/injection.dart';
 import 'package:recon/core/handler/phone_call_handler.dart';
+import 'package:recon/core/services/permission_handler.dart';
 import 'package:recon/presentation/bloc/theme/theme_bloc.dart';
 import 'package:recon/presentation/routes/app_router.dart';
+import 'package:recon/presentation/widgets/modal/modal_permission_denied.dart';
 import 'dart:async';
 import 'flavors.dart';
 
@@ -21,6 +24,8 @@ class _AppState extends State<App> with WidgetsBindingObserver {
   late final AppRouter _appRouter;
   late PhoneCallHandler _phoneHandler;
   late NetworkHandler _networkHandler;
+  late final PermissionService _permissionService;
+  StreamSubscription<PermissionEvent>? _permSub;
 
   // ! First Step for initialize
   @override
@@ -66,13 +71,53 @@ class _AppState extends State<App> with WidgetsBindingObserver {
   @override
   void dispose() {
     WidgetsBinding.instance.removeObserver(this);
+    _permSub?.cancel();
+    _permissionService.dispose();
     _dispose();
     super.dispose();
+  }
+
+  void _showPermissionModal(List<Permission> denied) {
+    final navigator = getIt<GlobalKey<NavigatorState>>().currentState;
+    if (navigator == null) return;
+
+    navigator.push(
+      PageRouteBuilder(
+        opaque: false,
+        barrierDismissible: false,
+        pageBuilder: (_, __, ___) {
+          return ModalPermissionDenied(denied: denied);
+        },
+      ),
+    );
   }
 
   Future<void> _init() async {
     await _registerNavKey();
     final navKey = getIt<GlobalKey<NavigatorState>>();
+
+    _permissionService = PermissionService();
+
+    _permSub = _permissionService.events.listen((event) {
+      if (event.type == PermissionEventType.allCompleted) {
+        final deniedPermissions =
+            event.status.entries
+                .where((e) => !e.value.isGranted)
+                .map((e) => e.key)
+                .toList();
+
+        if (deniedPermissions.isNotEmpty) {
+          Future.microtask(() {
+            _showPermissionModal(deniedPermissions);
+          });
+        }
+      }
+    });
+
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      _permissionService.requestAll();
+    });
+
     _phoneHandler = PhoneCallHandler(navigatorKey: navKey);
     _networkHandler = NetworkHandler();
     _phoneHandler.start();
