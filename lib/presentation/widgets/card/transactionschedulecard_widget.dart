@@ -1,5 +1,3 @@
-
-
 import 'package:flutter/material.dart';
 import 'package:recon/core/constants/colors_const.dart';
 import 'package:recon/presentation/widgets/badge/infobadge_widget.dart';
@@ -38,9 +36,7 @@ class TransactionschedulecardWidget extends StatelessWidget {
       padding: const EdgeInsets.all(16),
       decoration: BoxDecoration(
         borderRadius: BorderRadius.circular(12),
-        border: Border.all(
-          color: Colors.grey.withOpacity(0.2),
-        ),
+        border: Border.all(color: Colors.grey.withAlpha(20)),
       ),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
@@ -49,10 +45,7 @@ class TransactionschedulecardWidget extends StatelessWidget {
           Row(
             mainAxisAlignment: MainAxisAlignment.spaceBetween,
             children: [
-              Text(
-                dateTime,
-                style: TextStyle(color: secondaryColor),
-              ),
+              Text(dateTime, style: TextStyle(color: secondaryColor)),
               GestureDetector(
                 onTap: onPressDetail,
                 child: Text(
@@ -78,10 +71,7 @@ class TransactionschedulecardWidget extends StatelessWidget {
               ),
               Text(
                 transactionId,
-                style: TextStyle(
-                  color: textColor,
-                  fontWeight: FontWeight.w500,
-                ),
+                style: TextStyle(color: textColor, fontWeight: FontWeight.w500),
               ),
             ],
           ),

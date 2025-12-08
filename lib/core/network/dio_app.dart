@@ -1,7 +1,6 @@
 // network/dio_client.dart
 import 'dart:convert';
 
-import 'package:auto_route/auto_route.dart';
 import 'package:dartz/dartz.dart';
 import 'package:dio/dio.dart';
 import 'package:flutter/material.dart';
@@ -12,7 +11,6 @@ import 'package:recon/core/network/dio_const.dart';
 import 'package:recon/core/network/failure_response.dart';
 import 'package:recon/core/utils/utils.dart';
 import 'package:recon/flavors.dart';
-import 'package:recon/presentation/routes/app_router.gr.dart';
 
 class DioHeaders {
   static const authorization = 'Authorization';
@@ -205,11 +203,11 @@ class DioApp {
     }
   }
 
-  post(
+  void post(
     String s, {
     required Map<String, Object> data,
     required Options options,
   }) {}
 
-  get(String s, {required Options options}) {}
+  void get(String s, {required Options options}) {}
 }

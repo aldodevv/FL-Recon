@@ -11,19 +11,20 @@ class BridgingPage extends StatefulWidget {
 }
 
 class _BridgingPageState extends State<BridgingPage> {
-   // 1. Tentukan nama channel yang unik.
+  // 1. Tentukan nama channel yang unik.
   //    Best practice: gunakan format domain terbalik.
-  static const platform = MethodChannel('com.example.flutter_bridge/data');
+  static const platform = MethodChannel('id.co.recon/data');
 
   // Fungsi untuk mengirim String
   Future<void> _sendString() async {
     try {
-      final String testString = "Ini adalah String yang dikirim dari Flutter! 🚀";
+      final String testString =
+          "Ini adalah String yang dikirim dari Flutter! 🚀";
       // 2. Panggil method di native dengan nama 'sendString' dan kirim argumennya.
       await platform.invokeMethod('sendString', testString);
-      print("Flutter: String sent successfully.");
+      debugPrint("Flutter: String sent successfully.");
     } on PlatformException catch (e) {
-      print("Flutter: Failed to send string: '${e.message}'.");
+      debugPrint("Flutter: Failed to send string: '${e.message}'.");
     }
   }
 
@@ -37,9 +38,9 @@ class _BridgingPageState extends State<BridgingPage> {
       };
       // 3. Panggil method 'sendObject'
       await platform.invokeMethod('sendObject', testObject);
-      print("Flutter: Object sent successfully.");
+      debugPrint("Flutter: Object sent successfully.");
     } on PlatformException catch (e) {
-      print("Flutter: Failed to send object: '${e.message}'.");
+      debugPrint("Flutter: Failed to send object: '${e.message}'.");
     }
   }
 
@@ -49,17 +50,16 @@ class _BridgingPageState extends State<BridgingPage> {
       final List<dynamic> testArray = ["Flutter", "Kotlin", "Swift", 2025];
       // 4. Panggil method 'sendArray'
       await platform.invokeMethod('sendArray', testArray);
-      print("Flutter: Array sent successfully.");
+      debugPrint("Flutter: Array sent successfully.");
     } on PlatformException catch (e) {
-      print("Flutter: Failed to send array: '${e.message}'.");
-}
+      debugPrint("Flutter: Failed to send array: '${e.message}'.");
+    }
   }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(
-        title: const Text('Flutter to Native Bridge'),
-      ),
+      appBar: AppBar(title: const Text('Flutter to Native Bridge')),
       body: Center(
         child: Column(
           mainAxisAlignment: MainAxisAlignment.center,

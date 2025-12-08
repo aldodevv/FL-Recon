@@ -23,9 +23,9 @@ class SubsectiontermsWidget extends StatelessWidget {
                 style: const TextStyle(fontSize: 14),
               ),
               if (data.subData != null)
-                ...data.subData!
-                    .map((e) => ItemtermsWidget(alfabet: e.key, title: e.text))
-                    .toList(),
+                ...data.subData!.map(
+                  (e) => ItemtermsWidget(alfabet: e.key, title: e.text),
+                ),
             ],
           ),
         ),

@@ -1,25 +1,26 @@
 {
-     // Use IntelliSense to learn about possible attributes.
-     // Hover to view descriptions of existing attributes.
-     // For more information, visit: https://go.microsoft.com/fwlink/?linkid=830387
-     "version": "0.2.0",
-     "configurations": [
-          {
-               "name": "FL-Recon",
-               "request": "launch",
-               "type": "dart"
-          },
-          {
-               "name": "FL-Recon (profile mode)",
-               "request": "launch",
-               "type": "dart",
-               "flutterMode": "profile"
-          },
-          {
-               "name": "FL-Recon (release mode)",
-               "request": "launch",
-               "type": "dart",
-               "flutterMode": "release"
-          }
-     ]
+  "version": "0.2.0",
+  "configurations": [
+    {
+      "name": "FL-Recon dev",
+      "request": "launch",
+      "type": "dart",
+      "program": "lib/main_dev.dart",
+      "args": ["--flavor", "dev"]
+    },
+    {
+      "name": "FL-Recon uat",
+      "request": "launch",
+      "type": "dart",
+      "program": "lib/main_uat.dart",
+      "args": ["--flavor", "uat"]
+    },
+    {
+      "name": "FL-Recon prod",
+      "request": "launch",
+      "type": "dart",
+      "program": "lib/main.dart",
+      "args": ["--flavor", "prod"]
+    }
+  ]
 }

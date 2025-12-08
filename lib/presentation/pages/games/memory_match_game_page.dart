@@ -1,4 +1,3 @@
-
 import 'dart:async';
 import 'package:auto_route/auto_route.dart';
 import 'package:flutter/material.dart';
@@ -8,10 +7,10 @@ class MemoryMatchGamePage extends StatefulWidget {
   const MemoryMatchGamePage({super.key});
 
   @override
-  _MemoryMatchGamePageState createState() => _MemoryMatchGamePageState();
+  MemoryMatchGamePageState createState() => MemoryMatchGamePageState();
 }
 
-class _MemoryMatchGamePageState extends State<MemoryMatchGamePage> {
+class MemoryMatchGamePageState extends State<MemoryMatchGamePage> {
   late List<GameCard> _cards;
   GameCard? _firstCard, _secondCard;
   bool _isChecking = false;
@@ -26,8 +25,14 @@ class _MemoryMatchGamePageState extends State<MemoryMatchGamePage> {
   void _setupGame() {
     _pairsFound = 0;
     final List<IconData> icons = [
-      Icons.pets, Icons.star, Icons.favorite, Icons.anchor,
-      Icons.camera, Icons.lightbulb, Icons.ac_unit, Icons.wb_sunny,
+      Icons.pets,
+      Icons.star,
+      Icons.favorite,
+      Icons.anchor,
+      Icons.camera,
+      Icons.lightbulb,
+      Icons.ac_unit,
+      Icons.wb_sunny,
     ];
     _cards = [...icons, ...icons].map((icon) => GameCard(icon: icon)).toList();
     _cards.shuffle();
@@ -84,19 +89,20 @@ class _MemoryMatchGamePageState extends State<MemoryMatchGamePage> {
   void _showGameWonDialog() {
     showDialog(
       context: context,
-      builder: (_) => AlertDialog(
-        title: const Text('Congratulations!'),
-        content: const Text('You found all the pairs!'),
-        actions: [
-          TextButton(
-            onPressed: () {
-              Navigator.of(context).pop();
-              _setupGame();
-            },
-            child: const Text('Play Again'),
+      builder:
+          (_) => AlertDialog(
+            title: const Text('Congratulations!'),
+            content: const Text('You found all the pairs!'),
+            actions: [
+              TextButton(
+                onPressed: () {
+                  Navigator.of(context).pop();
+                  _setupGame();
+                },
+                child: const Text('Play Again'),
+              ),
+            ],
           ),
-        ],
-      ),
     );
   }
 
@@ -106,10 +112,7 @@ class _MemoryMatchGamePageState extends State<MemoryMatchGamePage> {
       appBar: AppBar(
         title: const Text('Memory Match'),
         actions: [
-          IconButton(
-            icon: const Icon(Icons.refresh),
-            onPressed: _setupGame,
-          ),
+          IconButton(icon: const Icon(Icons.refresh), onPressed: _setupGame),
         ],
       ),
       body: Padding(
@@ -126,9 +129,10 @@ class _MemoryMatchGamePageState extends State<MemoryMatchGamePage> {
               onTap: () => _onCardTapped(index),
               child: Card(
                 color: _cards[index].isFlipped ? Colors.white : Colors.blue,
-                child: _cards[index].isFlipped
-                    ? Icon(_cards[index].icon, size: 40)
-                    : const SizedBox.shrink(),
+                child:
+                    _cards[index].isFlipped
+                        ? Icon(_cards[index].icon, size: 40)
+                        : const SizedBox.shrink(),
               ),
             );
           },

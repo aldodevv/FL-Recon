@@ -7,12 +7,18 @@ class WordleGamePage extends StatefulWidget {
   const WordleGamePage({super.key});
 
   @override
-  _WordleGamePageState createState() => _WordleGamePageState();
+  WordleGamePageState createState() => WordleGamePageState();
 }
 
-class _WordleGamePageState extends State<WordleGamePage> {
+class WordleGamePageState extends State<WordleGamePage> {
   // Corrected: Word list now only contains 5-letter words.
-  static const List<String> _wordList = ['FLAME', 'APPLE', 'WORLD', 'GREAT', 'STATE'];
+  static const List<String> _wordList = [
+    'FLAME',
+    'APPLE',
+    'WORLD',
+    'GREAT',
+    'STATE',
+  ];
   static const int _wordLength = 5;
   static const int _maxAttempts = 4;
 
@@ -92,28 +98,27 @@ class _WordleGamePageState extends State<WordleGamePage> {
     showDialog(
       context: context,
       barrierDismissible: false,
-      builder: (context) => AlertDialog(
-        title: const Text('Game Over'),
-        content: Text(message),
-        actions: [
-          TextButton(
-            onPressed: () {
-              Navigator.of(context).pop();
-              _startNewGame();
-            },
-            child: const Text('Play Again'),
+      builder:
+          (context) => AlertDialog(
+            title: const Text('Game Over'),
+            content: Text(message),
+            actions: [
+              TextButton(
+                onPressed: () {
+                  Navigator.of(context).pop();
+                  _startNewGame();
+                },
+                child: const Text('Play Again'),
+              ),
+            ],
           ),
-        ],
-      ),
     );
   }
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(
-        title: const Text('Wordle Game'),
-      ),
+      appBar: AppBar(title: const Text('Wordle Game')),
       body: Column(
         mainAxisAlignment: MainAxisAlignment.spaceBetween,
         children: [
@@ -175,9 +180,30 @@ class _WordleGamePageState extends State<WordleGamePage> {
   }
 
   Widget _buildKeyboard() {
-    const List<String> row1 = ['Q', 'W', 'E', 'R', 'T', 'Y', 'U', 'I', 'O', 'P'];
+    const List<String> row1 = [
+      'Q',
+      'W',
+      'E',
+      'R',
+      'T',
+      'Y',
+      'U',
+      'I',
+      'O',
+      'P',
+    ];
     const List<String> row2 = ['A', 'S', 'D', 'F', 'G', 'H', 'J', 'K', 'L'];
-    const List<String> row3 = ['ENTER', 'Z', 'X', 'C', 'V', 'B', 'N', 'M', 'BACKSPACE'];
+    const List<String> row3 = [
+      'ENTER',
+      'Z',
+      'X',
+      'C',
+      'V',
+      'B',
+      'N',
+      'M',
+      'BACKSPACE',
+    ];
 
     return Padding(
       padding: const EdgeInsets.only(bottom: 24.0, left: 4, right: 4),
@@ -196,26 +222,39 @@ class _WordleGamePageState extends State<WordleGamePage> {
   Widget _buildKeyboardRow(List<String> keys) {
     return Row(
       mainAxisAlignment: MainAxisAlignment.center,
-      children: keys.map((key) {
-        final isSpecialKey = key == 'ENTER' || key == 'BACKSPACE';
-        final color = _getKeyColor(key);
+      children:
+          keys.map((key) {
+            final isSpecialKey = key == 'ENTER' || key == 'BACKSPACE';
+            final color = _getKeyColor(key);
 
-        return Expanded(
-          flex: isSpecialKey ? 2 : 1,
-          child: Padding(
-            padding: const EdgeInsets.symmetric(horizontal: 2.0),
-            child: MaterialButton(
-              onPressed: () => _onKeyPressed(key),
-              color: color,
-              height: 50,
-              shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(4)),
-              child: isSpecialKey
-                  ? Icon(key == 'ENTER' ? Icons.check : Icons.backspace, color: Colors.white)
-                  : Text(key, style: const TextStyle(color: Colors.white, fontSize: 16)),
-            ),
-          ),
-        );
-      }).toList(),
+            return Expanded(
+              flex: isSpecialKey ? 2 : 1,
+              child: Padding(
+                padding: const EdgeInsets.symmetric(horizontal: 2.0),
+                child: MaterialButton(
+                  onPressed: () => _onKeyPressed(key),
+                  color: color,
+                  height: 50,
+                  shape: RoundedRectangleBorder(
+                    borderRadius: BorderRadius.circular(4),
+                  ),
+                  child:
+                      isSpecialKey
+                          ? Icon(
+                            key == 'ENTER' ? Icons.check : Icons.backspace,
+                            color: Colors.white,
+                          )
+                          : Text(
+                            key,
+                            style: const TextStyle(
+                              color: Colors.white,
+                              fontSize: 16,
+                            ),
+                          ),
+                ),
+              ),
+            );
+          }).toList(),
     );
   }
 
@@ -249,5 +288,6 @@ class WordGuess {
   final String word;
   final List<LetterStatus> statuses;
 
-  WordGuess(this.word) : statuses = List.filled(word.length, LetterStatus.empty);
+  WordGuess(this.word)
+    : statuses = List.filled(word.length, LetterStatus.empty);
 }

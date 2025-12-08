@@ -1,4 +1,3 @@
-
 import 'dart:async';
 import 'dart:math';
 import 'package:auto_route/auto_route.dart';
@@ -9,12 +8,12 @@ class SnakeGamePage extends StatefulWidget {
   const SnakeGamePage({super.key});
 
   @override
-  _SnakeGamePageState createState() => _SnakeGamePageState();
+  SnakeGamePageState createState() => SnakeGamePageState();
 }
 
 enum Direction { up, down, left, right }
 
-class _SnakeGamePageState extends State<SnakeGamePage> {
+class SnakeGamePageState extends State<SnakeGamePage> {
   static const int _gridSize = 20;
   List<Point<int>> _snake = [const Point(10, 10)];
   late Point<int> _food;
@@ -74,7 +73,11 @@ class _SnakeGamePageState extends State<SnakeGamePage> {
       }
 
       // Check for collision with walls or self
-      if (newHead.x < 0 || newHead.x >= _gridSize || newHead.y < 0 || newHead.y >= _gridSize || _snake.contains(newHead)) {
+      if (newHead.x < 0 ||
+          newHead.x >= _gridSize ||
+          newHead.y < 0 ||
+          newHead.y >= _gridSize ||
+          _snake.contains(newHead)) {
         _gameOver();
         return;
       }
@@ -98,19 +101,20 @@ class _SnakeGamePageState extends State<SnakeGamePage> {
     showDialog(
       context: context,
       barrierDismissible: false,
-      builder: (context) => AlertDialog(
-        title: const Text('Game Over'),
-        content: Text('Your score: $_score'),
-        actions: [
-          TextButton(
-            onPressed: () {
-              Navigator.of(context).pop();
-              _startGame();
-            },
-            child: const Text('Play Again'),
+      builder:
+          (context) => AlertDialog(
+            title: const Text('Game Over'),
+            content: Text('Your score: $_score'),
+            actions: [
+              TextButton(
+                onPressed: () {
+                  Navigator.of(context).pop();
+                  _startGame();
+                },
+                child: const Text('Play Again'),
+              ),
+            ],
           ),
-        ],
-      ),
     );
   }
 
@@ -123,10 +127,7 @@ class _SnakeGamePageState extends State<SnakeGamePage> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(
-        title: const Text('Snake Game'),
-        centerTitle: true,
-      ),
+      appBar: AppBar(title: const Text('Snake Game'), centerTitle: true),
       body: GestureDetector(
         onVerticalDragUpdate: (details) {
           if (details.delta.dy > 0 && _direction != Direction.up) {
@@ -156,9 +157,10 @@ class _SnakeGamePageState extends State<SnakeGamePage> {
                   child: GridView.builder(
                     physics: const NeverScrollableScrollPhysics(),
                     itemCount: _gridSize * _gridSize,
-                    gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
-                      crossAxisCount: _gridSize,
-                    ),
+                    gridDelegate:
+                        const SliverGridDelegateWithFixedCrossAxisCount(
+                          crossAxisCount: _gridSize,
+                        ),
                     itemBuilder: (context, index) {
                       final x = index % _gridSize;
                       final y = index ~/ _gridSize;
@@ -169,7 +171,10 @@ class _SnakeGamePageState extends State<SnakeGamePage> {
                       return Container(
                         margin: const EdgeInsets.all(0.5),
                         decoration: BoxDecoration(
-                          color: isSnake ? Colors.green : (isFood ? Colors.red : Colors.grey[900]),
+                          color:
+                              isSnake
+                                  ? Colors.green
+                                  : (isFood ? Colors.red : Colors.grey[900]),
                           shape: isSnake ? BoxShape.rectangle : BoxShape.circle,
                         ),
                       );

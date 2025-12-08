@@ -1,4 +1,3 @@
-
 import 'dart:async';
 import 'dart:math';
 import 'package:auto_route/auto_route.dart';
@@ -9,10 +8,10 @@ class TapTheTargetGamePage extends StatefulWidget {
   const TapTheTargetGamePage({super.key});
 
   @override
-  _TapTheTargetGamePageState createState() => _TapTheTargetGamePageState();
+  TapTheTargetGamePageState createState() => TapTheTargetGamePageState();
 }
 
-class _TapTheTargetGamePageState extends State<TapTheTargetGamePage> {
+class TapTheTargetGamePageState extends State<TapTheTargetGamePage> {
   static const int _gridSize = 4;
   static const int _gameDurationInSeconds = 30;
 
@@ -51,7 +50,7 @@ class _TapTheTargetGamePageState extends State<TapTheTargetGamePage> {
     final random = Random();
     _targetTimer?.cancel();
     _targetTimer = Timer.periodic(const Duration(milliseconds: 800), (timer) {
-       if(!_isPlaying) return timer.cancel();
+      if (!_isPlaying) return timer.cancel();
       setState(() {
         _targetIndex = random.nextInt(_gridSize * _gridSize);
       });
@@ -79,18 +78,19 @@ class _TapTheTargetGamePageState extends State<TapTheTargetGamePage> {
     showDialog(
       context: context,
       barrierDismissible: false,
-      builder: (context) => AlertDialog(
-        title: const Text('Game Over'),
-        content: Text('Your final score: $_score'),
-        actions: [
-          TextButton(
-            onPressed: () {
-              Navigator.of(context).pop();
-            },
-            child: const Text('Close'),
+      builder:
+          (context) => AlertDialog(
+            title: const Text('Game Over'),
+            content: Text('Your final score: $_score'),
+            actions: [
+              TextButton(
+                onPressed: () {
+                  Navigator.of(context).pop();
+                },
+                child: const Text('Close'),
+              ),
+            ],
           ),
-        ],
-      ),
     );
   }
 
@@ -104,10 +104,7 @@ class _TapTheTargetGamePageState extends State<TapTheTargetGamePage> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(
-        title: const Text('Tap The Target'),
-        centerTitle: true,
-      ),
+      appBar: AppBar(title: const Text('Tap The Target'), centerTitle: true),
       body: Column(
         mainAxisAlignment: MainAxisAlignment.center,
         children: [
@@ -134,9 +131,12 @@ class _TapTheTargetGamePageState extends State<TapTheTargetGamePage> {
                     child: Card(
                       color: isTarget ? Colors.redAccent : Colors.blueGrey[100],
                       child: Center(
-                        child: isTarget
-                            ? Image.network('https://i.pinimg.com/474x/e3/5d/ed/e35ded8d32daa3968ef1cb94c7c057cc.jpg')
-                            : null,
+                        child:
+                            isTarget
+                                ? Image.network(
+                                  'https://i.pinimg.com/474x/e3/5d/ed/e35ded8d32daa3968ef1cb94c7c057cc.jpg',
+                                )
+                                : null,
                       ),
                     ),
                   );

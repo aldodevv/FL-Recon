@@ -1,7 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:recon/core/constants/colors_const.dart';
 
-
 extension ColorTypeExt on ColorType {
   MainStatusColor get infoGroupColor {
     switch (this) {
@@ -12,7 +11,6 @@ extension ColorTypeExt on ColorType {
       case ColorType.red:
         return MainGroupColors.red;
       case ColorType.blue:
-      default:
         return MainGroupColors.blue;
     }
   }

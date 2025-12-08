@@ -30,9 +30,10 @@ class DatePickerPage extends StatelessWidget {
   void _showCustomDialog(BuildContext context, Widget child) {
     showDialog(
       context: context,
-      builder: (_) => AlertDialog(
-        content: SizedBox(width: 300, height: 400, child: child),
-      ),
+      builder:
+          (_) => AlertDialog(
+            content: SizedBox(width: 300, height: 400, child: child),
+          ),
     );
   }
 
@@ -52,83 +53,90 @@ class DatePickerPage extends StatelessWidget {
             child: const Text('Show Range Picker Dialog'),
           ),
           ElevatedButton(
-            onPressed: () => _showCustomDialog(
-              context,
-              DatePicker(
-                minDate: DateTime(2021, 1, 1),
-                maxDate: DateTime(2023, 12, 31),
-                onDateSelected: (value) {
-                  Navigator.pop(context);
-                  ScaffoldMessenger.of(context).showSnackBar(
-                    SnackBar(content: Text('DatePicker: $value')),
-                  );
-                },
-              ),
-            ),
+            onPressed:
+                () => _showCustomDialog(
+                  context,
+                  DatePicker(
+                    minDate: DateTime(2021, 1, 1),
+                    maxDate: DateTime(2023, 12, 31),
+                    onDateSelected: (value) {
+                      Navigator.pop(context);
+                      ScaffoldMessenger.of(context).showSnackBar(
+                        SnackBar(content: Text('DatePicker: $value')),
+                      );
+                    },
+                  ),
+                ),
             child: const Text('Show DatePicker Widget'),
           ),
           ElevatedButton(
-            onPressed: () => _showCustomDialog(
-              context,
-              RangeDatePicker(
-                minDate: DateTime(2020, 10, 10),
-                maxDate: DateTime(2024, 10, 30),
-                onRangeSelected: (value) {
-                  Navigator.pop(context);
-                  ScaffoldMessenger.of(context).showSnackBar(
-                    SnackBar(content: Text('Range: ${value.start} - ${value.end}')),
-                  );
-                },
-              ),
-            ),
+            onPressed:
+                () => _showCustomDialog(
+                  context,
+                  RangeDatePicker(
+                    minDate: DateTime(2020, 10, 10),
+                    maxDate: DateTime(2024, 10, 30),
+                    onRangeSelected: (value) {
+                      Navigator.pop(context);
+                      ScaffoldMessenger.of(context).showSnackBar(
+                        SnackBar(
+                          content: Text('Range: ${value.start} - ${value.end}'),
+                        ),
+                      );
+                    },
+                  ),
+                ),
             child: const Text('Show RangeDatePicker Widget'),
           ),
           ElevatedButton(
-            onPressed: () => _showCustomDialog(
-              context,
-              DaysPicker(
-                minDate: DateTime(2021, 1, 1),
-                maxDate: DateTime(2023, 12, 31),
-                onDateSelected: (value) {
-                  Navigator.pop(context);
-                  ScaffoldMessenger.of(context).showSnackBar(
-                    SnackBar(content: Text('DaysPicker: $value')),
-                  );
-                },
-              ),
-            ),
+            onPressed:
+                () => _showCustomDialog(
+                  context,
+                  DaysPicker(
+                    minDate: DateTime(2021, 1, 1),
+                    maxDate: DateTime(2023, 12, 31),
+                    onDateSelected: (value) {
+                      Navigator.pop(context);
+                      ScaffoldMessenger.of(context).showSnackBar(
+                        SnackBar(content: Text('DaysPicker: $value')),
+                      );
+                    },
+                  ),
+                ),
             child: const Text('Show DaysPicker Widget'),
           ),
           ElevatedButton(
-            onPressed: () => _showCustomDialog(
-              context,
-              MonthPicker(
-                minDate: DateTime(2021, 1),
-                maxDate: DateTime(2023, 12),
-                onDateSelected: (value) {
-                  Navigator.pop(context);
-                  ScaffoldMessenger.of(context).showSnackBar(
-                    SnackBar(content: Text('MonthPicker: $value')),
-                  );
-                },
-              ),
-            ),
+            onPressed:
+                () => _showCustomDialog(
+                  context,
+                  MonthPicker(
+                    minDate: DateTime(2021, 1),
+                    maxDate: DateTime(2023, 12),
+                    onDateSelected: (value) {
+                      Navigator.pop(context);
+                      ScaffoldMessenger.of(context).showSnackBar(
+                        SnackBar(content: Text('MonthPicker: $value')),
+                      );
+                    },
+                  ),
+                ),
             child: const Text('Show MonthPicker Widget'),
           ),
           ElevatedButton(
-            onPressed: () => _showCustomDialog(
-              context,
-              YearsPicker(
-                minDate: DateTime(2021),
-                maxDate: DateTime(2023),
-                onDateSelected: (value) {
-                  Navigator.pop(context);
-                  ScaffoldMessenger.of(context).showSnackBar(
-                    SnackBar(content: Text('YearsPicker: $value')),
-                  );
-                },
-              ),
-            ),
+            onPressed:
+                () => _showCustomDialog(
+                  context,
+                  YearsPicker(
+                    minDate: DateTime(2021),
+                    maxDate: DateTime(2023),
+                    onDateSelected: (value) {
+                      Navigator.pop(context);
+                      ScaffoldMessenger.of(context).showSnackBar(
+                        SnackBar(content: Text('YearsPicker: $value')),
+                      );
+                    },
+                  ),
+                ),
             child: const Text('Show YearsPicker Widget'),
           ),
         ],
@@ -136,6 +144,3 @@ class DatePickerPage extends StatelessWidget {
     );
   }
 }
-
-
-

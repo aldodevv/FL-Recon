@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:recon/core/constants/colors_const.dart';
 
 enum BadgeSize { small, medium, large }
+
 extension ColorTypeExt on ColorType {
   MainStatusColor get groupColor {
     switch (this) {
@@ -12,7 +13,6 @@ extension ColorTypeExt on ColorType {
       case ColorType.red:
         return MainGroupColors.red;
       case ColorType.blue:
-      default:
         return MainGroupColors.blue;
     }
   }
@@ -58,7 +58,6 @@ class StatusBadgeWidget extends StatelessWidget {
       case BadgeSize.large:
         return 18;
       case BadgeSize.medium:
-      default:
         return 14;
     }
   }
@@ -70,7 +69,6 @@ class StatusBadgeWidget extends StatelessWidget {
       case BadgeSize.large:
         return const EdgeInsets.symmetric(horizontal: 16, vertical: 10);
       case BadgeSize.medium:
-      default:
         return const EdgeInsets.symmetric(horizontal: 12, vertical: 6);
     }
   }
@@ -91,7 +89,8 @@ class StatusBadgeWidget extends StatelessWidget {
   Widget build(BuildContext context) {
     final colorGroup = _resolvedColor(context);
 
-    final content = child ??
+    final content =
+        child ??
         Text(
           text ?? '',
           style: TextStyle(
@@ -105,8 +104,9 @@ class StatusBadgeWidget extends StatelessWidget {
       padding: padding ?? _defaultPadding(),
       decoration: BoxDecoration(
         color: colorGroup.background,
-        borderRadius:
-            BorderRadius.circular(borderRadius ?? _defaultBorderRadius()),
+        borderRadius: BorderRadius.circular(
+          borderRadius ?? _defaultBorderRadius(),
+        ),
         border: showBorder ? Border.all(color: colorGroup.color) : null,
       ),
       child: content,

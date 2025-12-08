@@ -3,7 +3,7 @@ import 'package:flutter/material.dart';
 class DateofweeksectionWidget extends StatefulWidget {
   final DateTime? initialDate;
   final Function(DateTime)? onDateSelected;
-  
+
   const DateofweeksectionWidget({
     super.key,
     this.initialDate,
@@ -11,20 +11,39 @@ class DateofweeksectionWidget extends StatefulWidget {
   });
 
   @override
-  State<DateofweeksectionWidget> createState() => _DateofweeksectionWidgetState();
+  State<DateofweeksectionWidget> createState() =>
+      _DateofweeksectionWidgetState();
 }
 
 class _DateofweeksectionWidgetState extends State<DateofweeksectionWidget> {
   late DateTime _currentDate;
   late DateTime _selectedWeekStart;
-  
+
   static const List<String> _monthNames = [
-    'Januari', 'Februari', 'Maret', 'April', 'Mei', 'Juni',
-    'Juli', 'Agustus', 'September', 'Oktober', 'November', 'Desember'
+    'Januari',
+    'Februari',
+    'Maret',
+    'April',
+    'Mei',
+    'Juni',
+    'Juli',
+    'Agustus',
+    'September',
+    'Oktober',
+    'November',
+    'Desember',
   ];
-  
-  static const List<String> _dayNames = ['Min', 'Sen', 'Sel', 'Rab', 'Kam', 'Jum', 'Sab'];
-  
+
+  static const List<String> _dayNames = [
+    'Min',
+    'Sen',
+    'Sel',
+    'Rab',
+    'Kam',
+    'Jum',
+    'Sab',
+  ];
+
   @override
   void initState() {
     super.initState();
@@ -38,16 +57,22 @@ class _DateofweeksectionWidgetState extends State<DateofweeksectionWidget> {
   }
 
   List<DateTime> _getWeekDates() {
-    return List.generate(7, (index) => 
-      DateTime(_selectedWeekStart.year, _selectedWeekStart.month, _selectedWeekStart.day + index)
+    return List.generate(
+      7,
+      (index) => DateTime(
+        _selectedWeekStart.year,
+        _selectedWeekStart.month,
+        _selectedWeekStart.day + index,
+      ),
     );
   }
 
   @override
   Widget build(BuildContext context) {
     final weekDates = _getWeekDates();
-    final monthYear = '${_monthNames[weekDates[3].month - 1]} ${weekDates[3].year}';
-    
+    final monthYear =
+        '${_monthNames[weekDates[3].month - 1]} ${weekDates[3].year}';
+
     return Container(
       padding: const EdgeInsets.all(16),
       decoration: BoxDecoration(
@@ -55,7 +80,7 @@ class _DateofweeksectionWidgetState extends State<DateofweeksectionWidget> {
         borderRadius: BorderRadius.circular(12),
         boxShadow: [
           BoxShadow(
-            color: Colors.black.withOpacity(0.1),
+            color: Colors.black.withAlpha(10),
             blurRadius: 10,
             offset: const Offset(0, 4),
           ),
@@ -92,7 +117,6 @@ class _DateofweeksectionWidgetState extends State<DateofweeksectionWidget> {
     );
   }
 
-
   Widget _buildWeekView(List<DateTime> weekDates) {
     return Column(
       children: [
@@ -107,7 +131,8 @@ class _DateofweeksectionWidgetState extends State<DateofweeksectionWidget> {
                   style: TextStyle(
                     fontSize: 12,
                     fontWeight: FontWeight.w500,
-                    color: isWeekend ? Colors.red.shade400 : Colors.grey.shade700,
+                    color:
+                        isWeekend ? Colors.red.shade400 : Colors.grey.shade700,
                   ),
                 ),
               ),
@@ -124,7 +149,7 @@ class _DateofweeksectionWidgetState extends State<DateofweeksectionWidget> {
               final isSelected = _isSameDay(date, _currentDate);
               final isToday = _isSameDay(date, DateTime.now());
               final isWeekend = index == 0 || index == 6;
-              
+
               return Expanded(
                 child: _buildDayCell(date, isSelected, isToday, isWeekend),
               );
@@ -135,10 +160,15 @@ class _DateofweeksectionWidgetState extends State<DateofweeksectionWidget> {
     );
   }
 
-  Widget _buildDayCell(DateTime date, bool isSelected, bool isToday, bool isWeekend) {
+  Widget _buildDayCell(
+    DateTime date,
+    bool isSelected,
+    bool isToday,
+    bool isWeekend,
+  ) {
     Color? backgroundColor;
     Color textColor = Colors.black87;
-    
+
     if (isSelected) {
       backgroundColor = Colors.blue;
       textColor = Colors.white;
@@ -146,11 +176,11 @@ class _DateofweeksectionWidgetState extends State<DateofweeksectionWidget> {
       backgroundColor = Colors.blue.shade50;
       textColor = Colors.blue;
     }
-    
+
     if (isWeekend && !isSelected) {
       textColor = Colors.red.shade400;
     }
-    
+
     return GestureDetector(
       onTap: () => _onDateTap(date),
       child: Container(
@@ -184,11 +214,9 @@ class _DateofweeksectionWidgetState extends State<DateofweeksectionWidget> {
   void _showMonthYearPicker() async {
     final result = await showDialog<DateTime>(
       context: context,
-      builder: (context) => _MonthYearPickerDialog(
-        initialDate: _currentDate,
-      ),
+      builder: (context) => _MonthYearPickerDialog(initialDate: _currentDate),
     );
-    
+
     if (result != null) {
       setState(() {
         _currentDate = result;
@@ -204,7 +232,7 @@ class _DateofweeksectionWidgetState extends State<DateofweeksectionWidget> {
 
 class _MonthYearPickerDialog extends StatefulWidget {
   final DateTime initialDate;
-  
+
   const _MonthYearPickerDialog({required this.initialDate});
 
   @override
@@ -214,10 +242,20 @@ class _MonthYearPickerDialog extends StatefulWidget {
 class _MonthYearPickerDialogState extends State<_MonthYearPickerDialog> {
   late int _selectedYear;
   late int _selectedMonth;
-  
+
   static const List<String> _monthNames = [
-    'Januari', 'Februari', 'Maret', 'April', 'Mei', 'Juni',
-    'Juli', 'Agustus', 'September', 'Oktober', 'November', 'Desember'
+    'Januari',
+    'Februari',
+    'Maret',
+    'April',
+    'Mei',
+    'Juni',
+    'Juli',
+    'Agustus',
+    'September',
+    'Oktober',
+    'November',
+    'Desember',
   ];
 
   @override
@@ -238,9 +276,9 @@ class _MonthYearPickerDialogState extends State<_MonthYearPickerDialog> {
           children: [
             Text(
               'Pilih Bulan & Tahun',
-              style: Theme.of(context).textTheme.titleLarge?.copyWith(
-                fontWeight: FontWeight.w600,
-              ),
+              style: Theme.of(
+                context,
+              ).textTheme.titleLarge?.copyWith(fontWeight: FontWeight.w600),
             ),
             const SizedBox(height: 20),
             Row(
@@ -261,7 +299,9 @@ class _MonthYearPickerDialogState extends State<_MonthYearPickerDialog> {
                 const SizedBox(width: 8),
                 ElevatedButton(
                   onPressed: () {
-                    Navigator.of(context).pop(DateTime(_selectedYear, _selectedMonth, 1));
+                    Navigator.of(
+                      context,
+                    ).pop(DateTime(_selectedYear, _selectedMonth, 1));
                   },
                   style: ElevatedButton.styleFrom(
                     backgroundColor: Colors.blue,
@@ -280,7 +320,7 @@ class _MonthYearPickerDialogState extends State<_MonthYearPickerDialog> {
   Widget _buildYearSelector() {
     final currentYear = DateTime.now().year;
     final years = List.generate(21, (index) => currentYear - 10 + index);
-    
+
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
@@ -297,13 +337,14 @@ class _MonthYearPickerDialogState extends State<_MonthYearPickerDialog> {
             itemBuilder: (context, index) {
               final year = years[index];
               final isSelected = year == _selectedYear;
-              
+
               return ListTile(
                 dense: true,
                 title: Text(
                   year.toString(),
                   style: TextStyle(
-                    fontWeight: isSelected ? FontWeight.w600 : FontWeight.normal,
+                    fontWeight:
+                        isSelected ? FontWeight.w600 : FontWeight.normal,
                     color: isSelected ? Colors.blue : null,
                   ),
                 ),
@@ -334,13 +375,14 @@ class _MonthYearPickerDialogState extends State<_MonthYearPickerDialog> {
             itemBuilder: (context, index) {
               final month = index + 1;
               final isSelected = month == _selectedMonth;
-              
+
               return ListTile(
                 dense: true,
                 title: Text(
                   _monthNames[index],
                   style: TextStyle(
-                    fontWeight: isSelected ? FontWeight.w600 : FontWeight.normal,
+                    fontWeight:
+                        isSelected ? FontWeight.w600 : FontWeight.normal,
                     color: isSelected ? Colors.blue : null,
                   ),
                 ),

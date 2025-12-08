@@ -11,7 +11,6 @@ extension ColorTypeExt on ColorType {
       case ColorType.red:
         return MainGroupColors.red;
       case ColorType.blue:
-      default:
         return MainGroupColors.blue;
     }
   }
@@ -29,7 +28,6 @@ extension SummarysectionTypeExt on SummarysectionType {
       case SummarysectionType.gagal:
         return ColorType.red;
       case SummarysectionType.harian:
-      default:
         return ColorType.blue;
     }
   }
@@ -43,7 +41,6 @@ extension SummarysectionTypeExt on SummarysectionType {
       case SummarysectionType.gagal:
         return Icons.receipt;
       case SummarysectionType.harian:
-      default:
         return Icons.calendar_month;
     }
   }
@@ -59,8 +56,6 @@ class SummarysectionWidget extends StatelessWidget {
   final IconData? icon;
   final String label;
 
-
-
   const SummarysectionWidget({
     super.key,
     required this.type,
@@ -69,7 +64,6 @@ class SummarysectionWidget extends StatelessWidget {
     this.iconSize = 32,
     this.fontSize = 16,
     this.label = '',
-
   });
 
   bool _isDarkMode(BuildContext context) =>

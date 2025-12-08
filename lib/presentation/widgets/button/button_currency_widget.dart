@@ -7,7 +7,7 @@ class ButtonCurrencyWidget extends StatelessWidget {
   const ButtonCurrencyWidget({
     super.key,
     required this.value,
-    required this.onChangeFlag
+    required this.onChangeFlag,
   });
 
   @override
@@ -17,7 +17,7 @@ class ButtonCurrencyWidget extends StatelessWidget {
       child: Container(
         padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
         decoration: BoxDecoration(
-          color: Colors.black.withOpacity(0.6),
+          color: Colors.black.withAlpha(20),
           borderRadius: BorderRadius.circular(30),
         ),
         child: Row(
@@ -25,16 +25,10 @@ class ButtonCurrencyWidget extends StatelessWidget {
           children: [
             Text(
               value,
-              style: const TextStyle(
-                color: Colors.white,
-                fontSize: 16,
-              ),
+              style: const TextStyle(color: Colors.white, fontSize: 16),
             ),
             const SizedBox(width: 8),
-            const Icon(
-              Icons.arrow_downward,
-              color: Colors.white,
-            ),
+            const Icon(Icons.arrow_downward, color: Colors.white),
           ],
         ),
       ),
