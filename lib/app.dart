@@ -4,8 +4,10 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_dotenv/flutter_dotenv.dart';
 import 'package:recon/app_theme.dart';
 import 'package:recon/core/handler/network_handler.dart';
+import 'package:recon/core/handler/permission_handler.dart';
 import 'package:recon/core/injection.dart';
 import 'package:recon/core/handler/phone_call_handler.dart';
+import 'package:recon/core/services/permission_service.dart';
 import 'package:recon/presentation/bloc/theme/theme_bloc.dart';
 import 'package:recon/presentation/routes/app_router.dart';
 import 'dart:async';
@@ -21,6 +23,7 @@ class _AppState extends State<App> with WidgetsBindingObserver {
   late final AppRouter _appRouter;
   late PhoneCallHandler _phoneHandler;
   late NetworkHandler _networkHandler;
+  late PermissionHandler _permissionHandler;
 
   // ! First Step for initialize
   @override
@@ -66,6 +69,7 @@ class _AppState extends State<App> with WidgetsBindingObserver {
   @override
   void dispose() {
     WidgetsBinding.instance.removeObserver(this);
+    _permissionHandler.dispose();
     _dispose();
     super.dispose();
   }
@@ -73,6 +77,13 @@ class _AppState extends State<App> with WidgetsBindingObserver {
   Future<void> _init() async {
     await _registerNavKey();
     final navKey = getIt<GlobalKey<NavigatorState>>();
+    final permissionService = PermissionService();
+    _permissionHandler = PermissionHandler(
+      navigatorKey: navKey,
+      service: permissionService,
+    );
+    _permissionHandler.start();
+
     _phoneHandler = PhoneCallHandler(navigatorKey: navKey);
     _networkHandler = NetworkHandler();
     _phoneHandler.start();
