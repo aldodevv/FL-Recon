@@ -28,7 +28,7 @@ class ModalPermissionDenied extends StatelessWidget {
                   style: TextStyle(
                     fontSize: 18,
                     fontWeight: FontWeight.bold,
-                    color: Colors.black
+                    color: Colors.black,
                   ),
                 ),
                 const SizedBox(height: 12),
