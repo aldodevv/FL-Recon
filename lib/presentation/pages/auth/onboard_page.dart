@@ -36,6 +36,12 @@ final onboardMenuSections = <OnboardMenuSection>[
     icon: Icons.sports_esports,
     items: [
       OnboardMenuItem(
+        title: 'Unknow Route',
+        subtitle: 'Unknow Route',
+        icon: Icons.device_unknown,
+        route: const UnknowRoute(),
+      ),
+      OnboardMenuItem(
         title: 'Memory Match',
         subtitle: 'Card matching game',
         icon: Icons.grid_view,

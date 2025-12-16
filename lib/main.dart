@@ -16,13 +16,21 @@ FutureOr<void> main() async {
   if (kReleaseMode) {
     debugPrint = (String? message, {int? wrapWidth}) {};
   }
+  runZonedGuarded(
+    () {
+      FlutterError.onError = (details) {
+        debugPrint('🔥 FlutterError: ${details.exception}');
+      };
+      runApp(const App());
+    },
+    (error, stack) {
+      debugPrint('💥 ZoneError: $error');
+    },
+  );
 
   await dotenv.load(fileName: ".env");
 
-  F.appFlavor = Flavor.values.firstWhere(
-    (element) => element.name == appFlavor,
-    orElse: () => Flavor.dev,
-  );
+  F.appFlavor = Flavor.values.firstWhere((element) => element.name == appFlavor, orElse: () => Flavor.dev);
 
   runApp(App());
 }

@@ -1,13 +1,13 @@
 import 'package:auto_route/auto_route.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:flutter_dotenv/flutter_dotenv.dart';
 import 'package:recon/app_theme.dart';
 import 'package:recon/core/handler/network_handler.dart';
 import 'package:recon/core/handler/permission_handler.dart';
 import 'package:recon/core/injection.dart';
 import 'package:recon/core/handler/phone_call_handler.dart';
 import 'package:recon/core/services/permission_service.dart';
+import 'package:recon/core/utils/log_navigator_util.dart';
 import 'package:recon/presentation/bloc/theme/theme_bloc.dart';
 import 'package:recon/presentation/routes/app_router.dart';
 import 'dart:async';
@@ -135,6 +135,7 @@ class _AppState extends State<App> with WidgetsBindingObserver {
             themeMode: state.themeMode,
             title: F.title,
             routerConfig: _appRouter.config(
+              navigatorObservers: () => [RouteLogger()],
               deepLinkTransformer: DeepLink.prefixStripper(''),
               deepLinkBuilder: (deepLink) {
                 debugPrint('Received deepLink: ${deepLink.uri}');
