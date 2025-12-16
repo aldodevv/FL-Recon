@@ -1,11 +1,119 @@
 // pages/home_screen.dart
 import 'package:auto_route/auto_route.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:recon/core/constants/colors_const.dart';
-import 'package:recon/presentation/bloc/theme/theme_bloc.dart';
 import 'package:recon/presentation/routes/app_router.gr.dart';
-import 'package:recon/presentation/widgets/button/mainbutton_widget.dart';
+
+final onboardMenuSections = <OnboardMenuSection>[
+  /// AUTH
+  OnboardMenuSection(
+    title: 'Auth Pages',
+    icon: Icons.lock_outline,
+    items: [
+      OnboardMenuItem(
+        title: 'Onboard Page',
+        subtitle: 'Entry & showcase page',
+        icon: Icons.flag,
+        route: const OnboardRoute(),
+      ),
+      OnboardMenuItem(
+        title: 'Forgot Password',
+        subtitle: 'Reset password flow',
+        icon: Icons.password,
+        route: const ForgetpasswordRoute(),
+      ),
+      OnboardMenuItem(
+        title: 'Terms & Condition',
+        subtitle: 'Legal & agreement',
+        icon: Icons.description,
+        route: const TermsconditionRoute(),
+      ),
+    ],
+  ),
+
+  /// GAMES
+  OnboardMenuSection(
+    title: 'Games',
+    icon: Icons.sports_esports,
+    items: [
+      OnboardMenuItem(
+        title: 'Memory Match',
+        subtitle: 'Card matching game',
+        icon: Icons.grid_view,
+        route: const MemoryMatchGameRoute(),
+      ),
+      OnboardMenuItem(
+        title: 'Snake Game',
+        subtitle: 'Classic snake',
+        icon: Icons.drag_indicator,
+        route: const SnakeGameRoute(),
+      ),
+      OnboardMenuItem(
+        title: 'Tap The Target',
+        subtitle: 'Reflex test game',
+        icon: Icons.touch_app,
+        route: const TapTheTargetGameRoute(),
+      ),
+      OnboardMenuItem(
+        title: 'Wordle',
+        subtitle: 'Guess the word',
+        icon: Icons.text_fields,
+        route: const WordleGameRoute(),
+      ),
+    ],
+  ),
+
+  /// TOOLS
+  OnboardMenuSection(
+    title: 'Tools',
+    icon: Icons.build,
+    items: [
+      OnboardMenuItem(
+        title: 'Main Tool',
+        subtitle: 'Tools entry point',
+        icon: Icons.dashboard,
+        route: MaintoolRoute(username: 'aldodevv'),
+      ),
+      OnboardMenuItem(
+        title: 'Base32',
+        subtitle: 'Encode & decode',
+        icon: Icons.code,
+        route: const Base32Route(),
+      ),
+      OnboardMenuItem(
+        title: 'Bridging',
+        subtitle: 'Platform channel demo',
+        icon: Icons.compare_arrows,
+        route: const BridgingRoute(),
+      ),
+      OnboardMenuItem(
+        title: 'Flushbar',
+        subtitle: 'Notification demo',
+        icon: Icons.notifications,
+        route: const FlushbarRoute(),
+      ),
+      OnboardMenuItem(
+        title: 'WebView',
+        subtitle: 'In-app browser',
+        icon: Icons.public,
+        route: WebViewRoute(initialUrl: 'https://flutter.dev'),
+      ),
+    ],
+  ),
+
+  /// TRANSACTION
+  OnboardMenuSection(
+    title: 'Transaction',
+    icon: Icons.receipt_long,
+    items: [
+      OnboardMenuItem(
+        title: 'Transaction Detail',
+        subtitle: 'Detail transaction UI',
+        icon: Icons.payments,
+        route: const DetailTransactionRoute(),
+      ),
+    ],
+  ),
+];
 
 @RoutePage()
 class OnboardPage extends StatefulWidget {
@@ -19,147 +127,73 @@ class _OnboardPageState extends State<OnboardPage> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(title: const Text("Onboard")),
-      body: BlocSelector<ThemeBloc, ThemeState, ThemeMode>(
-        selector: (state) => state.themeMode,
-        builder: (context, currentThemeMode) {
-          return SingleChildScrollView(
-            child: Padding(
-              padding: const EdgeInsets.all(8.0),
-              child: Column(
-                spacing: 10,
+      appBar: AppBar(title: const Text('🚀 Onboard Hub')),
+      body: ListView.separated(
+        padding: const EdgeInsets.all(16),
+        itemCount: onboardMenuSections.length,
+        separatorBuilder: (_, _) => const SizedBox(height: 24),
+        itemBuilder: (context, index) {
+          final section = onboardMenuSections[index];
+
+          return Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              Row(
                 children: [
-                  const Text(
-                    "➡️ Navigate to Pages",
-                    style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
+                  Icon(section.icon, size: 22),
+                  const SizedBox(width: 8),
+                  Text(
+                    section.title,
+                    style: const TextStyle(
+                      fontSize: 18,
+                      fontWeight: FontWeight.bold,
+                    ),
                   ),
-                  const SizedBox(height: 12),
-
-                  MainbuttonWidget(
-                    text: "Open Form Page",
-                    size: ButtonSize.large,
-                    colorType: ColorType.green,
-                    onPressed: () {
-                      context.router.push(const FormRoute());
-                    },
-                  ),
-                  const SizedBox(height: 12),
-
-                  MainbuttonWidget(
-                    text: "Open WebView Page",
-                    size: ButtonSize.large,
-                    colorType: ColorType.blue,
-                    onPressed: () {
-                      context.router.push(
-                        WebViewRoute(
-                          initialUrl: 'https://flutter.dev',
-                          key: ValueKey('webview'),
-                        ),
-                      );
-                    },
-                  ),
-
-                  const SizedBox(height: 32),
-
-                  const Text(
-                    "🎨 Button Variations",
-                    style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
-                  ),
-                  const SizedBox(height: 12),
-
-                  const Text("Fullfilled"),
-                  const SizedBox(height: 8),
-                  Row(
-                    mainAxisAlignment: MainAxisAlignment.spaceAround,
-                    children: [
-                      MainbuttonWidget(
-                        text: "Small",
-                        size: ButtonSize.small,
-                        colorType: ColorType.red,
-                        onPressed: () {},
-                      ),
-                      MainbuttonWidget(
-                        text: "Medium",
-                        size: ButtonSize.medium,
-                        colorType: ColorType.orange,
-                        onPressed: () {},
-                      ),
-                      MainbuttonWidget(
-                        text: "Large",
-                        size: ButtonSize.large,
-                        colorType: ColorType.green,
-                        onPressed: () {},
-                      ),
-                    ],
-                  ),
-
-                  const SizedBox(height: 20),
-                  const Text("Outlined"),
-                  const SizedBox(height: 8),
-                  Row(
-                    mainAxisAlignment: MainAxisAlignment.spaceAround,
-                    children: [
-                      MainbuttonWidget(
-                        text: "Small",
-                        size: ButtonSize.small,
-                        type: ButtonType.outlined,
-                        colorType: ColorType.blue,
-                        onPressed: () {},
-                      ),
-                      MainbuttonWidget(
-                        text: "Medium",
-                        size: ButtonSize.medium,
-                        type: ButtonType.outlined,
-                        colorType: ColorType.green,
-                        onPressed: () {},
-                      ),
-                      MainbuttonWidget(
-                        text: "Large",
-                        size: ButtonSize.large,
-                        type: ButtonType.outlined,
-                        colorType: ColorType.orange,
-                        onPressed: () {},
-                      ),
-                    ],
-                  ),
-
-                  const SizedBox(height: 20),
-                  const Text("Text Buttons"),
-                  const SizedBox(height: 8),
-                  Row(
-                    mainAxisAlignment: MainAxisAlignment.spaceAround,
-                    children: [
-                      MainbuttonWidget(
-                        text: "Small",
-                        size: ButtonSize.small,
-                        type: ButtonType.text,
-                        colorType: ColorType.red,
-                        onPressed: () {},
-                      ),
-                      MainbuttonWidget(
-                        text: "Medium",
-                        size: ButtonSize.medium,
-                        type: ButtonType.text,
-                        colorType: ColorType.blue,
-                        onPressed: () {},
-                      ),
-                      MainbuttonWidget(
-                        text: "Large",
-                        size: ButtonSize.large,
-                        type: ButtonType.text,
-                        colorType: ColorType.green,
-                        onPressed: () {},
-                      ),
-                    ],
-                  ),
-
-                  const SizedBox(height: 40),
                 ],
               ),
-            ),
+              const SizedBox(height: 12),
+
+              ...section.items.map(
+                (item) => Card(
+                  child: ListTile(
+                    leading: Icon(item.icon),
+                    title: Text(item.title),
+                    subtitle: Text(item.subtitle),
+                    trailing: const Icon(Icons.chevron_right),
+                    onTap: () => context.router.push(item.route),
+                  ),
+                ),
+              ),
+            ],
           );
         },
       ),
     );
   }
+}
+
+class OnboardMenuSection {
+  final String title;
+  final IconData icon;
+  final List<OnboardMenuItem> items;
+
+  const OnboardMenuSection({
+    required this.title,
+    required this.icon,
+    required this.items,
+  });
+}
+
+class OnboardMenuItem {
+  final String title;
+  final String subtitle;
+  final IconData icon;
+  final PageRouteInfo route;
+
+  const OnboardMenuItem({
+    required this.title,
+    required this.subtitle,
+    required this.icon,
+    required this.route,
+  });
 }

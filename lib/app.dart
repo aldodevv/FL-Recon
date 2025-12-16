@@ -128,6 +128,7 @@ class _AppState extends State<App> with WidgetsBindingObserver {
             (previous, current) => previous.themeMode != current.themeMode,
         builder: (context, state) {
           return MaterialApp.router(
+            debugShowCheckedModeBanner: false,
             themeAnimationDuration: const Duration(milliseconds: 200),
             theme: AppTheme.lightTheme,
             darkTheme: AppTheme.darkTheme,
@@ -140,31 +141,10 @@ class _AppState extends State<App> with WidgetsBindingObserver {
                 return deepLink;
               },
             ),
-            builder:
-                (context, child) => _flavorBanner(
-                  child: child ?? const SizedBox.shrink(),
-                  show: false,
-                ),
+            builder: (context, child) => child ?? const SizedBox.shrink(),
           );
         },
       ),
     );
   }
-
-  // Inline conditional untuk performance - no function call overhead
-  Widget _flavorBanner({required Widget child, bool show = true}) =>
-      show
-          ? Banner(
-            location: BannerLocation.topEnd,
-            message: '${F.name} ${dotenv.env['APP_NAME']}',
-            color: Colors.red,
-            textStyle: const TextStyle(
-              fontWeight: FontWeight.w700,
-              fontSize: 12.0,
-              letterSpacing: 1.0,
-            ),
-            textDirection: TextDirection.ltr,
-            child: child,
-          )
-          : child;
 }
