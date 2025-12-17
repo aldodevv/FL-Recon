@@ -1,22 +1,14 @@
 import 'dart:async';
 import 'package:permission_handler/permission_handler.dart';
 
-enum PermissionEventType {
-  updated,
-  permanentlyDenied,
-  allCompleted,
-}
+enum PermissionEventType { updated, permanentlyDenied, allCompleted }
 
 class PermissionEvent {
   final PermissionEventType type;
   final Permission? permission;
   final Map<Permission, PermissionStatus> status;
 
-  PermissionEvent({
-    required this.type,
-    required this.status,
-    this.permission,
-  });
+  PermissionEvent({required this.type, required this.status, this.permission});
 }
 
 class PermissionService {
@@ -30,6 +22,7 @@ class PermissionService {
       Permission.camera,
       Permission.location,
       Permission.notification,
+      Permission.microphone
     ];
 
     checkAll();
@@ -43,10 +36,7 @@ class PermissionService {
     }
 
     _safeAddEvent(
-      PermissionEvent(
-        type: PermissionEventType.updated,
-        status: result,
-      ),
+      PermissionEvent(type: PermissionEventType.updated, status: result),
     );
 
     return result;
@@ -77,6 +67,30 @@ class PermissionService {
           ),
         );
       }
+    }
+  }
+
+  Future<void> request(Permission permission) async {
+    final status = await permission.request();
+
+    final mapCheckPermission = await checkAll();
+
+    _safeAddEvent(
+      PermissionEvent(
+        type: PermissionEventType.updated,
+        status: mapCheckPermission,
+        permission: permission,
+      ),
+    );
+
+    if (status.isPermanentlyDenied) {
+      _safeAddEvent(
+        PermissionEvent(
+          type: PermissionEventType.permanentlyDenied,
+          permission: permission,
+          status: mapCheckPermission,
+        ),
+      );
     }
   }
 
