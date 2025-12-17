@@ -1,13 +1,13 @@
 import 'package:auto_route/auto_route.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:flutter_dotenv/flutter_dotenv.dart';
 import 'package:recon/app_theme.dart';
 import 'package:recon/core/handler/network_handler.dart';
 import 'package:recon/core/handler/permission_handler.dart';
 import 'package:recon/core/injection.dart';
 import 'package:recon/core/handler/phone_call_handler.dart';
 import 'package:recon/core/services/permission_service.dart';
+import 'package:recon/core/utils/log_navigator_util.dart';
 import 'package:recon/presentation/bloc/theme/theme_bloc.dart';
 import 'package:recon/presentation/routes/app_router.dart';
 import 'dart:async';
@@ -128,43 +128,24 @@ class _AppState extends State<App> with WidgetsBindingObserver {
             (previous, current) => previous.themeMode != current.themeMode,
         builder: (context, state) {
           return MaterialApp.router(
+            debugShowCheckedModeBanner: false,
             themeAnimationDuration: const Duration(milliseconds: 200),
             theme: AppTheme.lightTheme,
             darkTheme: AppTheme.darkTheme,
             themeMode: state.themeMode,
             title: F.title,
             routerConfig: _appRouter.config(
+              navigatorObservers: () => [RouteLogger()],
               deepLinkTransformer: DeepLink.prefixStripper(''),
               deepLinkBuilder: (deepLink) {
                 debugPrint('Received deepLink: ${deepLink.uri}');
                 return deepLink;
               },
             ),
-            builder:
-                (context, child) => _flavorBanner(
-                  child: child ?? const SizedBox.shrink(),
-                  show: false,
-                ),
+            builder: (context, child) => child ?? const SizedBox.shrink(),
           );
         },
       ),
     );
   }
-
-  // Inline conditional untuk performance - no function call overhead
-  Widget _flavorBanner({required Widget child, bool show = true}) =>
-      show
-          ? Banner(
-            location: BannerLocation.topEnd,
-            message: '${F.name} ${dotenv.env['APP_NAME']}',
-            color: Colors.red,
-            textStyle: const TextStyle(
-              fontWeight: FontWeight.w700,
-              fontSize: 12.0,
-              letterSpacing: 1.0,
-            ),
-            textDirection: TextDirection.ltr,
-            child: child,
-          )
-          : child;
 }

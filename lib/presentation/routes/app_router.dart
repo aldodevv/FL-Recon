@@ -29,6 +29,14 @@ class AppRouter extends RootStackRouter {
     // Camera
     AutoRoute(page: CameraRoute.page, path: '/camera'),
 
+    //! Unknown Route
+    CustomRoute(
+      path: '*',
+      page: UnknowRoute.page,
+      transitionsBuilder: TransitionsBuilders.fadeIn,
+      duration: Duration(seconds: 1),
+    ),
+
     //! Transaction Routes
     AutoRoute(path: '/detail-transaction', page: DetailTransactionRoute.page),
   ];

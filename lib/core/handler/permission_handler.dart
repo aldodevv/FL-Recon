@@ -10,10 +10,7 @@ class PermissionHandler {
 
   StreamSubscription<PermissionEvent>? _sub;
 
-  PermissionHandler({
-    required this.navigatorKey,
-    required this.service,
-  });
+  PermissionHandler({required this.navigatorKey, required this.service});
 
   void start() {
     _listenEvents();
@@ -44,10 +41,9 @@ class PermissionHandler {
   }
 
   void _handleAllCompleted(Map<Permission, PermissionStatus> map) {
-    final denied = map.entries
-        .where((e) => !e.value.isGranted)
-        .map((e) => e.key)
-        .toList();
+    final denied =
+        map.entries.where((e) => !e.value.isGranted).map((e) => e.key).toList();
+    debugPrint('denied: $denied --- $map');
 
     if (denied.isNotEmpty) {
       _showModal(denied);
@@ -62,8 +58,7 @@ class PermissionHandler {
       PageRouteBuilder(
         opaque: false,
         barrierDismissible: false,
-        pageBuilder: (_, __, ___) =>
-            ModalPermissionDenied(denied: denied),
+        pageBuilder: (_, _, _) => ModalPermissionDenied(denied: denied),
       ),
     );
   }
