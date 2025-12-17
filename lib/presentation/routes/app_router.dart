@@ -26,6 +26,8 @@ class AppRouter extends RootStackRouter {
     AutoRoute(path: '/lazy', page: LazyRoute.page),
     AutoRoute(path: '/webview', page: WebViewRoute.page),
     AutoRoute(path: '/form', page: FormRoute.page),
+    // Camera
+    AutoRoute(page: CameraRoute.page, path: '/camera'),
 
     //! Transaction Routes
     AutoRoute(path: '/detail-transaction', page: DetailTransactionRoute.page),
