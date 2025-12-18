@@ -103,6 +103,12 @@ final onboardMenuSections = <OnboardMenuSection>[
         icon: Icons.public,
         route: WebViewRoute(initialUrl: 'https://flutter.dev'),
       ),
+      OnboardMenuItem(
+        title: 'App Logs',
+        subtitle: 'Crash & debug logs',
+        icon: Icons.bug_report,
+        route: const TalkerRoute(),
+      ),
     ],
   ),
 

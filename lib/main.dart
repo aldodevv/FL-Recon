@@ -5,6 +5,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_dotenv/flutter_dotenv.dart';
 import 'package:recon/core/injection.dart';
+import 'package:recon/core/log/logger.dart';
 
 import 'app.dart';
 import 'flavors.dart';
@@ -19,12 +20,20 @@ FutureOr<void> main() async {
   runZonedGuarded(
     () {
       FlutterError.onError = (details) {
-        debugPrint('🔥 FlutterError: ${details.exception}');
+        talker.error(
+          'FlutterError',
+          details.exception,
+          details.stack
+        );
       };
       runApp(const App());
     },
     (error, stack) {
-      debugPrint('💥 ZoneError: $error');
+      talker.critical(
+        'ZoneError',
+        error,
+        stack
+      );
     },
   );
 
