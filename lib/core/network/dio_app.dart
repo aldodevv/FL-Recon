@@ -1,213 +1,108 @@
-// network/dio_client.dart
-import 'dart:convert';
-
 import 'package:dartz/dartz.dart';
-import 'package:dio/dio.dart';
-import 'package:flutter/material.dart';
-import 'package:logger/logger.dart';
-import 'package:recon/core/constants/app_const.dart';
-import 'package:recon/core/injection.dart';
-import 'package:recon/core/network/dio_const.dart';
+import 'package:recon/core/network/dio_client.dart';
 import 'package:recon/core/network/failure_response.dart';
-import 'package:recon/core/utils/utils.dart';
-import 'package:recon/flavors.dart';
 
-class DioHeaders {
-  static const authorization = 'Authorization';
-  static const bearer = 'Bearer';
-}
+typedef OnUnauthorized = Future<void> Function();
+typedef OnShowError = void Function(AppFailure failure);
 
-extension DioAppX on DioApp {
-  Future<Either<ResponseFailed, Response<T>>> safeRequest<T>(
-    Future<Response<T>> Function() requestFn,
-  ) async {
-    try {
-      final response = await requestFn();
-      return Right(response);
-    } on DioException catch (e) {
-      if (e.response?.statusCode == 401) {
-        await _handleUnauthorized();
-      }
-      return Left(ResponseFailed.fromDioError(e));
-    } catch (e) {
-      return Left(
-        ResponseFailed(
-          message: e.toString(),
-          statusCode: null,
-          isUnauthorized: false,
-        ),
-      );
+enum BaseUrl { main, auth }
+
+extension BaseUrlX on BaseUrl {
+  String get value {
+    switch (this) {
+      case BaseUrl.auth:
+        return 'https://auth.example.com';
+      case BaseUrl.main:
+        return 'https://jsonplaceholder.typicode.com';
     }
   }
 }
 
 class DioApp {
-  static DioApp? _instance;
-  static DioApp get instance => _instance ??= DioApp._();
+  late final DioClient _client;
 
-  static String get _baseUrl {
-    switch (F.appFlavor) {
-      case Flavor.dev:
-        return AppConst.devBaseUrl;
-      case Flavor.uat:
-        return AppConst.uatBaseUrl;
-      case Flavor.prod:
-        return AppConst.appBaseUrl;
-    }
-  }
+  final OnUnauthorized? onUnauthorized;
+  final OnShowError? onShowError;
 
-  late Dio dio;
-  final Logger _logger = Logger();
-
-  DioApp._() {
-    dio = Dio(
-      BaseOptions(
-        baseUrl: _baseUrl,
-        connectTimeout: const Duration(seconds: 30),
-        receiveTimeout: const Duration(seconds: 30),
-        sendTimeout: const Duration(seconds: 30),
-        contentType: DioContentType.json,
-        responseType: ResponseType.json,
-      ),
-    );
-
-    dio.interceptors.add(
-      InterceptorsWrapper(
-        onRequest: (options, handler) async {
-          final token = await Utils.storageSecure.read(key: 'token');
-          final hasToken = token != null && token.isNotEmpty;
-
-          final isPrivate = options.path.contains('/private/');
-          final isPublic = options.path.contains('/public/');
-
-          if (isPrivate && hasToken) {
-            options.headers[DioHeaders.authorization] =
-                '${DioHeaders.bearer} $token';
-          } else if (isPublic) {
-            options.headers.remove(DioHeaders.authorization);
-          }
-
-          handler.next(options);
-        },
-        onResponse: (response, handler) {
-          _logResponse(response);
-          handler.next(response);
-        },
-        onError: (DioException e, handler) async {
-          _logError(e);
-          handler.next(e);
-        },
-      ),
+  DioApp({
+    BaseUrl baseUrl = BaseUrl.main,
+    Map<String, dynamic>? headers,
+    Duration? timeout,
+    this.onUnauthorized,
+    this.onShowError,
+  }) {
+    _client = DioClient(
+      baseUrl: baseUrl.value,
+      headers: headers,
+      connectTimeout: timeout,
+      receiveTimeout: timeout,
+      sendTimeout: timeout,
     );
   }
 
-  /// Gunakan ini untuk memanggil Dio request dengan error handling
-  Future<Either<ResponseFailed, Response<T>>> safeRequest<T>(
-    Future<Response<T>> Function() requestFn,
-  ) async {
-    try {
-      final response = await requestFn();
-      return Right(response);
-    } on DioException catch (e) {
-      return _handleException(e);
-    } catch (e) {
-      return Left(
-        ResponseFailed(
-          message: e.toString(),
-          statusCode: null,
-          isUnauthorized: false,
-        ),
+  Future<Either<AppFailure, T>> request<T>({
+    required String path,
+    required String method,
+    dynamic data,
+    Map<String, dynamic>? queryParameters,
+    Map<String, dynamic>? headers,
+    T Function(dynamic)? parser,
+    bool showError = true,
+    bool retry = false,
+  }) async {
+    final result = await _client.request<T>(
+      path: path,
+      method: method,
+      data: data,
+      queryParameters: queryParameters,
+      headers: headers,
+      parser: parser,
+    );
+    if (result.isSuccess) {
+      return Right(result.data as T);
+    }
+    final failure = AppFailure(
+      message: result.message ?? 'Unknown error',
+      type: result.type,
+      rc: result.rc,
+    );
+    if (result.isUnauthorized) {
+      await onUnauthorized?.call();
+    }
+    if (showError) {
+      onShowError?.call(failure);
+    }
+    if (retry && result.isConnectionError) {
+      return request(
+        path: path,
+        method: method,
+        data: data,
+        queryParameters: queryParameters,
+        headers: headers,
+        parser: parser,
+        retry: false,
       );
     }
+    return Left(failure);
   }
 
-  /// Handler untuk error dari Dio
-  Future<Either<ResponseFailed, Response<T>>> _handleException<T>(
-    DioException error,
-  ) async {
-    final responseFailed = ResponseFailed.fromDioError(error);
-    final mainContext =
-        getIt<GlobalKey<NavigatorState>>().currentState!.context;
-    // Unauthorized (401)
-    if (responseFailed.isUnauthorized) {
-      await Utils.storageSecure.delete(key: 'token');
-      if (mainContext.mounted) {
-        // mainContext.router.replaceAll([const SigninRoute()]);
-      }
-    }
+  Future<Either<AppFailure, T>> get<T>(
+    String path, {
+    Map<String, dynamic>? query,
+    Map<String, dynamic>? headers,
+    T Function(dynamic)? parser,
+  }) => request<T>(
+    path: path,
+    method: 'GET',
+    queryParameters: query,
+    headers: headers,
+    parser: parser,
+  );
 
-    // Show error bottom sheet
-    if (mainContext.mounted) {
-      showModalBottomSheet(
-        context: mainContext,
-        builder:
-            (_) => Padding(
-              padding: const EdgeInsets.all(16.0),
-              child: Text(responseFailed.message),
-            ),
-      );
-    }
-
-    return Left(responseFailed);
-  }
-
-  void _logResponse(Response response) {
-    try {
-      final uri = response.requestOptions.uri;
-      final method = response.requestOptions.method;
-      final status = response.statusCode;
-      final headers = response.headers.map;
-      final responseData = response.data;
-
-      _logger.i(
-        '📥 RESPONSE: [$method] $uri\n'
-        'Status: $status\n'
-        'Headers: $headers\n'
-        'Payload: ${_prettyPrint(responseData)}',
-      );
-    } catch (e) {
-      _logger.e('Error logging response: $e');
-    }
-  }
-
-  Future<void> _handleUnauthorized() async {
-    _logger.w('401 detected - clearing token');
-    await Utils.storageSecure.delete(key: 'token');
-  }
-
-  void _logError(DioException error) {
-    try {
-      final uri = error.requestOptions.uri;
-      final method = error.requestOptions.method;
-      final status = error.response?.statusCode;
-      final data = error.response?.data;
-      final message = error.message;
-
-      _logger.e(
-        '❌ ERROR: [$method] $uri\n'
-        'Status: $status\n'
-        'Message: $message\n'
-        'Error Data: ${_prettyPrint(data)}',
-      );
-    } catch (e) {
-      _logger.e('Error logging Dio error: $e');
-    }
-  }
-
-  String _prettyPrint(dynamic data) {
-    try {
-      if (data is String) return data;
-      return const JsonEncoder.withIndent('  ').convert(data);
-    } catch (e) {
-      return data.toString();
-    }
-  }
-
-  void post(
-    String s, {
-    required Map<String, Object> data,
-    required Options options,
-  }) {}
-
-  void get(String s, {required Options options}) {}
+  Future<Either<AppFailure, T>> post<T>(
+    String path, {
+    dynamic data,
+    Map<String, dynamic>? headers,
+    T Function(dynamic)? parser,
+  }) => request<T>(path: path, method: 'POST', data: data, headers: headers, parser: parser);
 }

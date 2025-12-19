@@ -26,14 +26,10 @@ class AppRouter extends RootStackRouter {
     AutoRoute(path: '/lazy', page: LazyRoute.page),
     AutoRoute(path: '/webview', page: WebViewRoute.page),
     AutoRoute(path: '/form', page: FormRoute.page),
+    AutoRoute(path: '/dummy', page: DummyRoute.page),
 
     //! Unknown Route
-    CustomRoute(
-      path: '*',
-      page: UnknowRoute.page,
-      transitionsBuilder: TransitionsBuilders.fadeIn,
-      duration: Duration(seconds: 1),
-    ),
+    CustomRoute(path: '*', page: UnknowRoute.page, transitionsBuilder: TransitionsBuilders.fadeIn, duration: Duration(seconds: 1)),
 
     //! Transaction Routes
     AutoRoute(path: '/detail-transaction', page: DetailTransactionRoute.page),

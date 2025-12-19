@@ -1,33 +1,30 @@
 import 'package:dio/dio.dart';
-import 'package:logger/logger.dart';
 
-/// ini untuk debug hasil dari pemanggilan api seperti reactotron dari react native
-class LoggerInterceptor extends Interceptor {
-  Logger logger = Logger(printer: PrettyPrinter(methodCount: 0, colors: true,printEmojis: true));
+class RetryInterceptor extends Interceptor {
+  final int maxRetries;
+  int _retryCount = 0;
+
+  RetryInterceptor({this.maxRetries = 3});
 
   @override
-  void onError( DioException err, ErrorInterceptorHandler handler) {
-    final options = err.requestOptions;
-    final requestPath = '${options.baseUrl}${options.path}';
-    logger.e('${options.method} request ==> $requestPath'); //Error log
-    logger.d('Error type: ${err.error} \n '
-        'Error message: ${err.message}'); //Debug log
-    handler.next(err); //Continue with the Error
+  Future<void> onError(DioException err, ErrorInterceptorHandler handler) async {
+    if (_shouldRetry(err) && _retryCount < maxRetries) {
+      _retryCount++;
+      await Future.delayed(Duration(seconds: _retryCount));
+
+      try {
+        final res = await Dio().fetch(err.requestOptions);
+        return handler.resolve(res);
+      } catch (e) {
+        return super.onError(err, handler);
+      }
+    }
+
+    _retryCount = 0;
+    return super.onError(err, handler);
   }
 
-  @override
-  void onRequest(RequestOptions options, RequestInterceptorHandler handler) {
-    final requestPath = '${options.baseUrl}${options.path}';
-    logger.i('${options.method} request ==> $requestPath'); //Info log
-    handler.next(options); // continue with the Request
-  }
-
-  @override
-  void onResponse(Response response, ResponseInterceptorHandler handler) {
-    logger.d('STATUSCODE: ${response.statusCode} \n '
-        'STATUSMESSAGE: ${response.statusMessage} \n'
-        'HEADERS: ${response.headers} \n'
-        'Data: ${response.data}'); // Debug log
-    handler.next(response); // continue with the Response
+  bool _shouldRetry(DioException err) {
+    return err.type == DioExceptionType.connectionTimeout || err.type == DioExceptionType.receiveTimeout || err.type == DioExceptionType.connectionError;
   }
 }

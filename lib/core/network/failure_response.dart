@@ -1,25 +1,9 @@
-import 'package:dio/dio.dart';
+import 'package:recon/core/network/dio_client.dart';
 
-class ResponseFailed {
+class AppFailure {
   final String message;
-  final int? statusCode;
-  final bool isUnauthorized;
+  final ResultType type;
+  final int? rc;
 
-  ResponseFailed({
-    required this.message,
-    this.statusCode,
-    this.isUnauthorized = false,
-  });
-
-  factory ResponseFailed.fromDioError(DioException error) {
-    final response = error.response;
-    final statusCode = response?.statusCode;
-    final is401 = statusCode == 401;
-
-    return ResponseFailed(
-      message: response?.data?['message']?.toString() ?? error.message ?? 'Unknown error',
-      statusCode: statusCode,
-      isUnauthorized: is401,
-    );
-  }
+  const AppFailure({required this.message, required this.type, this.rc});
 }
