@@ -1,10 +1,7 @@
-import 'package:alice/alice.dart';
-import 'package:alice_dio/alice_dio_adapter.dart';
 import 'package:dartz/dartz.dart';
 import 'package:dio/dio.dart';
 import 'package:recon/core/network/dio_client.dart';
 import 'package:recon/core/network/failure_response.dart';
-import 'package:recon/core/network/interceptors.dart';
 
 typedef OnUnauthorized = Future<void> Function();
 typedef OnShowError = void Function(AppFailure failure);
@@ -27,8 +24,6 @@ class DioApp {
 
   final OnUnauthorized? onUnauthorized;
   final OnShowError? onShowError;
-  Alice alice = Alice();
-  AliceDioAdapter aliceDioAdapter = AliceDioAdapter();
 
   DioApp({
     BaseUrl baseUrl = BaseUrl.main,
@@ -44,16 +39,10 @@ class DioApp {
       receiveTimeout: timeout,
       sendTimeout: timeout,
     );
-    alice.addAdapter(aliceDioAdapter);
-    _client.addInterceptors([AliceInterceptor(), RetryInterceptor(maxRetries: 3)]);
   }
 
   void updateHeaders(Map<String, dynamic> headers) {
     _client.updateHeaders(headers);
-  }
-
-  void clearInterceptors() {
-    _client.clearInterceptors();
   }
 
   Dio get dio => _client.dio;
@@ -76,20 +65,25 @@ class DioApp {
       headers: headers,
       parser: parser,
     );
+
     if (result.isSuccess) {
       return Right(result.data as T);
     }
+
     final failure = AppFailure(
       message: result.message ?? 'Unknown error',
       type: result.type,
       rc: result.rc,
     );
+
     if (result.isUnauthorized) {
       await onUnauthorized?.call();
     }
+
     if (showError) {
       onShowError?.call(failure);
     }
+
     if (retry && result.isConnectionError) {
       return request(
         path: path,
@@ -101,6 +95,7 @@ class DioApp {
         retry: false,
       );
     }
+
     return Left(failure);
   }
 
@@ -123,4 +118,24 @@ class DioApp {
     Map<String, dynamic>? headers,
     T Function(dynamic)? parser,
   }) => request<T>(path: path, method: 'POST', data: data, headers: headers, parser: parser);
+
+  Future<Either<AppFailure, T>> put<T>(
+    String path, {
+    dynamic data,
+    Map<String, dynamic>? headers,
+    T Function(dynamic)? parser,
+  }) => request<T>(path: path, method: 'PUT', data: data, headers: headers, parser: parser);
+
+  Future<Either<AppFailure, T>> delete<T>(
+    String path, {
+    Map<String, dynamic>? query,
+    Map<String, dynamic>? headers,
+    T Function(dynamic)? parser,
+  }) => request<T>(
+    path: path,
+    method: 'DELETE',
+    queryParameters: query,
+    headers: headers,
+    parser: parser,
+  );
 }

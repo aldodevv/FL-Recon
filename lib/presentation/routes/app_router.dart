@@ -4,6 +4,7 @@ import 'package:recon/presentation/routes/app_router.gr.dart';
 
 @AutoRouterConfig(replaceInRouteName: 'Screen|Page,Route')
 class AppRouter extends RootStackRouter {
+  AppRouter({super.navigatorKey});
   @override
   RouteType get defaultRouteType => RouteType.material();
 
@@ -29,7 +30,12 @@ class AppRouter extends RootStackRouter {
     AutoRoute(path: '/dummy', page: DummyRoute.page),
 
     //! Unknown Route
-    CustomRoute(path: '*', page: UnknowRoute.page, transitionsBuilder: TransitionsBuilders.fadeIn, duration: Duration(seconds: 1)),
+    CustomRoute(
+      path: '*',
+      page: UnknowRoute.page,
+      transitionsBuilder: TransitionsBuilders.fadeIn,
+      duration: Duration(seconds: 1),
+    ),
 
     //! Transaction Routes
     AutoRoute(path: '/detail-transaction', page: DetailTransactionRoute.page),

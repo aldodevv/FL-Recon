@@ -1,22 +1,14 @@
 import 'dart:async';
 import 'package:permission_handler/permission_handler.dart';
 
-enum PermissionEventType {
-  updated,
-  permanentlyDenied,
-  allCompleted,
-}
+enum PermissionEventType { updated, permanentlyDenied, allCompleted }
 
 class PermissionEvent {
   final PermissionEventType type;
   final Permission? permission;
   final Map<Permission, PermissionStatus> status;
 
-  PermissionEvent({
-    required this.type,
-    required this.status,
-    this.permission,
-  });
+  PermissionEvent({required this.type, required this.status, this.permission});
 }
 
 class PermissionService {
@@ -26,11 +18,7 @@ class PermissionService {
   late final List<Permission> _permissions;
 
   PermissionService() {
-    _permissions = [
-      Permission.camera,
-      Permission.location,
-      Permission.notification,
-    ];
+    _permissions = [Permission.camera, Permission.location, Permission.notification];
 
     checkAll();
   }
@@ -42,12 +30,7 @@ class PermissionService {
       result[p] = await p.status;
     }
 
-    _safeAddEvent(
-      PermissionEvent(
-        type: PermissionEventType.updated,
-        status: result,
-      ),
-    );
+    _safeAddEvent(PermissionEvent(type: PermissionEventType.updated, status: result));
 
     return result;
   }
@@ -60,12 +43,7 @@ class PermissionService {
       finalResult[p] = status;
     }
 
-    _safeAddEvent(
-      PermissionEvent(
-        type: PermissionEventType.allCompleted,
-        status: finalResult,
-      ),
-    );
+    _safeAddEvent(PermissionEvent(type: PermissionEventType.allCompleted, status: finalResult));
 
     for (var entry in finalResult.entries) {
       if (entry.value.isPermanentlyDenied) {

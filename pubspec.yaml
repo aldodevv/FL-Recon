@@ -67,8 +67,8 @@ dependencies:
   flutter_local_notifications: ^19.5.0
   path_provider: ^2.1.5
   permission_handler: ^12.0.1
-  alice: ^1.0.0
-  alice_dio: ^1.0.7
+  overlay_support: ^2.1.0
+  flutter_alice: ^2.0.1
 
 dev_dependencies:
   flutter_test:

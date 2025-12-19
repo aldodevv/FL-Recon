@@ -1,10 +1,13 @@
 import 'dart:async';
 import 'package:dio/dio.dart';
+import 'package:flutter_alice/alice.dart';
+import 'package:recon/core/network/interceptors.dart';
 
 class DioClient {
   late final Dio _dio;
   final List<Interceptor> _interceptors = [];
   Dio get dio => _dio;
+  Alice alice = Alice();
 
   DioClient({
     required String baseUrl,
@@ -23,11 +26,8 @@ class DioClient {
         validateStatus: (status) => status != null && status < 500,
       ),
     );
-  }
 
-  void addInterceptors(List<Interceptor> interceptors) {
-    _interceptors.addAll(interceptors);
-    _dio.interceptors.addAll(interceptors);
+    _dio.interceptors.addAll([alice.getDioInterceptor(), RetryInterceptor()]);
   }
 
   void clearInterceptors() {

@@ -1,5 +1,4 @@
-import 'package:alice/alice.dart';
-import 'package:alice/model/alice_configuration.dart';
+import 'package:flutter_alice/alice.dart';
 import 'package:auto_route/auto_route.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
@@ -14,6 +13,7 @@ import 'package:recon/presentation/bloc/theme/theme_bloc.dart';
 import 'package:recon/presentation/routes/app_router.dart';
 import 'dart:async';
 import 'flavors.dart';
+import 'package:overlay_support/overlay_support.dart';
 
 class App extends StatefulWidget {
   const App({super.key});
@@ -23,17 +23,21 @@ class App extends StatefulWidget {
 
 class _AppState extends State<App> with WidgetsBindingObserver {
   late final AppRouter _appRouter;
+  // ignore: unused_field
+  late final Alice _alice;
   late PhoneCallHandler _phoneHandler;
   late NetworkHandler _networkHandler;
   late PermissionHandler _permissionHandler;
-  late final Alice _alice;
+
+  final _rootNavigatorKey = GlobalKey<NavigatorState>();
 
   // ! First Step for initialize
   @override
   void initState() {
     super.initState();
     WidgetsBinding.instance.addObserver(this);
-    _appRouter = AppRouter();
+    _alice = Alice(showInspectorOnShake: true, navigatorKey: _rootNavigatorKey);
+    _appRouter = AppRouter(navigatorKey: _rootNavigatorKey);
     _init();
   }
 
@@ -79,26 +83,17 @@ class _AppState extends State<App> with WidgetsBindingObserver {
 
   Future<void> _init() async {
     await _registerNavKey();
-    final navKey = getIt<GlobalKey<NavigatorState>>();
     final permissionService = PermissionService();
-    _permissionHandler = PermissionHandler(navigatorKey: navKey, service: permissionService);
+    _permissionHandler = PermissionHandler(
+      navigatorKey: _rootNavigatorKey,
+      service: permissionService,
+    );
     _permissionHandler.start();
 
-    _phoneHandler = PhoneCallHandler(navigatorKey: navKey);
+    _phoneHandler = PhoneCallHandler(navigatorKey: _rootNavigatorKey);
     _networkHandler = NetworkHandler();
     _phoneHandler.start();
     _networkHandler.start();
-    _alice = Alice(
-      configuration: AliceConfiguration(
-        showNotification: true,
-        showShareButton: true,
-        navigatorKey: _appRouter.navigatorKey,
-      ),
-    );
-
-    WidgetsBinding.instance.addPostFrameCallback((_) {
-      _alice.setNavigatorKey(_appRouter.navigatorKey);
-    });
   }
 
   Future<void> _dispose() async {
@@ -127,7 +122,7 @@ class _AppState extends State<App> with WidgetsBindingObserver {
     if (getIt.isRegistered<GlobalKey<NavigatorState>>()) {
       await getIt.unregister<GlobalKey<NavigatorState>>();
     }
-    getIt.registerSingleton<GlobalKey<NavigatorState>>(_appRouter.navigatorKey);
+    getIt.registerSingleton<GlobalKey<NavigatorState>>(_rootNavigatorKey);
   }
 
   @override
@@ -137,22 +132,26 @@ class _AppState extends State<App> with WidgetsBindingObserver {
       child: BlocBuilder<ThemeBloc, ThemeState>(
         buildWhen: (previous, current) => previous.themeMode != current.themeMode,
         builder: (context, state) {
-          return MaterialApp.router(
-            debugShowCheckedModeBanner: false,
-            themeAnimationDuration: const Duration(milliseconds: 200),
-            theme: AppTheme.lightTheme,
-            darkTheme: AppTheme.darkTheme,
-            themeMode: state.themeMode,
-            title: F.title,
-            routerConfig: _appRouter.config(
-              navigatorObservers: () => [RouteLogger()],
-              deepLinkTransformer: DeepLink.prefixStripper(''),
-              deepLinkBuilder: (deepLink) {
-                debugPrint('Received deepLink: ${deepLink.uri}');
-                return deepLink;
+          return OverlaySupport(
+            child: MaterialApp.router(
+              debugShowCheckedModeBanner: false,
+              themeAnimationDuration: const Duration(milliseconds: 200),
+              theme: AppTheme.lightTheme,
+              darkTheme: AppTheme.darkTheme,
+              themeMode: state.themeMode,
+              title: F.title,
+              routerConfig: _appRouter.config(
+                navigatorObservers: () => [RouteLogger()],
+                deepLinkTransformer: DeepLink.prefixStripper(''),
+                deepLinkBuilder: (deepLink) {
+                  debugPrint('Received deepLink: ${deepLink.uri}');
+                  return deepLink;
+                },
+              ),
+              builder: (context, child) {
+                return child ?? const SizedBox.shrink();
               },
             ),
-            builder: (context, child) => child ?? const SizedBox.shrink(),
           );
         },
       ),
