@@ -1,6 +1,10 @@
+import 'package:alice/alice.dart';
+import 'package:alice_dio/alice_dio_adapter.dart';
 import 'package:dartz/dartz.dart';
+import 'package:dio/dio.dart';
 import 'package:recon/core/network/dio_client.dart';
 import 'package:recon/core/network/failure_response.dart';
+import 'package:recon/core/network/interceptors.dart';
 
 typedef OnUnauthorized = Future<void> Function();
 typedef OnShowError = void Function(AppFailure failure);
@@ -23,6 +27,8 @@ class DioApp {
 
   final OnUnauthorized? onUnauthorized;
   final OnShowError? onShowError;
+  Alice alice = Alice();
+  AliceDioAdapter aliceDioAdapter = AliceDioAdapter();
 
   DioApp({
     BaseUrl baseUrl = BaseUrl.main,
@@ -38,7 +44,19 @@ class DioApp {
       receiveTimeout: timeout,
       sendTimeout: timeout,
     );
+    alice.addAdapter(aliceDioAdapter);
+    _client.addInterceptors([AliceInterceptor(), RetryInterceptor(maxRetries: 3)]);
   }
+
+  void updateHeaders(Map<String, dynamic> headers) {
+    _client.updateHeaders(headers);
+  }
+
+  void clearInterceptors() {
+    _client.clearInterceptors();
+  }
+
+  Dio get dio => _client.dio;
 
   Future<Either<AppFailure, T>> request<T>({
     required String path,

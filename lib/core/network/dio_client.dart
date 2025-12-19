@@ -4,8 +4,15 @@ import 'package:dio/dio.dart';
 class DioClient {
   late final Dio _dio;
   final List<Interceptor> _interceptors = [];
+  Dio get dio => _dio;
 
-  DioClient({required String baseUrl, Map<String, dynamic>? headers, Duration? connectTimeout, Duration? receiveTimeout, Duration? sendTimeout}) {
+  DioClient({
+    required String baseUrl,
+    Map<String, dynamic>? headers,
+    Duration? connectTimeout,
+    Duration? receiveTimeout,
+    Duration? sendTimeout,
+  }) {
     _dio = Dio(
       BaseOptions(
         baseUrl: baseUrl,
@@ -18,7 +25,6 @@ class DioClient {
     );
   }
 
-  // Add multiple interceptors
   void addInterceptors(List<Interceptor> interceptors) {
     _interceptors.addAll(interceptors);
     _dio.interceptors.addAll(interceptors);
@@ -56,7 +62,12 @@ class DioClient {
         path,
         data: data,
         queryParameters: queryParameters,
-        options: Options(method: method, headers: headers, sendTimeout: sendTimeout, receiveTimeout: receiveTimeout),
+        options: Options(
+          method: method,
+          headers: headers,
+          sendTimeout: sendTimeout,
+          receiveTimeout: receiveTimeout,
+        ),
         cancelToken: cancelToken,
         onSendProgress: onSendProgress,
         onReceiveProgress: onReceiveProgress,
@@ -65,16 +76,24 @@ class DioClient {
       if (res.statusCode == 200 && res.data is Map) {
         final statusCode = res.data['statusCode'];
         if (statusCode == 401) {
-          return ResponseResult<T>.unauthorized(message: res.data['message']?.toString() ?? 'Unauthorized');
+          return ResponseResult<T>.unauthorized(
+            message: res.data['message']?.toString() ?? 'Unauthorized',
+          );
         }
       }
 
       if (res.statusCode == 401) {
-        return ResponseResult<T>.unauthorized(message: res.data?['message']?.toString() ?? 'Unauthorized');
+        return ResponseResult<T>.unauthorized(
+          message: res.data?['message']?.toString() ?? 'Unauthorized',
+        );
       }
 
       final parsed = parser != null ? parser(res.data) : res.data as T;
-      return ResponseResult<T>.success(data: parsed, rc: res.statusCode, message: res.data is Map ? res.data['message']?.toString() : null);
+      return ResponseResult<T>.success(
+        data: parsed,
+        rc: res.statusCode,
+        message: res.data is Map ? res.data['message']?.toString() : null,
+      );
     } on DioException catch (e) {
       return _handleDioException<T>(e);
     } catch (e, s) {
@@ -88,7 +107,14 @@ class DioClient {
     Map<String, dynamic>? headers,
     T Function(dynamic)? parser,
     CancelToken? cancelToken,
-  }) => request<T>(path: path, method: 'GET', queryParameters: queryParameters, headers: headers, parser: parser, cancelToken: cancelToken);
+  }) => request<T>(
+    path: path,
+    method: 'GET',
+    queryParameters: queryParameters,
+    headers: headers,
+    parser: parser,
+    cancelToken: cancelToken,
+  );
 
   Future<ResponseResult<T>> post<T>(
     String path, {
@@ -116,7 +142,15 @@ class DioClient {
     Map<String, dynamic>? headers,
     T Function(dynamic)? parser,
     CancelToken? cancelToken,
-  }) => request<T>(path: path, method: 'PUT', data: data, queryParameters: queryParameters, headers: headers, parser: parser, cancelToken: cancelToken);
+  }) => request<T>(
+    path: path,
+    method: 'PUT',
+    data: data,
+    queryParameters: queryParameters,
+    headers: headers,
+    parser: parser,
+    cancelToken: cancelToken,
+  );
 
   Future<ResponseResult<T>> delete<T>(
     String path, {
@@ -125,7 +159,15 @@ class DioClient {
     Map<String, dynamic>? headers,
     T Function(dynamic)? parser,
     CancelToken? cancelToken,
-  }) => request<T>(path: path, method: 'DELETE', data: data, queryParameters: queryParameters, headers: headers, parser: parser, cancelToken: cancelToken);
+  }) => request<T>(
+    path: path,
+    method: 'DELETE',
+    data: data,
+    queryParameters: queryParameters,
+    headers: headers,
+    parser: parser,
+    cancelToken: cancelToken,
+  );
 
   Future<ResponseResult<T>> patch<T>(
     String path, {
@@ -134,7 +176,15 @@ class DioClient {
     Map<String, dynamic>? headers,
     T Function(dynamic)? parser,
     CancelToken? cancelToken,
-  }) => request<T>(path: path, method: 'PATCH', data: data, queryParameters: queryParameters, headers: headers, parser: parser, cancelToken: cancelToken);
+  }) => request<T>(
+    path: path,
+    method: 'PATCH',
+    data: data,
+    queryParameters: queryParameters,
+    headers: headers,
+    parser: parser,
+    cancelToken: cancelToken,
+  );
 
   ResponseResult<T> _handleDioException<T>(DioException e) {
     switch (e.type) {
@@ -149,9 +199,16 @@ class DioClient {
       case DioExceptionType.badResponse:
         final statusCode = e.response?.statusCode;
         if (statusCode == 401) {
-          return ResponseResult<T>.unauthorized(message: e.response?.data?['message']?.toString() ?? 'Unauthorized', dioException: e);
+          return ResponseResult<T>.unauthorized(
+            message: e.response?.data?['message']?.toString() ?? 'Unauthorized',
+            dioException: e,
+          );
         }
-        return ResponseResult<T>.badResponse(message: e.response?.data?['message']?.toString() ?? e.message ?? 'Bad response', rc: statusCode, dioException: e);
+        return ResponseResult<T>.badResponse(
+          message: e.response?.data?['message']?.toString() ?? e.message ?? 'Bad response',
+          rc: statusCode,
+          dioException: e,
+        );
       case DioExceptionType.cancel:
         return ResponseResult<T>.cancel(message: 'Request cancelled', dioException: e);
       case DioExceptionType.connectionError:
@@ -171,7 +228,15 @@ class ResponseResult<T> {
   final Object? exception;
   final StackTrace? stackTrace;
 
-  const ResponseResult._({this.data, this.message, this.rc, required this.type, this.dioException, this.exception, this.stackTrace});
+  const ResponseResult._({
+    this.data,
+    this.message,
+    this.rc,
+    required this.type,
+    this.dioException,
+    this.exception,
+    this.stackTrace,
+  });
 
   bool get isSuccess => type == ResultType.success;
   bool get isUnauthorized => type == ResultType.unauthorized;
@@ -189,34 +254,77 @@ class ResponseResult<T> {
       ResponseResult._(data: data, rc: rc, message: message, type: ResultType.success);
 
   factory ResponseResult.unauthorized({String? message, DioException? dioException}) =>
-      ResponseResult._(message: message, rc: 401, type: ResultType.unauthorized, dioException: dioException);
+      ResponseResult._(
+        message: message,
+        rc: 401,
+        type: ResultType.unauthorized,
+        dioException: dioException,
+      );
 
   factory ResponseResult.connectionTimeout({String? message, DioException? dioException}) =>
-      ResponseResult._(message: message, type: ResultType.connectionTimeout, dioException: dioException);
+      ResponseResult._(
+        message: message,
+        type: ResultType.connectionTimeout,
+        dioException: dioException,
+      );
 
   factory ResponseResult.sendTimeout({String? message, DioException? dioException}) =>
       ResponseResult._(message: message, type: ResultType.sendTimeout, dioException: dioException);
 
   factory ResponseResult.receiveTimeout({String? message, DioException? dioException}) =>
-      ResponseResult._(message: message, type: ResultType.receiveTimeout, dioException: dioException);
+      ResponseResult._(
+        message: message,
+        type: ResultType.receiveTimeout,
+        dioException: dioException,
+      );
 
   factory ResponseResult.badCertificate({String? message, DioException? dioException}) =>
-      ResponseResult._(message: message, type: ResultType.badCertificate, dioException: dioException);
+      ResponseResult._(
+        message: message,
+        type: ResultType.badCertificate,
+        dioException: dioException,
+      );
 
   factory ResponseResult.badResponse({String? message, int? rc, DioException? dioException}) =>
-      ResponseResult._(message: message, rc: rc, type: ResultType.badResponse, dioException: dioException);
+      ResponseResult._(
+        message: message,
+        rc: rc,
+        type: ResultType.badResponse,
+        dioException: dioException,
+      );
 
   factory ResponseResult.cancel({String? message, DioException? dioException}) =>
       ResponseResult._(message: message, type: ResultType.cancel, dioException: dioException);
 
   factory ResponseResult.connectionError({String? message, DioException? dioException}) =>
-      ResponseResult._(message: message, type: ResultType.connectionError, dioException: dioException);
+      ResponseResult._(
+        message: message,
+        type: ResultType.connectionError,
+        dioException: dioException,
+      );
 
   factory ResponseResult.unknown({String? message, DioException? dioException}) =>
       ResponseResult._(message: message, type: ResultType.unknown, dioException: dioException);
 
   factory ResponseResult.error({String? message, Object? exception, StackTrace? stackTrace}) =>
-      ResponseResult._(message: message, type: ResultType.error, exception: exception, stackTrace: stackTrace);
+      ResponseResult._(
+        message: message,
+        type: ResultType.error,
+        exception: exception,
+        stackTrace: stackTrace,
+      );
 }
 
-enum ResultType { success, unauthorized, connectionTimeout, sendTimeout, receiveTimeout, badCertificate, badResponse, cancel, connectionError, unknown, error }
+enum ResultType {
+  success,
+  unauthorized,
+  connectionTimeout,
+  sendTimeout,
+  receiveTimeout,
+  badCertificate,
+  badResponse,
+  cancel,
+  connectionError,
+  unknown,
+  error,
+}

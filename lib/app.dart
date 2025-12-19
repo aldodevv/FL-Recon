@@ -1,3 +1,5 @@
+import 'package:alice/alice.dart';
+import 'package:alice/model/alice_configuration.dart';
 import 'package:auto_route/auto_route.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
@@ -24,6 +26,7 @@ class _AppState extends State<App> with WidgetsBindingObserver {
   late PhoneCallHandler _phoneHandler;
   late NetworkHandler _networkHandler;
   late PermissionHandler _permissionHandler;
+  late final Alice _alice;
 
   // ! First Step for initialize
   @override
@@ -78,16 +81,24 @@ class _AppState extends State<App> with WidgetsBindingObserver {
     await _registerNavKey();
     final navKey = getIt<GlobalKey<NavigatorState>>();
     final permissionService = PermissionService();
-    _permissionHandler = PermissionHandler(
-      navigatorKey: navKey,
-      service: permissionService,
-    );
+    _permissionHandler = PermissionHandler(navigatorKey: navKey, service: permissionService);
     _permissionHandler.start();
 
     _phoneHandler = PhoneCallHandler(navigatorKey: navKey);
     _networkHandler = NetworkHandler();
     _phoneHandler.start();
     _networkHandler.start();
+    _alice = Alice(
+      configuration: AliceConfiguration(
+        showNotification: true,
+        showShareButton: true,
+        navigatorKey: _appRouter.navigatorKey,
+      ),
+    );
+
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      _alice.setNavigatorKey(_appRouter.navigatorKey);
+    });
   }
 
   Future<void> _dispose() async {
@@ -124,8 +135,7 @@ class _AppState extends State<App> with WidgetsBindingObserver {
     return MultiBlocProvider(
       providers: [BlocProvider(create: (_) => ThemeBloc())],
       child: BlocBuilder<ThemeBloc, ThemeState>(
-        buildWhen:
-            (previous, current) => previous.themeMode != current.themeMode,
+        buildWhen: (previous, current) => previous.themeMode != current.themeMode,
         builder: (context, state) {
           return MaterialApp.router(
             debugShowCheckedModeBanner: false,

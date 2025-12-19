@@ -7,7 +7,7 @@ class DummyRepository {
   Future<Either<AppFailure, List<ResponsePost>>> getPosts() async {
     final api = DioApp(baseUrl: BaseUrl.main);
 
-    final failureOrResponse = await api.get<List>('/postssss');
+    final failureOrResponse = await api.get<List>('/posts');
 
     return failureOrResponse.fold(
       (l) => Left(AppFailure(message: l.message, type: l.type, rc: l.rc)),
