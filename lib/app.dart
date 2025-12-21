@@ -37,7 +37,7 @@ class _AppState extends State<App> with WidgetsBindingObserver {
     super.initState();
     WidgetsBinding.instance.addObserver(this);
     _alice = Alice(showInspectorOnShake: true, navigatorKey: _rootNavigatorKey);
-    _appRouter = AppRouter(navigatorKey: _rootNavigatorKey);
+    _appRouter = AppRouter();
     _init();
   }
 
