@@ -26,7 +26,6 @@ class AppRouter extends RootStackRouter {
     AutoRoute(path: '/lazy', page: LazyRoute.page),
     AutoRoute(path: '/webview', page: WebViewRoute.page),
     AutoRoute(path: '/form', page: FormRoute.page),
-    AutoRoute(path: '/talker', page: TalkerRoute.page),
 
     //! Unknown Route
     CustomRoute(
