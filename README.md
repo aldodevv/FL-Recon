@@ -63,3 +63,7 @@ flutter build ipa \
 flutter symbolize \
   -i crash.txt \
   -d obfuscation/ios/prod/app.ios-arm64.symbols
+
+## Android Build
+## build APK obfuscate (dev / uat / prod)
+flutter build apk --flavor dev -t lib/main_dev.dart --release --obfuscate --split-debug-info=obfuscation/android/dev
