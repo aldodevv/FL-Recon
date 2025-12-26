@@ -1,7 +1,7 @@
-import 'package:flutter_alice/alice.dart';
 import 'package:auto_route/auto_route.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:hive_flutter/adapters.dart';
 import 'package:recon/app_theme.dart';
 import 'package:recon/core/handler/network_handler.dart';
 import 'package:recon/core/handler/permission_handler.dart';
@@ -23,8 +23,6 @@ class App extends StatefulWidget {
 
 class _AppState extends State<App> with WidgetsBindingObserver {
   late final AppRouter _appRouter;
-  // ignore: unused_field
-  late final Alice _alice;
   late PhoneCallHandler _phoneHandler;
   late NetworkHandler _networkHandler;
   late PermissionHandler _permissionHandler;
@@ -36,7 +34,6 @@ class _AppState extends State<App> with WidgetsBindingObserver {
   void initState() {
     super.initState();
     WidgetsBinding.instance.addObserver(this);
-    _alice = Alice(showInspectorOnShake: true, navigatorKey: _rootNavigatorKey);
     _appRouter = AppRouter();
     _init();
   }
@@ -94,6 +91,8 @@ class _AppState extends State<App> with WidgetsBindingObserver {
     _networkHandler = NetworkHandler();
     _phoneHandler.start();
     _networkHandler.start();
+    await Hive.initFlutter();
+    await Hive.openBox('chats');
   }
 
   Future<void> _dispose() async {

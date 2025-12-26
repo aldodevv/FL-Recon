@@ -1,6 +1,7 @@
 // pages/home_screen.dart
 import 'package:auto_route/auto_route.dart';
 import 'package:flutter/material.dart';
+import 'package:recon/presentation/pages/chat/widgets/chat_start_widget.dart';
 import 'package:recon/presentation/routes/app_router.gr.dart';
 
 final onboardMenuSections = <OnboardMenuSection>[
@@ -9,10 +10,25 @@ final onboardMenuSections = <OnboardMenuSection>[
     title: 'Auth Pages',
     icon: Icons.lock_outline,
     items: [
-      OnboardMenuItem(title: 'Onboard Page', subtitle: 'Entry & showcase page', icon: Icons.flag, route: const OnboardRoute()),
-      OnboardMenuItem(title: 'Dummy Page', subtitle: 'Bloc example', icon: Icons.access_alarm, route: const DummyRoute()),
-      OnboardMenuItem(title: 'Forgot Password', subtitle: 'Reset password flow', icon: Icons.password, route: const ForgetpasswordRoute()),
-      OnboardMenuItem(title: 'Terms & Condition', subtitle: 'Legal & agreement', icon: Icons.description, route: const TermsconditionRoute()),
+      OnboardMenuItem(title: 'Chat Page', subtitle: 'Chatting Realtime', icon: Icons.chat),
+      OnboardMenuItem(
+        title: 'Dummy Page',
+        subtitle: 'Bloc example',
+        icon: Icons.access_alarm,
+        route: const DummyRoute(),
+      ),
+      OnboardMenuItem(
+        title: 'Forgot Password',
+        subtitle: 'Reset password flow',
+        icon: Icons.password,
+        route: const ForgetpasswordRoute(),
+      ),
+      OnboardMenuItem(
+        title: 'Terms & Condition',
+        subtitle: 'Legal & agreement',
+        icon: Icons.description,
+        route: const TermsconditionRoute(),
+      ),
     ],
   ),
 
@@ -21,11 +37,36 @@ final onboardMenuSections = <OnboardMenuSection>[
     title: 'Games',
     icon: Icons.sports_esports,
     items: [
-      OnboardMenuItem(title: 'Unknow Route', subtitle: 'Unknow Route', icon: Icons.device_unknown, route: const UnknowRoute()),
-      OnboardMenuItem(title: 'Memory Match', subtitle: 'Card matching game', icon: Icons.grid_view, route: const MemoryMatchGameRoute()),
-      OnboardMenuItem(title: 'Snake Game', subtitle: 'Classic snake', icon: Icons.drag_indicator, route: const SnakeGameRoute()),
-      OnboardMenuItem(title: 'Tap The Target', subtitle: 'Reflex test game', icon: Icons.touch_app, route: const TapTheTargetGameRoute()),
-      OnboardMenuItem(title: 'Wordle', subtitle: 'Guess the word', icon: Icons.text_fields, route: const WordleGameRoute()),
+      OnboardMenuItem(
+        title: 'Unknow Route',
+        subtitle: 'Unknow Route',
+        icon: Icons.device_unknown,
+        route: const UnknowRoute(),
+      ),
+      OnboardMenuItem(
+        title: 'Memory Match',
+        subtitle: 'Card matching game',
+        icon: Icons.grid_view,
+        route: const MemoryMatchGameRoute(),
+      ),
+      OnboardMenuItem(
+        title: 'Snake Game',
+        subtitle: 'Classic snake',
+        icon: Icons.drag_indicator,
+        route: const SnakeGameRoute(),
+      ),
+      OnboardMenuItem(
+        title: 'Tap The Target',
+        subtitle: 'Reflex test game',
+        icon: Icons.touch_app,
+        route: const TapTheTargetGameRoute(),
+      ),
+      OnboardMenuItem(
+        title: 'Wordle',
+        subtitle: 'Guess the word',
+        icon: Icons.text_fields,
+        route: const WordleGameRoute(),
+      ),
     ],
   ),
 
@@ -34,11 +75,36 @@ final onboardMenuSections = <OnboardMenuSection>[
     title: 'Tools',
     icon: Icons.build,
     items: [
-      OnboardMenuItem(title: 'Main Tool', subtitle: 'Tools entry point', icon: Icons.dashboard, route: MaintoolRoute(username: 'aldodevv')),
-      OnboardMenuItem(title: 'Base32', subtitle: 'Encode & decode', icon: Icons.code, route: const Base32Route()),
-      OnboardMenuItem(title: 'Bridging', subtitle: 'Platform channel demo', icon: Icons.compare_arrows, route: const BridgingRoute()),
-      OnboardMenuItem(title: 'Flushbar', subtitle: 'Notification demo', icon: Icons.notifications, route: const FlushbarRoute()),
-      OnboardMenuItem(title: 'WebView', subtitle: 'In-app browser', icon: Icons.public, route: WebViewRoute(initialUrl: 'https://flutter.dev')),
+      OnboardMenuItem(
+        title: 'Main Tool',
+        subtitle: 'Tools entry point',
+        icon: Icons.dashboard,
+        route: MaintoolRoute(username: 'aldodevv'),
+      ),
+      OnboardMenuItem(
+        title: 'Base32',
+        subtitle: 'Encode & decode',
+        icon: Icons.code,
+        route: const Base32Route(),
+      ),
+      OnboardMenuItem(
+        title: 'Bridging',
+        subtitle: 'Platform channel demo',
+        icon: Icons.compare_arrows,
+        route: const BridgingRoute(),
+      ),
+      OnboardMenuItem(
+        title: 'Flushbar',
+        subtitle: 'Notification demo',
+        icon: Icons.notifications,
+        route: const FlushbarRoute(),
+      ),
+      OnboardMenuItem(
+        title: 'WebView',
+        subtitle: 'In-app browser',
+        icon: Icons.public,
+        route: WebViewRoute(initialUrl: 'https://flutter.dev'),
+      ),
     ],
   ),
 
@@ -46,7 +112,14 @@ final onboardMenuSections = <OnboardMenuSection>[
   OnboardMenuSection(
     title: 'Transaction',
     icon: Icons.receipt_long,
-    items: [OnboardMenuItem(title: 'Transaction Detail', subtitle: 'Detail transaction UI', icon: Icons.payments, route: const DetailTransactionRoute())],
+    items: [
+      OnboardMenuItem(
+        title: 'Transaction Detail',
+        subtitle: 'Detail transaction UI',
+        icon: Icons.payments,
+        route: const DetailTransactionRoute(),
+      ),
+    ],
   ),
 ];
 
@@ -77,7 +150,10 @@ class _OnboardPageState extends State<OnboardPage> {
                 children: [
                   Icon(section.icon, size: 22),
                   const SizedBox(width: 8),
-                  Text(section.title, style: const TextStyle(fontSize: 18, fontWeight: FontWeight.bold)),
+                  Text(
+                    section.title,
+                    style: const TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
+                  ),
                 ],
               ),
               const SizedBox(height: 12),
@@ -89,7 +165,11 @@ class _OnboardPageState extends State<OnboardPage> {
                     title: Text(item.title),
                     subtitle: Text(item.subtitle),
                     trailing: const Icon(Icons.chevron_right),
-                    onTap: () => context.router.push(item.route),
+                    onTap:
+                        () =>
+                            item.title == 'Chat Page'
+                                ? showStartChatSheet(context)
+                                : context.router.push(item.route!),
                   ),
                 ),
               ),
@@ -113,7 +193,12 @@ class OnboardMenuItem {
   final String title;
   final String subtitle;
   final IconData icon;
-  final PageRouteInfo route;
+  final PageRouteInfo? route;
 
-  const OnboardMenuItem({required this.title, required this.subtitle, required this.icon, required this.route});
+  const OnboardMenuItem({
+    required this.title,
+    required this.subtitle,
+    required this.icon,
+    this.route,
+  });
 }
