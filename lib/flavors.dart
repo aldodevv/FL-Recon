@@ -1,3 +1,6 @@
+import 'package:firebase_core/firebase_core.dart';
+import 'package:recon/firebase_options.dart';
+
 enum Flavor {
   dev,
   uat,
@@ -18,6 +21,16 @@ class F {
       case Flavor.prod:
         return 'Recon';
     }
+  }
+
+
+  static FirebaseOptions? get firebaseOptions {
+    switch (appFlavor) {
+      case Flavor.dev:
+      case Flavor.uat:
+      case Flavor.prod:
+        return DefaultFirebaseOptions.currentPlatform;
+      }
   }
 
 }

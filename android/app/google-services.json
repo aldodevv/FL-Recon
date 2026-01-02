@@ -1,0 +1,29 @@
+{
+  "project_info": {
+    "project_number": "80865386568",
+    "project_id": "fl-recon",
+    "storage_bucket": "fl-recon.firebasestorage.app"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:80865386568:android:a81bfa14c9510b220af87d",
+        "android_client_info": {
+          "package_name": "id.co.recon"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyAeaQxr1-1V0z2cJAZX4v2NJS5UQKMSjZg"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
